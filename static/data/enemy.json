@@ -1,0 +1,9 @@
+{
+    "data":[
+        {"_id":{"$oid":"64ff0e18466d416d30914f87"},"name":"金武斗士","gj":112,"fy":156,"mk":120,"gs":1.5,"distance": 80,"speed": 0.8,"blood":3500,"lv": 3,"icon":"enemy1.jpg"},
+		{"_id":{"$oid":"65053a3609664caf29b66594"},"name":"彩虹公主","gj":90,"fy":123,"mk":82,"gs":1,"distance": 100,"speed": 0.8,"blood":3600,"lv": 1,"icon":"enemy3.jpg"},
+		{"_id":{"$oid":"650b1e99a7c432baa0f9586a"},"name":"钢铁机器人","gj":75,"fy":205,"mk":188,"gs":1.7,"lv": 1,"distance": 70,"speed": 1,"blood":4000,"icon":"enemy4.jpg"},
+		{"_id":{"$oid":"6511b028f08210d51526ba4f"},"name":"椿","gj":120,"fy":109,"mk":101,"gs":1.2,"lv": 1,"distance": 110,"speed": 0.7,"blood":3500,"icon":"chun2.jpeg"},
+		{"_id":{"$oid":"650fdc32189f866d65f21504"},"name":"绝命毒师","gj":115,"fy":128,"mk":125,"gs":1.3,"lv": 6,"distance": 80,"speed": 0.7,"blood":3750,"icon":"jmds.png"}
+	]
+}

@@ -1,0 +1,6 @@
+{
+    "data":[
+        {"_id":{"$oid":"64fc2a929755e344ab579d22"},"name":"lin","e":0,"lv":1,"pwlv":1,"pwE": 0,"money":10000,"packs":[],"password":"123","roles":[],"num":72,"uTime":"2023/9/26 00:09:14","showIntro":0},
+        {"_id":{"$oid":"651022ee9755e344abdbd81e"},"name":"cml","e":0,"lv":1,"pwlv":1,"pwE": 0,"money":1000,"packs":[],"password":"123","roles":[],"num":0,"uTime":"2023/9/24 19:15:02","showIntro":1}
+    ]
+}
