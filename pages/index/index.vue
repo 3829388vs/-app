@@ -84,6 +84,9 @@
 						<view class="btns jinbiao" @click="match('jinbiao')"></view>
 					</view>
 					<view class="selRow">
+						<view class="btns shijiebei" @click="match('shijiebei')"></view>
+					</view>
+					<view class="selRow">
 						<view class="btns wuxian" @click="match('wuxian')"></view>
 					</view>
 					<view class="selRow">
@@ -476,6 +479,10 @@
 			}
 			.jinbiao {
 				background: url("../../static/imgs/jinbiao.png") no-repeat;
+				background-size: cover;
+			}
+			.shijiebei {
+				background: url("../../static/imgs/shijiebei.png") no-repeat;
 				background-size: cover;
 			}
 			.wuxian {

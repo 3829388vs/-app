@@ -2319,18 +2319,18 @@ export default {
 						this.backBgImg('jyzs3',2200)
 						setTimeout(()=>{
 							if(strongIndex == 1){
-								this.fasheArrow(780,2,25,this.myHero.id,1,1)
+								this.fasheArrow(780,2,25,this.myHero.id,1,1,2)
 							}else{
-								this.fasheArrow(650,2,25,this.myHero.id,1,1)
+								this.fasheArrow(650,2,25,this.myHero.id,1,1,2)
 							}
 						},1000)
 					}else{	//步枪
 						this.cd(1200 - addTalent*30,1)
 						this.blueComput(15 + addTalent*3,'reduce')
 						if(strongIndex == 1){
-							this.fasheArrow(550,2,22,this.myHero.id,1,12)
+							this.fasheArrow(550,2,22,this.myHero.id,1,12,1)
 						}else{
-							this.fasheArrow(420,2,22,this.myHero.id,1,12)
+							this.fasheArrow(420,2,22,this.myHero.id,1,12,1)
 						}
 					}
 				}
@@ -2385,7 +2385,7 @@ export default {
 						this.cd(7500 - addTalent4*300,4)
 					}
 					setTimeout(()=>{
-						this.fasheArrow(2000,2,38,this.myHero.id,4,3)
+						this.fasheArrow(2000,2,38,this.myHero.id,4,3,1)
 					},1000)
 					this.heroAnm('../../static/imgs/hero/jyzs2.gif?'+ new Date().getTime())
 					this.backBgImg('jyzs2',5000)
@@ -3396,7 +3396,10 @@ export default {
 					this.cd(8000 - addTalent2*250,2)
 					this.blueComput(70 + addTalent2*10,'reduce')
 					this.heroAnm('../../static/imgs/hero/sm2.gif?'+ new Date().getTime())
-					this.backBgImg('sm2',4000)
+					this.backBgImg('sm2',3300)
+					if(strongIndex == 2){
+						this.tallentExpert(3,1,3000)
+					}
 					let time = setInterval(()=>{
 						if(this.distanceComp(this.heroGJdis)){
 							let val = parseInt(parseInt(this.myHero.fs)*(1.2+addTalent2*0.08)) - parseInt(this.enemy.mk*2*this.pomo) + this.randomNum(70,80+addTalent2*15)
@@ -3405,10 +3408,10 @@ export default {
 							}
 							this.beat(val,1)
 						}
-					},600)
+					},300)
 					setTimeout(()=>{
 						clearInterval(time)
-					},4000)
+					},3300)
 					this.playVoice('../../static/sounds/sm'+num+'.wav',true,num-1,5300)
 				}
 				if(num == 3){
@@ -3430,13 +3433,25 @@ export default {
 					this.delayTel(300,num)
 					this.blueComput(150 + addTalent4*15,'reduce')
 					setTimeout(()=>{
-						this.fasheArrow(320,2,44,this.myHero.id,4,6)
+						if(strongIndex == 2){
+							this.fasheArrow(370,2,48,this.myHero.id,4,6,1)
+						}else{
+							this.fasheArrow(320,2,44,this.myHero.id,4,6)
+						}
 					},300)
 					this.playVoice('../../static/sounds/sm'+num+'.wav',false,num-1,2300)
 				}
 			}
 			if(this.myHero.name == '达摩' || this.myHero.id == 18){
 				// this.playVoice('../../static/sounds/dfzy'+num+'.wav',true,num-1,3000)
+				if(this.xuli == 0){
+					this.myspeed = this.myspeed - 0.1
+					this.xuli = 1
+				}
+				setTimeout(()=>{
+					this.myspeed = this.myspeed + 0.1
+					this.xuli = 0
+				},2000)
 				if(num == 1){
 					if(!this.ygbj){
 						this.$refs.tallents.tallentShow = false
@@ -3448,7 +3463,7 @@ export default {
 						this.delayTel(300,num)
 						this.blueComput(50 + addTalent*7,'reduce')
 						setTimeout(()=>{
-							this.fasheArrow(260 + addTalent*10,2,43,this.myHero.id,1,5)
+							this.fasheArrow(260 + addTalent*10,2,43,this.myHero.id,1,5,2)
 						},300)
 					}else{
 						this.delayTel(250,num)
@@ -3459,6 +3474,15 @@ export default {
 						}
 						setTimeout(()=>{
 							let val = this.harmComputer(1,addTalent)+ this.myHero.gj + 100 + addTalent*50
+							if(strongIndex == 1){
+								val = val + 230
+								if(this.reallyRandom(0,1) == 1){
+									setTimeout(()=>{
+										var vals = this.myHero.gj*2
+										this.beat(vals,1)
+									},500)
+								}
+							}
 							this.beat(val)
 							this.cd(8500 - addTalent*250,1)
 							this.ygbj = false
@@ -3488,6 +3512,8 @@ export default {
 					this.cd(8000 - addTalent3*250,3)
 					this.delayTel(200,num)
 					this.blueComput(50 + addTalent3*5,'reduce')
+					this.heroAnm('../../static/imgs/hero/damo3.gif?'+ new Date().getTime())
+					this.backBgImg('damo3',1000)
 					let val = this.harmComputer(1,addTalent)+ 300 + addTalent*50
 					this.beat(val)
 					if(this.myHero.v > 0.6){
@@ -3502,7 +3528,6 @@ export default {
 					this.cd(12000 - addTalent4*300,4)
 					this.delayTel(500,num)
 					this.blueComput(100 + addTalent4*10,'reduce')
-					this.fastsp = 0.15
 					setTimeout(()=>{
 						this.enNoMove = true
 						this.shotDown = true
@@ -3531,6 +3556,7 @@ export default {
 						}
 						let val2 = val1 + 650 + addTalent4*70
 						this.beat(val2)
+						this.computeDistance()
 					},500)
 					setTimeout(()=>{
 						this.fastsp2 = 0
@@ -4252,7 +4278,8 @@ export default {
 				this.flz = this.myHero.flz
 			}
 			if(this.myEquipName.includes('梅贾的窃魂卷')) {
-				this.myHero.fs = this.myHero.fs + 15
+				this.myHero.fs = this.myHero.fs + 20
+				this.origHero.fs = this.origHero.fs + 20
 			}
 			this.blueVal = Math.round(parseInt(this.flz) / parseInt(this.myHero.flz) * 100)
 					let resp = [...res.data]
@@ -4985,7 +5012,7 @@ export default {
 							if(val <= 30){
 								val = this.randomNum(30,50)
 							}
-							if(parseInt(this.addData.strongIndex) == 1){
+							if(parseInt(this.addData.strongIndex) == 1 || parseInt(this.addData.strongIndex) == 2){
 								val = val + 50
 							}
 							this.tallentExpert(3,1,1000)
@@ -5313,7 +5340,7 @@ export default {
 			}
 			
 		},
-		fasheArrow(distance,index,range,heroId,num,type) {
+		fasheArrow(distance,index,range,heroId,num,type,speed) {
 			if(index == 1){		//敌方发射
 				let arrowType =  'leftSJ.png'
 				let arrowType2 =  'rightSJ.png'
@@ -5615,7 +5642,11 @@ export default {
 						this.arrowX = this.characterX - 20
 						this.ArrowTX = arrowType
 						this.arrowTimer = setInterval(()=>{
-							this.arrowX = this.arrowX - 4
+							if(speed){
+								this.arrowX = this.arrowX - 4 - speed
+							}else{
+								this.arrowX = this.arrowX - 4
+							}
 							//射中
 							if(Math.abs(this.arrowY - this.enemyY) <= range && Math.abs(this.arrowX - this.enemyX) <= 20 && this.arrowTimer){
 								this.shejiBeat(index,heroId,num)
@@ -5633,7 +5664,11 @@ export default {
 					}else{
 						this.arrowX = this.characterX + 20
 						this.arrowTimer = setInterval(()=>{
-							this.arrowX = this.arrowX + 4
+							if(speed){
+								this.arrowX = this.arrowX + 4 + speed
+							}else{
+								this.arrowX = this.arrowX + 4
+							}
 							//射中
 							if(Math.abs(this.arrowY - this.enemyY) <= range && Math.abs(this.arrowX - this.enemyX) <= 20 && this.arrowTimer){
 								this.shejiBeat(index,heroId,num)
@@ -6160,7 +6195,7 @@ export default {
 			if(this.myHero.id == 17 && this.$refs.tallents.tallentShow){
 				this.playVoice('../../static/sounds/sm1.wav',false,0,2300)
 				this.$refs.tallents.tallentShow = false
-				if(parseInt(this.addData.strongIndex) == 1){
+				if(parseInt(this.addData.strongIndex) == 1 || parseInt(this.addData.strongIndex) == 2){
 					this.cd(5000 - addTalent*150,1)
 				}else{
 					this.cd(5800 - addTalent*200,1)

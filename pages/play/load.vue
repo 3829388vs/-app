@@ -62,6 +62,10 @@ export default {
 		if(type == 'tianti') {
 			this.type = '天梯模式'
 		}
+		if(type == 'shijiebei') {
+			this.type = '世界杯'
+			this.getWorldcupEnmList()
+		}
 		if(type == 'wuxian') {
 			this.type = '无限战争'
 			this.getWxEnmList()
@@ -158,7 +162,7 @@ export default {
 			res3.data.concat(res4.data.slice(1)).forEach(item=>{
 				if(!item.isOther){
 					let ite = {...item}
-					ite.gj = parseInt(ite.gj*1.5)
+					ite.gj = parseInt(ite.gj*1.5) + parseInt(ite.fs*0.35)
 					ite.fy = parseInt(ite.fy*1.7)
 					ite.blood = parseInt(ite.blood*1.2)
 					ite.gs = ite.v
@@ -178,6 +182,28 @@ export default {
 			// 	let leng = this.enmList.length
 			// 	this.match = {...this.enmList[this.randomNum(0,leng - 1)]}
 			// })
+		},
+		//世界杯敌人
+		getWorldcupEnmList() {
+			const self = this
+			let resp2 = []
+			res3.data.concat(res4.data.slice(1)).forEach(item=>{
+				if(!item.isOther){
+					let ite = {...item}
+					ite.gj = parseInt(ite.gj*1.5) + parseInt(ite.fs*0.35)
+					ite.fy = parseInt(ite.fy*1.5)
+					ite.blood = parseInt(ite.blood*1.2)
+					ite.gs = ite.v
+					ite.mk = ite.fy
+					ite.speed = 0.9
+					ite.icon = 'hero/' + ite.icon
+					ite.isHero = true
+					resp2.push(ite)
+				}
+			})
+			self.enmList = resp2.slice()
+			let leng = self.enmList.length
+			self.match = {...self.enmList[self.randomNum(0,leng - 1)]}
 		},
 		//无限战争的敌人
 		getWxEnmList() {
