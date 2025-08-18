@@ -26,7 +26,8 @@
 {"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":102,"index": 2,"name":"影流之主-灭世天煞","details":"诸刃的伤害提升；分身的距离提升；敌方生命低于55%瞬狱影杀阵产生暴发伤害，且冷却时间减少。","gj":91,"fs":0,"fy":83,"v":1,"bj":0,"distance": 80,"blood":3800,"flz":1100,"icon":"msts.jpg","img":"mstsbg.jpg","price":2700},
 {"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":17,"index": 1,"name":"神明-巫师","details":"炼狱技能伤害增加且冷却时间减少。","gj":75,"fs":82,"fy":77,"v":1.2,"bj":0,"distance": 115,"blood":3200,"flz":1050,"icon":"wushi.jpg","img":"wushibg.jpg","price":1350},
 {"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":17,"index": 2,"name":"神明-天穹之誓","details":"炼狱技能伤害增加且冷却时间减少；法术环绕技能会使敌方减速3秒；大招飞行速度增加，范围加大。","gj":79,"fs":88,"fy":79,"v":1,"bj":0,"distance": 120,"blood":3300,"flz":1150,"icon":"tnzs.jpg","img":"tnzsbg.jpg","price":2700},
-{"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":18,"index": 1,"name":"达摩-龙的传人","details":"气功波技能回踢伤害增加,且有50%概率造成二段的真实伤害；神龙摆尾技能伤害增加、可以踢的更远。","gj":86,"fs":0,"fy":87,"v":1,"bj":0,"distance": 72,"blood":3500,"flz":1000,"icon":"ldcr.jpg","img":"ldcrbg.jpg","price":2700}
-	
+{"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":18,"index": 1,"name":"达摩-龙的传人","details":"气功波技能回踢伤害增加,且有50%概率造成二段的真实伤害；神龙摆尾技能伤害增加、可以踢的更远。","gj":86,"fs":0,"fy":87,"v":1,"bj":0,"distance": 72,"blood":3500,"flz":1000,"icon":"ldcr.jpg","img":"ldcrbg.jpg","price":2700},
+{"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":19,"index": 1,"name":"疾风灵鹰-雷电御鹰","details":"飞鹰翱翔的时候，敌人可能会受到雷电伤害；鹰爪遨游抓起敌人会造成物理伤害","gj":85,"fs":0,"fy":79,"v":1,"bj":0.2,"distance": 75,"blood":3150,"flz":1000,"icon":"ldyy.jpeg","img":"ldyybg.jpeg","price":1350},
+{"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":19,"index": 2,"name":"疾风灵鹰-鹰击长空","details":"飞鹰翱翔的时候，敌人可能会受到雷电伤害；鹰爪遨游抓起敌人会造成物理伤害；飞鹰俯冲造成的伤害更大，如果在飞行状态下飞鹰俯冲,会造成更多的伤害。","gj":88,"fs":0,"fy":83,"v":1,"bj":0.3,"distance": 75,"blood":3250,"flz":1100,"icon":"yjck.jpeg","img":"yjckbg.jpeg","price":2700}
 	]
 }

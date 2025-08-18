@@ -85,11 +85,34 @@
 							<view class="infoValue">{{hasPoint}}</view>
 						</view>
 					</view>
+					<view class="infobtn" @click="toInfo()">
+						技能详情
+					</view>
 					<view class="tallentItem">
 						<view class="item" v-for="(item,index) in heroInfo.tallent.slice(1)" :key="item.name">
-							<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/rune/jm.png"></image>
+							<image class="itemImg" :src="tallentImgFilter(index)"></image>
 							<p class="itemText" :text="item.text">{{item.name}}({{addfilter(8+index)}})</p>
 							<image v-if="hasPoint > 0 && selIndex == 0" @click="addP(8+index)" class="addTallent" style="padding-top: 16rpx;" src="../../static/imgs/addTallent.png"></image>
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="tallentInfo" style="width: 94%;height: 70%;position: absolute;top: 20%;" v-if="showtallentInfo">
+				<view class="close" @click="close">×</view>
+				<view class="roleInfo">
+					<view class="tallent">
+						<view class="tallentRow">
+							<view class="tallentTitle">被动技能：</view>
+							<view style="background-color: rgba(255, 255, 255, 0.15);padding: 0rpx 16rpx;">
+								<view class="name">{{ heroInfo.tallent[0].name }}</view>
+								<view class="textInfo">{{ heroInfo.tallent[0].text }}</view>
+							</view>
+						</view>
+						<view class="tallentRow" v-for="item in heroInfo.tallent.slice(1)" :key="item.name">
+							<view>
+								<view class="name">{{ item.name }}</view>
+								<view class="textInfo">{{ item.text }}</view>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -113,7 +136,8 @@ export default {
 			hasPoint: 0,
 			addInfo: {},
 			heroStrong: [],
-			selIndex: 0
+			selIndex: 0,
+			showtallentInfo: false
 		}
 	},
 	mounted() {
@@ -587,6 +611,212 @@ export default {
 				}
 			});
 		},
+		close() {
+			this.showtallentInfo = false
+		},
+		toInfo() {
+			this.showtallentInfo = true
+		},
+		tallentImgFilter(index){
+			let imgs = [
+				{
+					id: 1,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/GarenQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/GarenW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/GarenE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/GarenR.png'
+					]
+				},
+				{
+					id: 2,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/JaxLeapStrike.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/JaxEmpowerTwo.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/JaxCounterStrike.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/JaxRApexForm.png'
+					]
+				},
+				{
+					id: 3,
+					imgs: [
+						'https://file.dahe.cn/image/gif/20201217/1608219103131164.gif',
+						'https://p3.itc.cn/images01/20200710/59842113d79f47b091bf58f7f32a7f07.jpeg',
+						'https://n.sinaimg.cn/sinacn20111/114/w987h727/20181211/4c48-hpinrye0532239.jpg',
+						'../../static/imgs/hero/xlsbzIcon.jpeg'
+					]
+				},
+				{
+					id: 4,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/AlphaStrike.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/Meditate.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/WujuStyle.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/Highlander.png'
+					]
+				},
+				{
+					id: 5,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/DianaQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/DianaW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/DianaE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/DianaR.png'
+					]
+				},
+				{
+					id: 6,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/NunuQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/SejuaniR.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/FizzR.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/NamiR.png'
+					]
+				},
+				{
+					id: 7,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/GravesQLineSpell.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/GravesSmokeGrenade.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/GravesMove.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/GravesChargeShot.png'
+					]
+				},
+				{
+					id: 8,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/SowTheWind.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/HowlingGale.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/EyeOfTheStorm.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/ReapTheWhirlwind.png'
+					]
+				},
+				{
+					id: 9,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/DariusCleave.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/DariusNoxianTacticsONH.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/DariusAxeGrabCone.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/DariusExecute.png'
+					]
+				},
+				{
+					id: 10,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/EzrealQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/EzrealW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/EzrealE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/EzrealR.png'
+					]
+				},
+				{
+					id: 101,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/MonkeyKingDoubleAttack.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/MonkeyKingDecoy.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/MonkeyKingNimbus.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/MonkeyKingSpinToWin.png'
+					]
+				},
+				{
+					id: 102,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/ZedQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/ZedW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/ZedE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/ZedR.png'
+					]
+				},
+				{
+					id: 11,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/KatarinaQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/SyndraPassive.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/IreliaQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/KatarinaR.png'
+					]
+				},
+				{
+					id: 12,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/BlindingDart.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/MoveQuick.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/ToxicShot.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/TeemoRCast.png'
+					]
+				},
+				{
+					id: 13,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/522/52210.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/522/52200.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/522/52220.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/522/52230.png'
+					]
+				},
+				{
+					id: 14,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/TalonQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/TalonW.png',
+						'https://game.gtimg.cn/images/lol/act/img/passive/TalonP.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/TalonR.png'
+					]
+				},
+				{
+					id: 15,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/SeismicShard.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/Obduracy.png',
+						'https://game.gtimg.cn/images/lol/act/img/passive/Malphite_GraniteShield.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/UFSlash.png'
+					]
+				},
+				{
+					id: 16,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/519/51940.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/519/51920.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/519/51910.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/519/51930.png'
+					]
+				},
+				{
+					id: 17,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/148/14810.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/148/14800.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/148/14820.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/148/14830.png'
+					]
+				},
+				{
+					id: 18,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/BlindMonkQOne.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/BlindMonkWOne.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/BlindMonkEOne.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/BlindMonkRKick.png'
+					]
+				},
+				{
+					id: 19,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/UdyrQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/QuinnW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/QuinnQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/QuinnR.png'
+					]
+				}
+			]
+			let img = ''
+			imgs.map(i=>{
+				if(i.id == this.heroInfo.id){
+					img = i.imgs[index]
+				}
+			})
+			return img
+		}
 	},
 }
 </script>
@@ -704,7 +934,7 @@ export default {
 					padding: 4rpx 0rpx;
 					.tallentTitle {
 						width: 200rpx;
-						font-size: 36rpx;
+						font-size: 30rpx;
 						color: #ebebeb;
 					}
 					.name {
@@ -829,6 +1059,125 @@ export default {
 		.zw {
 			width: 124rpx;
 			height: 124rpx;
+		}
+	}
+	.infobtn {
+		width: 170rpx;
+		text-align: center;
+		height: 52rpx;
+		line-height: 52rpx;
+		vertical-align: middle;
+		color: #ffffff;
+		background-color: #00aaff;
+		font-size: 26rpx;
+		position: relative;
+		top: 80rpx;
+		border-radius: 12rpx;
+	}
+	.tallentInfo {
+		width: 100%;
+		height: 80%;
+		position: relative;
+		top: 5%;
+		background: url('../../static/imgs/selRole.png');
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		z-index: 8;
+		.close {
+			position: absolute;
+			left: 92%;
+			font-size: 56rpx;
+			color: #ffffff;
+		}
+		.scroll-Y {
+			height: 78vh;
+		}
+		.roles {
+			width: 100%;
+			padding: 0px 20rpx;
+			padding-top: 70rpx;
+			display: flex;
+			flex-wrap: wrap;
+			.item {
+				width: 94%;
+				padding: 20rpx 0rpx;
+				display: flex;
+				// background-color: rgba(255, 255, 255, 0.2);
+				border-bottom: 2rpx solid #888888;
+				.left {
+					width: 40%;
+					position: relative;
+					top: 10rpx;
+					left: 26rpx;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+				}
+				.right {
+					width: 60%;
+					padding: 10rpx 0rpx;
+					.text {
+						width: 250rpx;
+						text-align: right;
+						color: #ebebeb;
+						font-size: 32rpx;
+					}
+				}
+				.info {
+					width: 200rpx;
+					text-align: center;
+					height: 56rpx;
+					line-height: 56rpx;
+					vertical-align: middle;
+					color: #ffffff;
+					background-color: #00aaff;
+					font-size: 26rpx;
+					position: relative;
+					top: 70%;
+					right: 20rpx;
+					border-radius: 12rpx;
+				}
+				.icon {
+					width: 120rpx;
+					height: 120rpx;
+					border-radius: 100%;
+					border: 4rpx solid $main-color;
+				}
+				.dead {
+					opacity: 0.3;
+				}
+				.deadText {
+					color: #828282 !important;
+				}
+				.heroName {
+					padding-top: 12rpx;
+					color: $main-color;
+				}
+			}
+		}
+		.roleInfo {
+			padding: 60rpx 50rpx;
+			.tallent {
+				.tallentRow {
+					display: flex;
+					padding: 4rpx 0rpx;
+					.tallentTitle {
+						width: 200rpx;
+						font-size: 30rpx;
+						color: #ebebeb;
+					}
+					.name {
+						color: $main-color;
+						font-size: 34rpx;
+						font-weight: bold;
+					}
+					.textInfo {
+						color: #ebebeb;
+						padding: 10rpx 0rpx;
+						font-size: 28rpx;
+					}
+				}
+			}
 		}
 	}
 }

@@ -306,10 +306,14 @@ export default {
 		z-index: 12;
 		.close {
 			position: absolute;
+			height: 100rpx;
 			left: 92%;
 			top: 12rpx;
-			font-size: 70rpx;
+			font-size: 80rpx;
+			line-height: 80rpx;
+			vertical-align: middle;
 			color: #ffffff;
+			z-index: 15;
 		}
 		.title {
 			font-size: 38rpx;

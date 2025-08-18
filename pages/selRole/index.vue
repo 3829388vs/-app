@@ -347,7 +347,7 @@ export default {
 					padding: 4rpx 0rpx;
 					.tallentTitle {
 						width: 200rpx;
-						font-size: 36rpx;
+						font-size: 30rpx;
 						color: #ebebeb;
 					}
 					.name {
