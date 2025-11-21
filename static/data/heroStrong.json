@@ -14,6 +14,7 @@
 {"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":6,"index": 1,"name":"大鱼海棠-鲲","details":"生灵召唤的伤害增加，如果命中则回复少量血量；撕咬技能会令对方减速2.5秒。","gj":85,"fs":63,"fy":81,"v":1.2,"bj":0.2,"distance": 80,"blood":3350,"flz":1050,"icon":"dyht.jpg","img":"dyhtbg.jpeg","price":2700},
 {"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":3,"index": 1,"name":"GG Bond-超级英雄","details":"超级棒棒糖会提升30%移动速度，武当太极拳的伤害提升。","gj":76,"fs":100,"fy":78,"v":1.2,"bj":0.5,"distance": 100,"blood":3500,"flz":1050,"icon":"cjyx.jpg","img":"cjyxbg.jpeg","price":1350},
 {"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":14,"index": 1,"name":"刀锋之影-刺客信条","details":"斩草除根的伤害加大；诺克萨斯外交技能冷却减少","gj":90,"fs":0,"fy":75,"v":1,"bj":0,"distance": 75,"blood":3200,"flz":950,"icon":"ckxt.jpg","img":"ckxtbg.jpg","price":1350},
+{"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":14,"index": 2,"name":"刀锋之影-玉剑传说","details":"斩草除根的伤害加大；诺克萨斯外交技能范围增加50%，并有50%几率造成额外高爆伤害","gj":93,"fs":0,"fy":77,"v":1,"bj":0,"distance": 75,"blood":3300,"flz":1000,"icon":"yjcs.jpg","img":"yjcsbg.jpg","price":2700},
 {"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":13,"index": 1,"name":"云影之剑-云鹰飞将","details":"裂空斩技能冷却减少；云鹰：星辰之赐移动速度提升更多；飞将：归雁技能如果造成伤害，则刷新逐星技能。","gj":92,"fs":0,"fy":76,"v":1,"bj":0,"distance": 70,"blood":3350,"flz":1000,"icon":"yyfj.jpg","img":"yyfjbg.jpg","price":2700},
 {"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":13,"index": 2,"name":"云影之剑-山雷引","details":"裂空斩伤害提升；山雷：归雁技能有50%概率会触发山雷，山雷会在3~6秒里对敌方造成魔法伤害。","gj":89,"fs":0,"fy":73,"v":1,"bj":0,"distance": 70,"blood":3250,"flz":1000,"icon":"sly.jpg","img":"slybg.jpg","price":1350},
 {"_id":{"$oid":"65119d0a466d416d30ee360c"},"id":9,"index": 1,"name":"诺克萨斯之手-梦魇","details":"大杀四方伤害提升；如果刮中外圈，则恢复的血量更多","gj":77,"fs":0,"fy":93,"v":1.7,"bj":0,"distance": 75,"blood":3500,"flz":950,"icon":"mengyan.jpg","img":"mengyanbg.jpg","price":1350},
@@ -33,6 +34,6 @@
 {"_id":{"$oid":"65119d0a466d416d30ee362c"},"id":20,"index": 1,"name":"敖丙-龙族真神","details":"水柱冲击技能冷却时间减少，距离增加；水波攻击伤害提升。","gj":80,"fs":68,"fy":75,"v":0.7,"bj":0,"distance": 75,"blood":3300,"flz":1150,"icon":"lzzs.jpg","img":"lzzsbg.jpg","price":1350},
 {"_id":{"$oid":"65119d0a466d416d30ee363c"},"id":21,"index": 1,"name":"托塔天王-李靖","details":"穿刺的冷却时间减少，冲刺的距离增加，恢复的血量增加。","gj":95,"fs":45,"fy":78,"v":1,"bj":0,"distance": 75,"blood":3500,"flz":1100,"icon":"lj.jpg","img":"ljbg.jpg","price":1350},
 {"_id":{"$oid":"65119d0a466d416d30ee364c"},"id":22,"index": 1,"name":"隐世侠客-雁雀女侠","details":"体能守护技能回复的血量提升；气功波的伤害提升；","gj":90,"fs":0,"fy":82,"v":1,"bj":0,"blood":3300,"flz":1100,"icon":"yqnx.jpg","img":"yqnxbg.jpg","price":1350},
-{"_id":{"$oid":"65119d0a466d416d30ee365c"},"id":22,"index": 2,"name":"隐世侠客-仙潼太子","details":"气功波的伤害提升；无影败魔剑击造成的伤害略微提升并命中敌方的话回复自身血量。","gj":95,"fs":0,"fy":86,"v":1,"bj":0,"blood":3500,"flz":1300,"icon":"xttz.jpg","img":"xttzbg.jpg","price":2700}
+{"_id":{"$oid":"65119d0a466d416d30ee365c"},"id":22,"index": 2,"name":"隐世侠客-仙潼太子","details":"气功波的伤害提升；无影败魔剑击造成的伤害略微提升并命中敌方的话回复自身血量；使用疾风幻影技能后闪袭技能的命中范围增加。","gj":95,"fs":0,"fy":86,"v":1,"bj":0,"blood":3500,"flz":1300,"icon":"xttz.jpg","img":"xttzbg.jpg","price":2700}
 	]
 }

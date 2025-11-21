@@ -3710,6 +3710,9 @@ export default {
 			}
 			if(this.myHero.name == '刀锋之影' || this.myHero.id == 14){
 				this.playVoice('../../static/sounds/dfzy'+num+'.wav',true,num-1,3000)
+				if(strongIndex == 2){
+					this.myHero.dis1 = 170
+				}
 				if(num == 1){
 					if(strongIndex == 1){
 						this.cd(7000 - addTalent*200,1)
@@ -3717,8 +3720,13 @@ export default {
 						this.cd(8000 - addTalent*200,1)
 					}
 					this.blueComput(50 + addTalent*8,'reduce')
-					this.heroChongci(110,2)
+					this.heroChongci(this.myHero.dis1,2)
 					let val = this.harmComputer(1,addTalent) + 100 + addTalent*50
+					if(strongIndex == 2){
+						if(this.reallyRandom(0,1) == 1){
+							val = val + 150 + this.myHero.gj
+						}
+					}
 					this.beat(val)
 					setTimeout(()=>{
 						if(this.distanceComp(90) && this.yinshen){
@@ -4440,18 +4448,30 @@ export default {
 					this.cd(5000 - addTalent*250,1)
 					this.blueComput(30 + addTalent*3,'reduce')
 					this.fasheArrow(170,2,37,this.myHero.id,1,2,2)
+					this.playVoice('../../static/sounds/ysxk'+num+'.wav',true,num-1,1200)
 				}
 				if(num == 2){
 					this.cd(11500 - addTalent2*250,2)
 					this.blueComput(60 + addTalent2*5,'reduce')
 					this.delayTel(1000,num)
+					this.heroAnm('../../static/imgs/hero/ysxk2.gif?'+ new Date().getTime())
+					this.backBgImg('ysxk2',4000)
 					this.heroAddSpeed(parseFloat(0.5 + addTalent2*0.05).toFixed(2),4000 + addTalent2*250)
+					this.playVoice('../../static/sounds/ysxk'+num+'.wav',true,num-1,1200)
+					if(strongIndex == 2){
+						this.myHero.dis3 = 185
+						this.computeDistance()
+					}
 					if(parseFloat(this.myHero.v)>0.5){
 						this.xuli = true
 						this.myHero.v = parseFloat(parseFloat(this.myHero.v) - (0.3 + addTalent2*0.05)).toFixed(2)
 						setTimeout(()=>{
 							this.myHero.v = parseFloat(parseFloat(this.myHero.v) + (0.3 + addTalent2*0.05)).toFixed(2)
 							this.xuli = false
+							if(strongIndex == 2){
+								this.myHero.dis3 = 125
+								this.computeDistance()
+							}
 						},4000 + addTalent2*250)
 					}
 				}
@@ -4461,8 +4481,9 @@ export default {
 					}else{
 						this.cd(6000 - addTalent3*250,3)
 					}
+					this.playVoice('../../static/sounds/ysxk'+num+'.wav',true,num-1,1200)
 					this.blueComput(70 + addTalent3*5,'reduce')
-					this.heroChongci(125)
+					this.heroChongci(this.myHero.dis3)
 					if(this.characterX > this.enemyX){
 						this.characterX = this.enemyX - 50
 					}else{
@@ -4487,6 +4508,7 @@ export default {
 					this.delayTel(2000,num)
 					this.blueComput(120 + addTalent4*10,'reduce')
 					this.fasheArrow(160,2,45,this.myHero.id,4,18,5)
+					this.playVoice('../../static/sounds/ysxk'+num+'.wav',true,num-1,2200)
 					setTimeout(()=>{
 						this.fasheArrow(160,2,45,this.myHero.id,4,18,5)
 					},500)
@@ -8241,18 +8263,24 @@ export default {
 					clearInterval(this.arrowTimer)
 					//有一定概率敌方躲避射击
 					if(this.reallyRandom(0,1) == 1 && !this.enNoMove){
-						let sp = this.enspeed
-						this.enspeed = 0.3
-						this.enNoMove = true
-						if(this.randomNum(0,1) == 1){
-							this.enemyY = this.enemyY - 40
-						}else{
-							this.enemyY = this.enemyY + 40
+						let duobiTime = 250 - this.randomNum(0,200)
+						if(speed){
+							duobiTime = duobiTime + speed*50
 						}
 						setTimeout(()=>{
-							this.enspeed = sp
-							this.enNoMove = false
-						},350)
+							let sp = this.enspeed
+							this.enspeed = 0.3
+							this.enNoMove = true
+							if(this.randomNum(0,1) == 1){
+								this.enemyY = this.enemyY - 40
+							}else{
+								this.enemyY = this.enemyY + 40
+							}
+							setTimeout(()=>{
+								this.enspeed = sp
+								this.enNoMove = false
+							},350)
+						},duobiTime)
 					}
 					this.arrowY = this.characterY
 					if(this.characterX > this.enemyX){	//如果敌方在左边
