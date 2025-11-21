@@ -26,7 +26,7 @@
 				<button size="mini" class="clear" @click="resetAll">重置天赋点</button>
 				<view class="heroInfo">
 					<view style="width: 100%;display: flex;flex-direction: column;align-items: center;">
-						<image :class="{'heroIcon':true,'dead':addInfo.isLive == 0}" :src="'../../static/imgs/hero/'+heroInfo.icon"></image>
+						<image :class="{'heroIcon':true,'dead':addInfo.isLive == 0}" :src="'../../static/imgs/hero/'+heroInfo.icon" @click="preViewImg"></image>
 						<view style="margin-top: 10rpx;display: flex;">
 							<view v-if="addInfo.isLive == 0"><button size="mini" @click="living">复活</button></view>
 							<view v-if="selIndex != 0">
@@ -617,6 +617,14 @@ export default {
 		toInfo() {
 			this.showtallentInfo = true
 		},
+		preViewImg() {
+			if(this.heroInfo.img){
+				uni.previewImage({
+					current: 0,
+					urls: ['../../static/imgs/hero/'+this.heroInfo.img]
+				});
+			}
+		},
 		tallentImgFilter(index){
 			let imgs = [
 				{
@@ -806,6 +814,33 @@ export default {
 						'https://game.gtimg.cn/images/lol/act/img/spell/QuinnW.png',
 						'https://game.gtimg.cn/images/lol/act/img/spell/QuinnQ.png',
 						'https://game.gtimg.cn/images/lol/act/img/spell/QuinnR.png'
+					]
+				},
+				{
+					id: 20,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/585/58500.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/585/58520.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/563/56330.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/519/51940.png'
+					]
+				},
+				{
+					id: 21,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/120/32010.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/ThreshW.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/527/52710.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/527/52700.png'
+					]
+				},
+				{
+					id: 22,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/544/54400.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/544/54410.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/544/54420.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/544/54430.png'
 					]
 				}
 			]

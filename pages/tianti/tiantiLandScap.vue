@@ -191,6 +191,19 @@
 				  }"
 				></image>
 				<image
+					v-if="tallentObjects.length != 0"
+				  v-for="(item, index) in tallentObjects" 
+				  :key="index"
+				  class="tallentObjects"
+				  :src="'../../static/imgs/' + item.img"
+				  :style="{
+					left: item.left + 'px',
+					top: item.top + 'px',
+					width: (item.width?item.width:80) + 'rpx',
+					height: (item.height?item.height:80) + 'rpx'
+				  }"
+				></image>
+				<image
 					v-if="enmapObjects.length != 0"
 				  v-for="(item, index) in enmapObjects" 
 				  :key="index"
@@ -356,6 +369,7 @@ export default {
 			enNoMove: false, 	//敌方禁止移动
 			myNoMove: false, 	//我方禁止移动
 			mapObjects: [],	//地图物体
+			tallentObjects: [],	//技能特效物体
 			enmapObjects: [],	//敌方放置的地图物体
 			antijiansu: 0,	//反减速
 			txImg: '',
@@ -1181,6 +1195,15 @@ export default {
 					this.addBlood(parseInt(this.myHero.blood*0.025),0,0)
 				}
 			}
+			if(this.myHero.name == '托塔天王' || this.myHero.id == 21){
+				if(this.bloodVal2 < 40){	//宝塔护体
+					if(this.myHero.fy < 150){
+						this.myHero.fy = 180
+					}else if(this.myHero.fy < 200){
+						this.myHero.fy = 210
+					}
+				}
+			}
 			//对手技能
 			if(this.enemy.name == '地府-阎王'){
 				if(this.randomNum(0,1) == 1){
@@ -1295,6 +1318,43 @@ export default {
 					this.enemyBeat2(parseInt(this.enemy.gj)*2.3 - parseInt(this.myHero.fy)+this.randomNum(10,80))
 				}
 			}
+			if(this.enemy.name == '人间-张天志'){
+				if(this.randomNum(0,2) == 1 && this.distanceComp(110)){
+					uni.showToast({
+						title: '吃我一招',
+						icon:'none',
+						duration: 1500
+					});
+					this.enChongci(110)
+					this.enemyBeat2(parseInt(this.enemy.gj)*2.1 - parseInt(this.myHero.fy)+this.randomNum(10,200))
+				}
+				if(this.randomNum(0,3) == 2 && this.distanceComp(85)){
+					uni.showToast({
+						title: '在下咏春张天志',
+						icon:'none',
+						duration: 1500
+					});
+					let v = this.randomNum(50,90)
+					this.consistEnemyBeat(v,100,600+this.randomNum(0,6)*100)
+				}
+				if(this.randomNum(0,2) == 1 && this.distanceComp(95)){
+					uni.showToast({
+						title: '咏春飞踢',
+						icon:'none',
+						duration: 1000
+					});
+					if(this.enemyX<this.characterX){
+						this.characterX = this.characterX + 110
+					}else{
+						this.characterX = this.characterX - 110
+					}
+					this.enemyBeat2(parseInt(this.enemy.gj)*2.5 - parseInt(this.myHero.fy*1.5)+this.randomNum(50,350))
+					if(this.randomNum(0,1) == 1 && this.distanceComp(110)){
+						this.enChongci(110)
+						this.enemyBeat2(parseInt(this.enemy.gj)*2 - parseInt(this.myHero.fy)+this.randomNum(10,150))
+					}
+				}
+			}
 			if(this.enemy.name == '人间-关羽'){
 				if(this.randomNum(0,3) == 1 && this.engjAnm.indexOf('fb_gy') == -1 && this.distanceComp(85)){
 					uni.showToast({
@@ -1326,7 +1386,17 @@ export default {
 					},500)
 				}
 			}
-			
+			if(this.enemy.name == '妖族-鬼'){
+				if(this.randomNum(0,2) == 1){
+					this.fasheArrow(380,1,45,"敌方射击",1,4,3)
+				}
+				if(this.randomNum(0,2) == 2){
+					this.fasheArrow(325,1,32,"敌方射击-高伤害",1,2,2)
+				}
+				if(this.randomNum(0,2) == 0){
+					this.fasheArrow(285,1,32,"妖族-鬼",1,16,1)
+				}
+			}
 			if(this.enemy.name == '妖族-奎木狼'){
 				if(this.randomNum(0,3) == 1 && this.engjAnm.indexOf('fb_kml') == -1 && this.distanceComp(130)){
 					uni.showToast({
@@ -2530,7 +2600,7 @@ export default {
 					this.delayTel(100,num)
 						this.cd(4000 - addTalent*250,1)
 						this.blueComput(35 + addTalent*6,'reduce')
-						this.fasheArrow(220,2,30,this.myHero.id,1,1)
+						this.fasheArrow(220,2,30,this.myHero.id,1,1,5)
 				}
 				if(num == 2){
 					this.cd(6500 - addTalent2*150,2)
@@ -2538,7 +2608,7 @@ export default {
 					this.heroAnm('../../static/imgs/hero/ez1.gif?'+ new Date().getTime())
 					this.backBgImg('ez1',1000)
 					this.blueComput(35 + addTalent2*6,'reduce')
-					this.fasheArrow(185,2,25,this.myHero.id,2,4)
+					this.fasheArrow(185,2,25,this.myHero.id,2,4,5)
 				}
 				if(num == 3){
 					this.cd(8000 - addTalent3*150,3)
@@ -2554,7 +2624,7 @@ export default {
 					this.heroAnm('../../static/imgs/hero/ez2.gif?'+ new Date().getTime())
 					this.backBgImg('ez2',2200)
 					setTimeout(()=>{
-						this.fasheArrow(2000,2,40,this.myHero.id,4,6)
+						this.fasheArrow(2000,2,40,this.myHero.id,4,6,2)
 					},1500)
 				}
 			}
@@ -3097,7 +3167,7 @@ export default {
 						}else{
 							this.characterY = this.enemyY + 50
 						}
-						let val = this.harmComputer(1,addTalent) + 300 + parseInt(this.myHero.gj*0.6) + addTalent*50
+						let val = this.harmComputer(1,addTalent3) + 300 + parseInt(this.myHero.gj*0.6) + addTalent3*50
 						this.beat(val)
 					}else{
 						this.shanxian(70 + addTalent3*5)
@@ -3288,6 +3358,10 @@ export default {
 					this.playVoice('../../static/sounds/ryjs'+num+'.wav',true,num-1,3000)
 					setTimeout(()=>{
 						let val = (parseInt(this.myHero.fs)*(2.5+addTalent4*0.2) - parseInt(this.enemy.mk*4*this.pomo))*2 + this.randomNum(150,300+addTalent4*70)
+						if(strongIndex == 2){
+							val = val + parseInt(this.myHero.fs) + 100
+							this.enemy.fy = this.enemy.fy - 6
+						}
 						if(val < 50){
 							val = this.randomNum(100,200)
 						}
@@ -3675,6 +3749,251 @@ export default {
 							this.heroGJdis = this.heroGJdis - 20
 						},5000+addTalent4*300)
 					}
+				}
+			}
+			if(this.myHero.name == '敖丙' || this.myHero.id == 20){
+				if(num == 1){
+					this.cd(10500 - addTalent*250,2)
+					this.blueComput(80 + addTalent*8,'reduce')
+					this.heroAnm('../../static/imgs/hero/aobin1.gif?'+ new Date().getTime())
+					this.backBgImg('aobin1',4600)
+					this.delayTel(1000,num)
+					this.playVoice('../../static/sounds/aobin'+num+'.wav',true,num-1,4000)
+					if(this.distanceComp(100)){
+						this.tallentExpert(1,1,2000+addTalent*250)
+					}
+					this.shotDown = true
+					setTimeout(()=>{
+						this.shotDown = false
+					},2500+addTalent*250)
+				}
+				if(num == 2){
+					if(strongIndex == 1){
+						this.cd(5500 - addTalent2*200,2)
+					}else{
+						this.cd(7000 - addTalent2*250,2)
+					}
+					this.blueComput(35 + addTalent2*5,'reduce')
+					this.heroAnm('../../static/imgs/hero/aobin2.gif?'+ new Date().getTime())
+					this.backBgImg('aobin2',1900)
+					if(strongIndex == 1){
+						this.fasheArrow(280 + addTalent2*10,2,45,this.myHero.id,2,16,2)
+					}else{
+						this.fasheArrow(230 + addTalent2*10,2,45,this.myHero.id,2,16,2)
+					}
+					this.playVoice('../../static/sounds/aobin'+num+'.wav',true,num-1,3000)
+				}
+				if(num == 3){
+					this.cd(17000 - addTalent3*300,3)
+					this.blueComput(100 + addTalent3*10,'reduce')
+					this.mapObjects.map((i,d)=>{
+						if(i.img == 'shuiwall.png'){
+							this.mapObjects.splice(d,1)
+						}
+					})
+					this.mapObjects.push({
+						left: this.characterX - 100,
+						top: this.characterY - 100,
+						width: 430,
+						height: 430,
+						img: 'shuiwall.png'
+					});
+					setTimeout(()=>{
+						this.mapObjects.map((i,d)=>{
+							if(i.img == 'shuiwall.png'){
+								this.mapObjects.splice(d,1)
+							}
+						})
+						if(this.xuli){
+							this.myHero.fs = this.myHero.fs - 50 - addTalent3*10
+							this.myHero.gj = this.myHero.gj - 25 - addTalent3*5
+							this.myHero.fy = this.myHero.fy - 25 - addTalent3*5
+							this.xuli = false
+						}
+					},7000+addTalent3*500)
+				}
+				if(num == 4){
+					this.cd(11000 - addTalent4*250,4)
+					this.delayTel(3000,num)
+					this.blueComput(150 + addTalent4*15,'reduce')
+					setTimeout(()=>{
+						this.fasheArrow(3000+addTalent4*250,2,35,"无",3,14)
+						if(Math.abs(this.characterX - this.enemyX) <= 625 && Math.abs(this.characterY - this.enemyY)<=35){
+							let val = parseInt(this.myHero.fs*1.7) - parseInt(this.enemy.mk*1.5) + 30+addTalent4*20
+							if(val<=0){
+								val = 50
+							}
+							if(strongIndex == 1){
+								val = val + 60
+							}
+							this.consistBeat(val,500,3000+addTalent4*250)
+						}
+					},500)
+				}
+			}
+			if(this.myHero.name == '托塔天王' || this.myHero.id == 21){
+				if(num == 1){
+					if(strongIndex == 1){
+						this.cd(4000 - addTalent*250,1)
+					}else{
+						this.cd(5000 - addTalent*250,1)
+					}
+					this.blueComput(35 + addTalent*3,'reduce')
+					this.delayTel(500,num)
+					this.fasheArrow(135,2,75,this.myHero.id,1,18,4)
+				}
+				if(num == 2){
+					this.cd(10000 - addTalent2*250,2)
+					this.blueComput(60 + addTalent2*5,'reduce')
+					this.heroAnm('../../static/imgs/hero/tttw2.gif?'+ new Date().getTime())
+					this.backBgImg('tttw2',2500)
+					this.delayTel(1500,num)
+					if(!this.xuli){
+						this.enemy.gs = parseFloat(this.enemy.gs + 0.4 + addTalent2*0.1).toFixed(2)
+						this.enNoMove = true
+						this.ygbj = setInterval(()=>{
+							if(this.characterX > this.enemyX){
+								this.enemyX = this.enemyX + 6 + addTalent2*1
+							}else{
+								this.enemyX = this.enemyX - 6 - addTalent2*1
+							}
+							if(this.characterY > this.enemyY){
+								this.enemyY = this.enemyY + 6 + addTalent2*1
+							}else{
+								this.enemyY = this.enemyY - 6 - addTalent2*1
+							}
+						},100)
+						setTimeout(()=>{
+							this.enemy.gs = parseFloat(this.enemy.gs - 0.4 + addTalent2*0.1).toFixed(2)
+							this.enNoMove = false
+							clearInterval(this.ygbj)
+						},3000 + addTalent2*250)
+					}else{
+						let val = this.harmComputer(2,addTalent2) + addTalent2*50 + parseInt(this.myHero.fs*0.8)
+						this.beat(val)
+					}
+					this.playVoice('../../static/sounds/sm'+num+'.wav',true,num-1,3000)
+				}
+				if(num == 3){
+					this.cd(7500 - addTalent3*250,3)
+					this.blueComput(50 + addTalent3*5,'reduce')
+					if(strongIndex == 1){
+						this.shanxian(110 + addTalent3*10)
+					}else{
+						this.shanxian(80 + addTalent3*10)
+					}
+					this.addBlood(100 + addTalent3*30 + strongIndex*100 + parseInt(this.myHero.fs*1.6),0,0)
+					this.myHero.gj = parseInt(this.myHero.gj * (1.2 + addTalent3*0.025))
+					setTimeout(()=>{
+						this.myHero.gj = parseInt(this.myHero.gj / (1.2 + addTalent3*0.025))
+					},4000)
+				}
+				if(num == 4){
+					this.cd(14000 - addTalent4*250,4)
+					this.delayTel(2000,num)
+					this.blueComput(150 + addTalent4*10,'reduce')
+					this.playVoice('../../static/sounds/tttw'+num+'.wav',true,num-1,3500)
+					if(this.tallentObjects.length != 0){
+						this.tallentObjects.map((i,d)=>{
+							if(i.img == 'baota.png'){
+								this.tallentObjects.splice(d,1)
+							}
+						})
+					}
+					this.tallentExpert(3,1,900)
+					this.tallentObjects.push({
+						left: this.enemyX - 50,
+						top: this.enemyY - 250,
+						width: 350,
+						height: 480,
+						img: 'baota.png'
+					});
+					setTimeout(()=>{
+						this.tallentObjects.forEach((i,d)=>{
+							if(i.img == 'baota.png'){
+								i.top += 130
+							}
+						})
+					},100)
+					setTimeout(()=>{
+						this.xuli = true
+						this.shotDown = true
+						this.tallentExpert(1,1,5000+addTalent4*350)
+						let val = this.harmComputer(1,addTalent4) + 350 + addTalent4*80 + parseInt(this.myHero.fs*1.6)
+						this.beat(val)
+					},900)
+					setTimeout(()=>{
+						this.tallentObjects.map((i,d)=>{
+							if(i.img == 'baota.png'){
+								this.tallentObjects.splice(d,1)
+							}
+						})
+						this.xuli = false
+						this.shotDown = false
+					},5900+addTalent4*350)
+				}
+			}
+			if(this.myHero.name == '隐世侠客' || this.myHero.id == 22){
+				if(num == 1){
+					this.cd(5000 - addTalent*250,1)
+					this.blueComput(30 + addTalent*3,'reduce')
+					this.fasheArrow(170,2,37,this.myHero.id,1,2,2)
+				}
+				if(num == 2){
+					this.cd(11500 - addTalent2*250,2)
+					this.blueComput(60 + addTalent2*5,'reduce')
+					this.delayTel(1000,num)
+					this.heroAddSpeed(parseFloat(0.5 + addTalent2*0.05).toFixed(2),4000 + addTalent2*250)
+					if(parseFloat(this.myHero.v)>0.5){
+						this.xuli = true
+						this.myHero.v = parseFloat(parseFloat(this.myHero.v) - (0.3 + addTalent2*0.05)).toFixed(2)
+						setTimeout(()=>{
+							this.myHero.v = parseFloat(parseFloat(this.myHero.v) + (0.3 + addTalent2*0.05)).toFixed(2)
+							this.xuli = false
+						},4000 + addTalent2*250)
+					}
+				}
+				if(num == 3){
+					if(this.xuli){
+						this.cd(500,3)
+					}else{
+						this.cd(6000 - addTalent3*250,3)
+					}
+					this.blueComput(70 + addTalent3*5,'reduce')
+					this.heroChongci(125)
+					if(this.characterX > this.enemyX){
+						this.characterX = this.enemyX - 50
+					}else{
+						this.characterX = this.enemyX + 50
+					}
+					if(this.characterY > this.enemyY){
+						this.characterY = this.enemyY - 50
+					}else{
+						this.characterY = this.enemyY + 50
+					}
+					let val = this.harmComputer(1,addTalent3) + 250 + parseInt(this.myHero.gj*0.5) + addTalent3*50
+					if(this.xuli){
+						val = val + this.myHero.gj
+					}
+					if(this.reallyRandom(0,1) == 1){
+						val = parseInt(val*1.3)
+					}
+					this.beat(val)
+				}
+				if(num == 4){
+					this.cd(13000 - addTalent4*250,4)
+					this.delayTel(2000,num)
+					this.blueComput(120 + addTalent4*10,'reduce')
+					this.fasheArrow(160,2,45,this.myHero.id,4,18,5)
+					setTimeout(()=>{
+						this.fasheArrow(160,2,45,this.myHero.id,4,18,5)
+					},500)
+					setTimeout(()=>{
+						this.fasheArrow(180,2,50,this.myHero.id,4,18,5)
+					},1000)
+					setTimeout(()=>{
+						this.fasheArrow(200,2,50,this.myHero.id,4,18,5)
+					},1500)
 				}
 			}
 		},
@@ -4526,6 +4845,27 @@ export default {
 			}
 			if(this.myHero.id == 15 && parseInt(this.addData.strongIndex) == 1) {
 				this.tallentExpert(3,1,1000,0.7)
+			}
+			if(this.myHero.name == '敖丙' || this.myHero.id == 20){
+				if(this.reallyRandom(0,1) == 1){
+					let val = parseInt(this.myHero.gj * 2.3) + parseInt(this.myHero.fs*0.6) - parseInt(this.enemy.fy*2.2) + 250
+					if(val < 50){
+						val = this.randomNum(30,90)
+					}
+					this.beat(val,1)
+				}
+			}
+			if(this.myHero.name == '隐世侠客' || this.myHero.id == 22){
+				if(this.reallyRandom(0,1) == 1){
+					let strongIndex = 0
+					if(this.addData.strongIndex){
+						strongIndex = parseInt(this.addData.strongIndex)
+						if(strongIndex == 2){
+							strongIndex = 0
+						}
+					}
+					this.addBlood(this.randomNum(20 + strongIndex*80,100 + strongIndex*120),0,0)
+				}
 			}
 			if(this.myEquipName.includes('冰脉护手')){
 				this.tallentExpert(3,1,1000,0.6)
@@ -5551,6 +5891,24 @@ export default {
 					this.arrowHei2 = 67
 					this.playVoice('../../static/sounds/enmofabo.wav',false,7,2000)
 				}
+				if(type == 16){	//蓝冰
+					arrowType =  'lanbing.png'
+					arrowType2 =  'lanbing.png'
+					this.arrowWid2 = 77
+					this.arrowHei2 = 77
+				}
+				if(type == 17){	//雪花
+					arrowType =  'xuehua.png'
+					arrowType2 =  'xuehua.png'
+					this.arrowWid2 = 99
+					this.arrowHei2 = 99
+				}
+				if(type == 18){	//劈斩
+					arrowType =  'zhanLeft.png'
+					arrowType2 =  'zhanRight.png'
+					this.arrowWid2 = 120
+					this.arrowHei2 = 120
+				}
 				if(type == 10 || type == 11 || type == 14 || type == 15){	//固定的特效
 					this.ArrowTX2 = arrowType
 					this.arrowY2 = this.enemyY - 15
@@ -5709,6 +6067,24 @@ export default {
 					this.arrowWid = 600
 					this.arrowHei = 90
 					this.playVoice('../../static/sounds/enmofabo.wav',false,7,2000)
+				}
+				if(type == 16){	//蓝冰
+					arrowType =  'lanbing.png'
+					arrowType2 =  'lanbing.png'
+					this.arrowWid = 77
+					this.arrowHei = 77
+				}
+				if(type == 17){	//雪花
+					arrowType =  'xuehua.png'
+					arrowType2 =  'xuehua.png'
+					this.arrowWid = 99
+					this.arrowHei = 99
+				}
+				if(type == 18){	//劈斩
+					arrowType =  'zhanLeft.png'
+					arrowType2 =  'zhanRight.png'
+					this.arrowWid = 120
+					this.arrowHei = 120
 				}
 				if(type == 10 || type == 11 || type == 14 || type == 15){	//固定的特效
 					this.arrowY = this.characterY - 25
@@ -5940,6 +6316,11 @@ export default {
 					let val = this.enemy.gj*3.3 - this.myHero.fy*2 + 380
 					this.enemyBeat2(val)
 				}
+				if(heroId == '妖族-鬼'){
+					let val = this.enemy.gj*1.8 - this.myHero.fy*1.5 + 300
+					this.enemyBeat2(val)
+					this.tallentExpert(2,2,1500)
+				}
 				
 			}else{	//我方
 				if(heroId == 10){
@@ -6054,6 +6435,9 @@ export default {
 					if(num == 1){
 						this.tallentExpert(3,1,2500+addTalent*250)
 						let val = this.harmComputer(2,addTalent) + 250 + parseInt(this.myHero.fs*1.5)
+						if(strongIndex == 2){
+							val = val + parseInt(this.myHero.fs*0.7)
+						}
 						this.beat(val)
 						this.heroAddSpeed(0.35+addTalent*0.05,3000+addTalent*200)
 					}
@@ -6089,6 +6473,53 @@ export default {
 						setTimeout(()=>{
 							this.enspeed = sp
 						},2000)
+					}
+				}
+				if(heroId == 18){
+					if(num == 1){
+						this.ygbj = true
+						let val = this.harmComputer(1,addTalent) + addTalent*20
+						this.beat(val)
+						this.$refs.tallents.tallentShow = true
+						setTimeout(()=>{
+							if(this.ygbj){
+								this.cd(8500 - addTalent*250,1)
+								this.ygbj = false
+							}
+						},4500)
+					}
+				}
+				if(heroId == 20){
+					if(num == 2){
+						let val = this.harmComputer(2,addTalent2)
+						this.beat(val)
+						this.enDuobi(38)
+						this.tallentExpert(3,1,2000)
+					}
+				}
+				if(heroId == 21){
+					if(num == 1){
+						let val = this.harmComputer(1,addTalent) + 150 + addTalent*50
+						this.beat(val)
+					}
+				}
+				if(heroId == 22){
+					if(num == 1){
+						let val = this.harmComputer(1,addTalent) + 150 + addTalent*50
+						if(strongIndex == 1 || strongIndex == 2){
+							val = val + parseInt(this.myHero.gj * 1.2)
+						}
+						this.beat(val)
+						this.cd(1800 - addTalent*250,1)
+					}
+					if(num == 4){
+						this.computeDistance()
+						let val = this.harmComputer(1,addTalent4) + addTalent4*80 + parseInt(Math.abs(210 - parseInt(this.distance))*2.2)
+						if(strongIndex == 2){
+							val = val + 100
+							this.addBlood(150,0,0)
+						}
+						this.beat(val)
 					}
 				}
 			}
@@ -6261,6 +6692,44 @@ export default {
 				}else{
 					this.fastsp = 0
 				}
+			}
+			if(this.enmapObjects.length != 0 && (this.enemy.name == '神明' || this.enemy.id == 17)){
+				this.enmapObjects.map((it,idx)=>{
+					if(this.enmapObjects[idx].img == 'mofacircle.gif'){
+						let x = Math.abs(it.left+5 - this.characterX)
+						let y = Math.abs(it.top+5 - this.characterY)
+						let dis = Math.sqrt(x*x+y*y)
+						if(dis <= 40){	//踩到
+							let val = parseInt(this.enemy.gj * 0.75) - parseInt(this.myHero.fy*1.7) + this.randomNum(15,60)
+							if(val <= 30){
+								val = this.randomNum(30,50)
+							}
+							this.tallentExpert(3,2,1000)
+							this.enemyBeat2(val)
+						}
+					}
+				})
+			}
+			if(this.mapObjects.length != 0 && (this.myHero.name == '敖丙' || this.myHero.id == 20)){
+				this.mapObjects.map((it,idx)=>{
+					if(this.mapObjects[idx].img == 'shuiwall.png'){
+						let x = Math.abs(it.left+5 - this.characterX)
+						let y = Math.abs(it.top+5 - this.characterY)
+						let dis = Math.sqrt(x*x+y*y)
+						if(dis <= 150 && !this.xuli){	//踩到
+							this.myHero.fs = this.myHero.fs + 50 + parseInt(this.addData.add10)*10
+							this.myHero.gj = this.myHero.gj + 25 + parseInt(this.addData.add10)*5
+							this.myHero.fy = this.myHero.fy + 25 + parseInt(this.addData.add10)*5
+							this.xuli = true
+						}
+						if(dis > 150 && this.xuli){
+							this.myHero.fs = this.myHero.fs - 50 - parseInt(this.addData.add10)*10
+							this.myHero.gj = this.myHero.gj - 25 - parseInt(this.addData.add10)*5
+							this.myHero.fy = this.myHero.fy - 25 - parseInt(this.addData.add10)*5
+							this.xuli = false
+						}
+					}
+				})
 			}
 		},
 		scroll: function(e) {
@@ -6737,6 +7206,15 @@ export default {
 		border-radius: 100%;
 		position: absolute;
 		z-index: 2;
+	}
+	.tallentObjects {
+		width: 80rpx;
+		height: 80rpx;
+		position: absolute;
+		z-index: 2;
+		transition-property: top;
+		transition-duration: 0.8s;
+		transition-timing-function: linear;
 	}
 	.vs {
 		width: 100%;
