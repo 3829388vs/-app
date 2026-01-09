@@ -842,6 +842,33 @@ export default {
 						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/544/54420.png',
 						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/544/54430.png'
 					]
+				},
+				{
+					id: 23,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/116/11610.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/116/11600.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/116/11620.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/116/11630.png'
+					]
+				},
+				{
+					id: 24,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/SionQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/SionW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/SionE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/SionR.png'
+					]
+				},
+				{
+					id: 1000,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/VarusQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/VarusW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/VarusE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/VarusR.png'
+					]
 				}
 			]
 			let img = ''

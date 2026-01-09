@@ -66,6 +66,14 @@
 		    }
 		},
 		{
+		    "path" : "pages/tianti/sptBoss",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
 		    "path" : "pages/tianti/play",
 		    "style" :                                                                                    
 		    {

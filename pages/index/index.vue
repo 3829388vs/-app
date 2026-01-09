@@ -87,6 +87,9 @@
 						<view class="btns shijiebei" @click="match('shijiebei')"></view>
 					</view>
 					<view class="selRow">
+						<view class="btns spt" @click="match('spt')"></view>
+					</view>
+					<view class="selRow">
 						<view class="btns wuxian" @click="match('wuxian')"></view>
 					</view>
 					<view class="selRow">
@@ -242,6 +245,12 @@
 				if(type == 'tianti'){
 					uni.redirectTo({
 						url: "/pages/tianti/index"
+					})
+					return
+				}
+				if(type == 'spt'){
+					uni.redirectTo({
+						url: "/pages/tianti/sptBoss"
 					})
 					return
 				}
@@ -487,6 +496,10 @@
 			}
 			.wuxian {
 				background: url("../../static/imgs/wuxian.png") no-repeat;
+				background-size: cover;
+			}
+			.spt {
+				background: url("../../static/imgs/spt.png") no-repeat;
 				background-size: cover;
 			}
 		}

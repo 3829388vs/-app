@@ -55,6 +55,17 @@
 {"_id":{"$oid":"650c52ae337a9f4db74a8587"},"name":"神-十万天兵","gj":105,"fy":187,"mk":162,"gs":1.3,"distance": 85,"speed": 0.8,"blood":8000,"icon":"swtb.jpg","level":213},
 {"_id":{"$oid":"650c52ae337a9f4db74a8588"},"name":"神-四大天王","gj":122,"fy":158,"mk":179,"gs":1.3,"distance": 95,"speed": 0.8,"blood":7000,"icon":"sdtw.jpg","level":214},
 {"_id":{"$oid":"650c52ae337a9f4db74a8589"},"name":"神-二郎神杨戬","gj":147,"fy":185,"mk":177,"gs":1.4,"distance": 95,"speed": 0.7,"blood":7000,"icon":"enemy19.jpg","level":215},
-{"_id":{"$oid":"650c52ae337a9f4db74b8587"},"name":"神-齐天大圣","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"qtds.jpg","level":216}
+{"_id":{"$oid":"650c52ae337a9f4db74b8587"},"name":"神-齐天大圣","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"qtds.jpg","level":216},
+{"id":1000,"name":"韦鲁斯","gj":139,"fs":0,"fy":156,"mk":150,"gs":1.2,"v":1.2,"bj":0,"flz":1000,"distance": 115,"dis1": 2000,"dis2": 2000,"dis3": 2000,"dis4": 2000,"speed": 0.8,"blood":8000,"heroBlood":3500,"icon":"weilusi.jpg","level":1000,"levelNum": 2,
+"isOther":false,"buyTime":0,"details":"诺克萨斯国的神射手，天皇的右护卫，国家弓箭兵种的最高统帅，拥有武器“雷蛇弓”。‘一剑穿心’技能可以打破敌人护甲；‘寒冰剑脉’技能射中敌人让敌方减速。",
+"tallent":[{"name":"速战速决","text":"韦鲁斯每释放一个技能，移动速度都会提升5%。"},{"name":"一箭穿心","text":"韦鲁斯发射一道飞箭，穿过敌人心脏，造成物理伤害，每次命中敌人的防御力都降低10%。"},{"name":"寒冰剑脉","text":"发射一道寒冰剑，命中的敌人会减速3秒。"},{"name":"急速射击","text":"韦鲁斯做好准备，提升30%的攻击速度，持续3.5秒"},{"name":"绝密爆轰","text":"韦鲁斯发射一个炮弹，命中的话造成大量物理伤害。开始发射时他会因为后坐力往后退80~130码。"}]},
+{"_id":{"$oid":"650c52ae337a9f4db74b8589"},"name":"测试2","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"sdtw.jpg","level":1001,"levelNum": 2,"details":"却忘记哦亲卫军欧文切记哦i七五九二哦请问，"},
+{"_id":{"$oid":"650c52ae337a9f4db74b8589"},"name":"测试3","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"sdtw.jpg","level":1002,"levelNum": 3,"details":"却忘记哦亲卫军欧文切记哦i七五九二哦请问，"},
+{"_id":{"$oid":"650c52ae337a9f4db74b8589"},"name":"测试4","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"sdtw.jpg","level":1003,"levelNum": 3,"details":"却忘记哦亲卫军欧文切记哦i七五九二哦请问，"},
+{"_id":{"$oid":"650c52ae337a9f4db74b8589"},"name":"测试5","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"sdtw.jpg","level":1004,"levelNum": 4,"details":"却忘记哦亲卫军欧文切记哦i七五九二哦请问，"},
+{"_id":{"$oid":"650c52ae337a9f4db74b8589"},"name":"测试6","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"sdtw.jpg","level":1005,"levelNum": 4,"details":"却忘记哦亲卫军欧文切记哦i七五九二哦请问，"},
+{"_id":{"$oid":"650c52ae337a9f4db74b8589"},"name":"测试7","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"sdtw.jpg","level":1006,"levelNum": 4,"details":"却忘记哦亲卫军欧文切记哦i七五九二哦请问，"},
+{"_id":{"$oid":"650c52ae337a9f4db74b8589"},"name":"测试8","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"sdtw.jpg","level":1007,"levelNum": 5,"details":"却忘记哦亲卫军欧文切记哦i七五九二哦请问，"},
+{"_id":{"$oid":"650c52ae337a9f4db74b8589"},"name":"测试9","gj":182,"fy":186,"mk":198,"gs":1.75,"distance": 95,"speed": 0.7,"blood":7000,"icon":"sdtw.jpg","level":1008,"levelNum": 6,"details":"却忘记哦亲卫军欧文切记哦i七五九二哦请问，"}
     ]
 }

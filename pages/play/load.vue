@@ -74,6 +74,10 @@ export default {
 			this.type = '锦标赛模式'
 			this.getJBEnmList()
 		}
+		if(type == 'spt'){
+			this.match = JSON.parse(uni.getStorageSync('sptBoss'))
+			this.myHero = JSON.parse(uni.getStorageSync('tiantiHero'))[0]
+		}
 		if(uni.getStorageSync('gameType') == 'paiwei' || uni.getStorageSync('gameType') == 'tianti'){
 			this.showVS = false
 		}
@@ -271,7 +275,7 @@ export default {
 					if(this.percent >= 50 && this.percent < 100){
 						if(this.percent+9 > 100){
 							this.percent = 100
-							if(this.type == '天梯模式'){
+							if(this.type == '天梯模式' || uni.getStorageSync('gameType') == 'spt'){
 								setTimeout(()=>{
 									uni.redirectTo({
 										url: "/pages/tianti/tiantiLandScap"

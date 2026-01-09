@@ -34,6 +34,9 @@
 {"_id":{"$oid":"65119d0a466d416d30ee362c"},"id":20,"index": 1,"name":"敖丙-龙族真神","details":"水柱冲击技能冷却时间减少，距离增加；水波攻击伤害提升。","gj":80,"fs":68,"fy":75,"v":0.7,"bj":0,"distance": 75,"blood":3300,"flz":1150,"icon":"lzzs.jpg","img":"lzzsbg.jpg","price":1350},
 {"_id":{"$oid":"65119d0a466d416d30ee363c"},"id":21,"index": 1,"name":"托塔天王-李靖","details":"穿刺的冷却时间减少，冲刺的距离增加，恢复的血量增加。","gj":95,"fs":45,"fy":78,"v":1,"bj":0,"distance": 75,"blood":3500,"flz":1100,"icon":"lj.jpg","img":"ljbg.jpg","price":1350},
 {"_id":{"$oid":"65119d0a466d416d30ee364c"},"id":22,"index": 1,"name":"隐世侠客-雁雀女侠","details":"体能守护技能回复的血量提升；气功波的伤害提升；","gj":90,"fs":0,"fy":82,"v":1,"bj":0,"blood":3300,"flz":1100,"icon":"yqnx.jpg","img":"yqnxbg.jpg","price":1350},
-{"_id":{"$oid":"65119d0a466d416d30ee365c"},"id":22,"index": 2,"name":"隐世侠客-仙潼太子","details":"气功波的伤害提升；无影败魔剑击造成的伤害略微提升并命中敌方的话回复自身血量；使用疾风幻影技能后闪袭技能的命中范围增加。","gj":95,"fs":0,"fy":86,"v":1,"bj":0,"blood":3500,"flz":1300,"icon":"xttz.jpg","img":"xttzbg.jpg","price":2700}
+{"_id":{"$oid":"65119d0a466d416d30ee365c"},"id":22,"index": 2,"name":"隐世侠客-仙潼太子","details":"气功波的伤害提升；无影败魔剑击造成的伤害略微提升并命中敌方的话回复自身血量；使用疾风幻影技能后闪袭技能的命中范围增加。","gj":95,"fs":0,"fy":86,"v":1,"bj":0,"blood":3500,"flz":1300,"icon":"xttz.jpg","img":"xttzbg.jpg","price":2700},
+{"_id":{"$oid":"65119d0a466d416d30ee366c"},"id":23,"index": 1,"name":"阿宁-天香楼刺客","details":"无影飞镖技能的伤害提升，飞行距离提升20%，箭矢飞行速度提升20%。刺杀技能的伤害提升。","gj":95,"fs":0,"fy":75,"v":1,"bj":0,"blood":3300,"flz":1200,"icon":"txlck.jpg","img":"txlckbg.jpg","price":1350},
+{"_id":{"$oid":"65119d0a466d416d30ee367c"},"id":23,"index": 2,"name":"阿宁-上玄会","details":"无影飞镖技能的伤害提升，飞行距离提升17%；回魂丹技能能召唤上玄会同伴一起战斗，敌方不能移动3~5秒，且持续减血。闪现/刺杀技能的范围加大。","gj":99,"fs":0,"fy":80,"v":1,"bj":0.2,"blood":3500,"flz":1200,"icon":"sxh.jpg","img":"sxhbg.jpg","price":2700}
+
 	]
 }
