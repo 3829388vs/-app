@@ -624,6 +624,12 @@ export default {
 					urls: ['../../static/imgs/hero/'+this.heroInfo.img]
 				});
 			}
+			if(this.heroInfo.icon && !this.heroInfo.img){
+				uni.previewImage({
+					current: 0,
+					urls: ['../../static/imgs/hero/'+this.heroInfo.icon]
+				});
+			}
 		},
 		tallentImgFilter(index){
 			let imgs = [
@@ -868,6 +874,33 @@ export default {
 						'https://game.gtimg.cn/images/lol/act/img/spell/VarusW.png',
 						'https://game.gtimg.cn/images/lol/act/img/spell/VarusE.png',
 						'https://game.gtimg.cn/images/lol/act/img/spell/VarusR.png'
+					]
+				},
+				{
+					id: 1001,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/passive/WarwickP.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/WarwickE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/WarwickR.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/WarwickW.png'
+					]
+				},
+				{
+					id: 1002,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/LuxLightBinding.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/LuxLightStrikeKugel.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/ZyraW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/LuxIlluminatingFraulein.png'
+					]
+				},
+				{
+					id: 1003,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/168/16810.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/168/16800.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/168/16820.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/168/16830.png'
 					]
 				}
 			]
