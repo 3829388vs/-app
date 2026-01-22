@@ -902,6 +902,42 @@ export default {
 						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/168/16820.png',
 						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/168/16830.png'
 					]
+				},
+				{
+					id: 1004,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/JaxLeapStrike.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/JaxEmpowerTwo.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/JaxCounterStrike.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/JaxRApexForm.png'
+					]
+				},
+				{
+					id: 1005,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/169/16900.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/148/14800.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/173/17330.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/148/14810.png'
+					]
+				},
+				{
+					id: 1006,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/BrandQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/BrandW.png',
+						'https://game.gtimg.cn/images/lol/act/img/passive/BrandP.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/BrandR.png'
+					]
+				},
+				{
+					id: 1007,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17810.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17800.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17830.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17820.png'
+					]
 				}
 			]
 			let img = ''

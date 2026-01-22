@@ -39,7 +39,7 @@
 		</view>
 		<view class="zw" v-else></view>
 	</view>
-	<view class="tallentItem" v-if="heroId == 2 && !noflz">
+	<view class="tallentItem" v-if="(heroId == 2 || heroId == 1004) && !noflz">
 		<view class="item item1" :style="{opacity: dist > disList[0]? 0.5 : 1}" v-if="tallentShow" @click="dmxyzl(1)">
 			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/JaxLeapStrike.png"></image>
 		</view>
@@ -540,6 +540,60 @@
 		<view class="zw" v-else></view>
 		<view class="item item4 bigTel" :style="{opacity: dist > disList[3]? 0.5 : 1}" v-if="tallentShow4" @click="dmxyzl(4)">
 			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/168/16830.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+	</view>
+	<view class="tallentItem" v-if="heroId == 1005 && !noflz">
+		<view class="item item1" :style="{opacity: dist > disList[0]? 0.5 : 1}" v-if="tallentShow" @click="dmxyzl(1)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/169/16900.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item2" :style="{opacity: dist > disList[1]? 0.5 : 1}" v-if="tallentShow2" @click="dmxyzl(2)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/148/14800.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item3" :style="{opacity: dist > disList[2]? 0.5 : 1}" v-if="tallentShow3" @click="dmxyzl(3)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/173/17330.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item4 bigTel" :style="{opacity: dist > disList[3]? 0.5 : 1}" v-if="tallentShow4" @click="dmxyzl(4)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/148/14810.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+	</view>
+	<view class="tallentItem" v-if="heroId == 1006 && !noflz">
+		<view class="item item1" :style="{opacity: dist > disList[0]? 0.5 : 1}" v-if="tallentShow" @click="dmxyzl(1)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/BrandQ.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item2" :style="{opacity: dist > disList[1]? 0.5 : 1}" v-if="tallentShow2" @click="dmxyzl(2)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/BrandW.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item3" :style="{opacity: dist > disList[2]? 0.5 : 1}" v-if="tallentShow3" @click="dmxyzl(3)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/passive/BrandP.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item4 bigTel" :style="{opacity: dist > disList[3]? 0.5 : 1}" v-if="tallentShow4" @click="dmxyzl(4)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/BrandR.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+	</view>
+	<view class="tallentItem" v-if="heroId == 1007 && !noflz">
+		<view class="item item1" :style="{opacity: dist > disList[0]? 0.5 : 1}" v-if="tallentShow" @click="dmxyzl(1)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17810.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item2" :style="{opacity: dist > disList[1]? 0.5 : 1}" v-if="tallentShow2" @click="dmxyzl(2)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17800.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item3" :style="{opacity: dist > disList[2]? 0.5 : 1}" v-if="tallentShow3" @click="dmxyzl(3)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17830.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item4 bigTel" :style="{opacity: dist > disList[3]? 0.5 : 1}" v-if="tallentShow4" @click="dmxyzl(4)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17820.png"></image>
 		</view>
 		<view class="zw" v-else></view>
 	</view>

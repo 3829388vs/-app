@@ -212,6 +212,8 @@
 				  :style="{
 					left: item.left + 'px',
 					top: item.top + 'px',
+					width: (item.width?item.width:80) + 'rpx',
+					height: (item.height?item.height:80) + 'rpx'
 				  }"
 				></image>
 				<image v-if="showTower" class="towerImg" :style="{left: towerLeft + 'px'}" src="../../static/imgs/tower.png"></image>
@@ -316,6 +318,7 @@ export default {
 			showIntro: false,
 			tallentList: [],
 			innerAudioContext: [null,null,null,null,null,null,null,null],
+			audioVoice: [null,null,null,null,null,null,null,null],
 			bgAudio: null,
 			ygbj: false,	//嫦娥月光标记或战士换枪标记
 			ylzz: null,	//影流之主flag
@@ -410,6 +413,8 @@ export default {
 			myStore: [],
 			myImmunity: false,	//我方免疫异常状态
 			enImmunity: false,	//敌方免疫异常状态
+			enFlag: false,	//敌方flag
+			enFlagTime: null,	//敌方时间flag
 		}
 	},
 	 computed: {
@@ -519,7 +524,15 @@ export default {
 			self.origHero = {...self.myHero}
 			this.enspeed = this.enemy.speed
 			this.enemyGJdis = this.enemy.distance
-			self.playVoice('../../static/sounds/bgMp3.wav',true,10,170000)
+			if(this.gameType == 'spt'){
+				if(this.reallyRandom(0,1) == 1){
+					self.playVoice('../../static/sounds/battleBg.wav',true,10,180000)
+				}else{
+					self.playVoice('../../static/sounds/battleBg2.wav',true,10,180000)
+				}
+			}else{
+				self.playVoice('../../static/sounds/bgMp3.wav',true,10,170000)
+			}
 		}
 	},
 	components: {
@@ -666,8 +679,10 @@ export default {
 		},
 		//下一轮
 		getNextLoop() {
+			this.nextHeroHandle()
 			this.begin = false
 			clearInterval(this.beatTime)
+			this.audioVoice = [null,null,null,null,null,null,null,null]
 			this.$refs.tallents.tallentShow = true
 			this.$refs.tallents.tallentShow2 = true
 			this.$refs.tallents.tallentShow3 = true
@@ -716,6 +731,7 @@ export default {
 				this.blood2 = 0
 				this.bloodVal2 = 0
 				this.bettleEnd = true
+				this.audioVoice = [null,null,null,null,null,null,null,null]
 				this.addLog(0)
 				setTimeout(()=>{
 					this.showlose = true
@@ -850,18 +866,18 @@ export default {
 							if(this.distanceComp(this.enemy.dis2)){
 								setTimeout(()=>{
 									this.enemyTallent(2)
-								},1000)
+								},1000 + this.randomNum(0,2)*500)
 							}
 							if(this.distanceComp(this.enemy.dis3)){
 								setTimeout(()=>{
 									this.enemyTallent(3)
-								},2300)
+								},2300 + this.randomNum(0,2)*500)
 							}
 							if(this.distanceComp(this.enemy.dis4)){
 								if(this.randomNum(0,1) == 1){
 									setTimeout(()=>{
 										this.enemyTallent(4)
-									},3300)
+									},3300 + this.randomNum(0,2)*800)
 								}
 							}
 							this.enemyBeatCD = 1
@@ -1284,6 +1300,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('兄长，吃我一剑！',true,4,2000,'aicheng')
 					this.enChongci(120)
 					setTimeout(()=>{
 						this.enemyBeat2(parseInt(this.enemy.gj)*2.5 - parseInt(this.myHero.fy*1.5)+this.randomNum(100,700))
@@ -1302,6 +1319,7 @@ export default {
 						icon:'none',
 						duration: 1000
 					});
+					this.playVoice('兄长，看招！',true,5,2000,'aicheng')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_hml.gif?'+ new Date().getTime()
 					this.backBgImg('fb_hml',4200)
@@ -1332,6 +1350,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('永不畏缩！',true,5,2000,'zhifeng_emo')
 					setTimeout(()=>{
 						this.enemy.gj = parseInt(this.enemy.gj) - 25
 						this.enemy.fy = parseInt(this.enemy.fy) - 20
@@ -1340,10 +1359,11 @@ export default {
 				}
 				if(this.randomNum(0,2) == 1 && this.enmoveModel == 2){
 					uni.showToast({
-						title: '逆贼，休想跑！',
+						title: '逆贼！休想跑！',
 						icon:'none',
 						duration: 800
 					});
+					this.playVoice('逆贼！休想跑！',true,6,2000,'zhifeng_emo')
 					this.enChongci(50,1)
 				}
 			}
@@ -1354,6 +1374,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('杀！杀！杀！',true,5,2000,'zhifeng_emo')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_lb.gif?'+ new Date().getTime()
 					this.backBgImg('fb_lb',2000)
@@ -1368,6 +1389,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('在下！赵子龙也！',true,5,2000,'xiaogang')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_zzl.gif?'+ new Date().getTime()
 					this.backBgImg('fb_zzl',2000)
@@ -1387,6 +1409,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('吃我一招！',true,5,2000,'laotie')
 					this.enChongci(110)
 					this.enemyBeat2(parseInt(this.enemy.gj)*2.1 - parseInt(this.myHero.fy)+this.randomNum(10,200))
 				}
@@ -1396,6 +1419,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('在下咏春张天志！',true,6,2000,'laotie')
 					let v = this.randomNum(50,90)
 					this.consistEnemyBeat(v,100,600+this.randomNum(0,6)*100)
 				}
@@ -1405,6 +1429,7 @@ export default {
 						icon:'none',
 						duration: 1000
 					});
+					this.playVoice('咏春飞踢！',true,7,2000,'laotie')
 					if(this.enemyX<this.characterX){
 						this.characterX = this.characterX + 110
 					}else{
@@ -1424,6 +1449,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('来者何人？报上名来！',true,4,2000,'zhifeng_emo')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_gy.gif?'+ new Date().getTime()
 					this.backBgImg('fb_gy',4700)
@@ -1438,6 +1464,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('我和你拼了！',true,5,2000,'zhifeng_emo')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_gy.gif?'+ new Date().getTime()
 					this.backBgImg('fb_gy',2200)
@@ -1466,6 +1493,7 @@ export default {
 						icon:'none',
 						duration: 1200
 					});
+					this.playVoice('看招！',true,5,2000,'zhifeng_emo')
 					this.enChongci(130)
 					//禁锢
 					this.tallentExpert(1,2,1500)
@@ -1484,6 +1512,7 @@ export default {
 						icon:'none',
 						duration: 1200
 					});
+					this.playVoice('给我灰飞烟灭！',true,4,2000,'xiaoxian')
 					this.tallentExpert(3,1,2500)
 					this.blood1 = parseInt(this.blood1) + 300
 					this.bloodVal1 = Math.round(parseInt(this.blood1) / parseInt(this.enemy.blood) * 100)
@@ -1499,6 +1528,7 @@ export default {
 							icon:'none',
 							duration: 1500
 						});
+						this.playVoice('嘿！挺能打的嘛',true,5,2000,'xiaoxian')
 					}
 				}
 			}
@@ -1510,6 +1540,7 @@ export default {
 							icon:'none',
 							duration: 1200
 						});
+						this.playVoice('眼前是哪位勇士',true,4,2000,'laotie')
 						this.showEngjAnm = true
 						this.engjAnm = '../../static/imgs/hero/fb_bhlw.gif?'+ new Date().getTime()
 						this.playVoice('../../static/sounds/jiguangbo.wav',false,6,3000)
@@ -1547,6 +1578,7 @@ export default {
 						icon:'none',
 						duration: 1000
 					});
+					this.playVoice('裂空爪',true,4,2000,'siqi')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_lkz.gif?'+ new Date().getTime()
 					this.backBgImg('fb_lkz',4000)
@@ -1573,6 +1605,7 @@ export default {
 						icon:'none',
 						duration: 1000
 					});
+					this.playVoice('走了！再见',true,5,2000,'siqi')
 					this.yinshen2 = true
 					setTimeout(()=>{
 						this.yinshen2 = false
@@ -1586,6 +1619,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('哪吒在此！',true,4,2000,'aiying')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_nz2.gif?'+ new Date().getTime()
 					this.backBgImg('fb_nz2',1500)
@@ -1601,6 +1635,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('我命！由我不由天！',true,5,2000,'aiying')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_nz.gif?'+ new Date().getTime()
 					this.backBgImg('fb_nz',6900)
@@ -1627,6 +1662,7 @@ export default {
 						icon:'none',
 						duration: 2000
 					});
+					this.playVoice('八仙过海！',true,5,2000,'xiaogang')
 					var sp = this.enspeed
 					this.enspeed = 0.2
 					setTimeout(()=>{
@@ -1653,6 +1689,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('杀！杀！杀！',true,4,2000,'laotie')
 					this.playVoice('../../static/sounds/lianji.wav',false,6,5000)
 					this.consistEnemyBeat(this.randomNum(20,50),100,1200)
 				}
@@ -1662,6 +1699,7 @@ export default {
 						icon:'none',
 						duration: 2500
 					});
+					this.playVoice('集合！',true,5,2000,'laotie')
 					this.showEngjAnm = true
 					this.enDuobi(60)
 					this.engjAnm = '../../static/imgs/hero/fb_swtb.gif?'+ new Date().getTime()
@@ -1685,6 +1723,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('持国天王：破！',true,4,2000,'laotie')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_sdtw3.gif?'+ new Date().getTime()
 					this.backBgImg('fb_sdtw3',1000)
@@ -1704,6 +1743,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('多闻天王：转！',true,5,2000,'laotie')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_sdtw2.gif?'+ new Date().getTime()
 					this.backBgImg('fb_sdtw2',1600)
@@ -1724,6 +1764,7 @@ export default {
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('增长天王：进！',true,6,2000,'laotie')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_sdtw.gif?'+ new Date().getTime()
 					this.backBgImg('fb_sdtw',3500)
@@ -1748,6 +1789,7 @@ export default {
 						icon:'none',
 						duration: 800
 					});
+					this.playVoice('广目天王：电！',true,7,2000,'laotie')
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_sdtw4.gif?'+ new Date().getTime()
 					this.backBgImg('fb_sdtw4',1200)
@@ -1765,6 +1807,7 @@ export default {
 						icon:'none',
 						duration: 2000
 					});
+					this.playVoice('杨戬在此！谁敢造次',true,4,2000,'laotie')
 					this.playVoice('../../static/sounds/soonGJ.wav',true,7,2000)
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_yj.gif?'+ new Date().getTime()
@@ -1792,17 +1835,19 @@ export default {
 					this.blood1 = parseInt(this.blood1) + 300
 					this.bloodVal1 = Math.round(parseInt(this.blood1) / parseInt(this.enemy.blood) * 100)
 					uni.showToast({
-						title: '俺老孙是打不死的！',
+						title: '此地不宜久留！',
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('../../static/sounds/cdbyjl.mp3',true,4,2500)
 				}
 				if(this.randomNum(0,2) == 1 && this.engjAnm.indexOf('fb_swk') == -1 && this.distanceComp(120)){
 					uni.showToast({
-						title: '俺老孙来也！',
+						title: '妖怪哪里跑！',
 						icon:'none',
 						duration: 1500
 					});
+					this.playVoice('../../static/sounds/ygnlp.mp3',true,6,3500)
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_swk.gif?'+ new Date().getTime()
 					this.backBgImg('fb_swk',2000)
@@ -1827,6 +1872,7 @@ export default {
 							icon:'none',
 							duration: 1000
 						});
+						this.playVoice('../../static/sounds/calsyb.mp3',true,4,2500)
 						let val = this.enemy.gj*2.3 - this.myHero.fy*1.5 + this.randomNum(200,600)
 						setTimeout(()=>{
 							this.enemyBeat2(val)
@@ -1841,12 +1887,13 @@ export default {
 					this.showEngjAnm = true
 					this.engjAnm = '../../static/imgs/hero/fb_qtds.gif?'+ new Date().getTime()
 					this.backBgImg('fb_qtds',3000)
-					this.playVoice('../../static/sounds/qtds1.wav',true,6,2000)
+					this.playVoice('../../static/sounds/qtds1.wav',true,5,2000)
 					uni.showToast({
 						title: '吃俺老孙一棒！',
 						icon:'none',
 						duration: 1000
 					});
+					this.playVoice('../../static/sounds/calsyb.mp3',true,4,2500)
 					let val = this.enemy.gj*2.3 - this.myHero.fy*1.5 + this.randomNum(200,600)
 					setTimeout(()=>{
 						this.enemyBeat2(val)
@@ -1916,6 +1963,10 @@ export default {
 					this.beat(val,1)
 				}
 			}
+			this.directType = false
+			this.directType2 = false
+			this.directType3 = false
+			this.directType4 = false
 		},
 		//持续给敌方伤害
 		consistBeat(beatVal,time,outTime) {
@@ -1981,6 +2032,7 @@ export default {
 				this.blood1 = 0
 				this.bloodVal1 = 0
 				this.bettleEnd = true
+				this.audioVoice = [null,null,null,null,null,null,null,null]
 				this.addLog(1)
 				clearInterval(this.time1)
 				clearInterval(this.beatTime)
@@ -2072,6 +2124,7 @@ export default {
 					clearInterval(t1)
 				},2000)
 				this.playVoice('../../static/sounds/dmxyzl'+num+'.wav',true,num-1,5000)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhifeng_emo')
 				if(num == 1){
 					this.cd(5500 - addTalent*150,1)
 					this.blueComput(70 + addTalent*6,'reduce')
@@ -2133,6 +2186,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == 'GG Bond' || this.myHero.id == 3) {
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'aiying')
 				if(num == 1){
 					this.cd(3200 - addTalent*150,1)
 					this.delayTel(1000,num)
@@ -2195,6 +2249,7 @@ export default {
 					randomVal = 0
 					this.myHero.fs = this.myHero.fs + 5
 				}
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'laotie')
 				if(num == 1){
 					if(strongIndex == 1){
 						this.cd(2300 - addTalent*200,1)
@@ -2273,6 +2328,7 @@ export default {
 					this.regGjAdd.addBlood = this.myHero.gj + 100
 				}
 				this.playVoice('../../static/sounds/jiansheng'+num+'.wav',true,num-1,4000)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhibing_emo')
 				if(num == 1){
 					this.cd(4500 - addTalent*200,1)
 					this.delayTel(500,num)
@@ -2303,6 +2359,11 @@ export default {
 					},3000)
 				}
 				if(num == 3){
+					//灵魂莲华
+					if(strongIndex == 2){
+						this.enemyBeat2(999999)
+						return
+					}
 					this.cd(4000 - addTalent3*200,3)
 					this.blueComput(50 + addTalent3*10,'reduce')
 					let val = parseInt(this.myHero.gj * 1.2) + this.randomNum(30,200) - parseInt(this.enemy.fy*(1*this.pojia)) + addTalent3*20
@@ -2330,6 +2391,7 @@ export default {
 			}
 			if(this.myHero.name == '广寒仙子-嫦娥' || this.myHero.id == 5){
 				this.playVoice('../../static/sounds/cer'+num+'.wav',true,num-1,2500)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'xiaoxian')
 				if(num == 1){
 					this.cd(3600 - addTalent*250,1)
 					this.delayTel(1000,num)
@@ -2409,6 +2471,7 @@ export default {
 			}
 			if(this.myHero.name == '鲲' || this.myHero.id == 6){
 				this.playVoice('../../static/sounds/kun'+num+'.wav',true,num-1,6500)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'aiying')
 				if(num == 1){
 					this.cd(5000 - addTalent*250,1)
 					this.delayTel(900,num)
@@ -2455,6 +2518,7 @@ export default {
 			
 			if(this.myHero.name == '精英战士' || this.myHero.id == 7){
 				this.playVoice('../../static/sounds/jyzs'+num+'.wav',true,num-1,3000)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'xiaogang')
 				if(num == 1){
 					//狙击枪
 					if(this.ygbj){
@@ -2540,6 +2604,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '风神' || this.myHero.id == 8){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'maoxiaomei')
 				if(num != 1){
 					this.playVoice('../../static/sounds/fs'+num+'.wav',true,num-1,5000)
 				}
@@ -2598,6 +2663,7 @@ export default {
 			}
 			if(this.myHero.name == '诺克萨斯之手' || this.myHero.id == 9){
 				this.playVoice('../../static/sounds/nksszs'+num+'.wav',true,num-1,3000)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhifeng_emo')
 				if(num == 1){
 					this.cd(6200 - addTalent*150,1)
 					this.delayTel(1600,num)
@@ -2669,6 +2735,7 @@ export default {
 			}
 			if(this.myHero.name == '探险家' || this.myHero.id == 10){
 				this.playVoice('../../static/sounds/txj'+num+'.wav',true,num-1,3000)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'aicheng')
 				if(num == 1){
 					this.delayTel(100,num)
 						this.cd(4000 - addTalent*250,1)
@@ -2704,6 +2771,7 @@ export default {
 			if(this.myHero.name == '齐天大圣' || this.myHero.id == 101){
 				this.playVoice('../../static/sounds/qtds'+num+'.wav',true,num-1,4000)
 				if(num == 1){
+					this.playVoice('../../static/sounds/calsyb.mp3',true,7,2500)
 					this.delayTel(2900,num)
 					if(this.yinshen){
 						if(strongIndex == 2){
@@ -2729,6 +2797,10 @@ export default {
 					}
 					setTimeout(()=>{
 						this.beat(val)
+						//三昧真火
+						if(strongIndex == 3){
+							this.consistBeat(this.randomNum(30+parseInt(this.myHero.gj*0.5),70+parseInt(this.myHero.gj)),500,1500)
+						}
 					},2200)
 					this.enemy.fy = parseInt(this.enemy.fy*0.7)
 					setTimeout(()=>{
@@ -2767,6 +2839,7 @@ export default {
 					}else{
 						this.cd(7000 - addTalent3*150,3)
 					}
+					this.playVoice('../../static/sounds/ygnlp.mp3',true,6,3600)
 					this.delayTel(1000,num)
 					this.heroAnm('../../static/imgs/hero/swk3.gif?'+ new Date().getTime())
 					this.backBgImg('swk3',4000)
@@ -2784,6 +2857,10 @@ export default {
 						this.shotDown = false
 					}
 					this.beat(val)
+					//三昧真火
+					if(strongIndex == 3){
+						this.consistBeat(this.randomNum(30+parseInt(this.myHero.gj*0.5),70+parseInt(this.myHero.gj)),500,1500)
+					}
 				}
 				if(num == 4){
 					this.cd(11000 - addTalent4*200,4)
@@ -2807,17 +2884,18 @@ export default {
 					let val = parseInt(this.myHero.gj * (1.6+addTalent4*0.1)) - parseInt(this.enemy.fy*1.6*this.pojia)
 					  + addTalent4*15 + this.randomNum(20,70)
 					  if(val < 35){
-					  	val = 35
+						  val = 35
 					  }
-						let beatTime = setInterval(()=>{
-							this.beat(val,1)
-						},300)
-						setTimeout(()=>{
-							clearInterval(beatTime)
-						},5000)
+					  let beatTime = setInterval(()=>{
+					  	this.beat(val,1)
+					  },300)
+					  setTimeout(()=>{
+					  	clearInterval(beatTime)
+					  },5000)
 				}
 			}
 			if(this.myHero.name == '影流之主' || this.myHero.id == 102){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhibing_emo')
 				if(parseInt(this.blood1)/parseInt(this.enemy.blood) <= 0.5){
 					this.regGjAdd.gjHarm = this.regGjAdd.gjHarm + this.myHero.gj*0.7
 					setTimeout(()=>{
@@ -3015,6 +3093,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '玉玲珑' || this.myHero.id == 11){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'aiting')
 				this.xuli += 1
 				if(this.xuli >= 3){
 					this.addBlood(parseInt(this.myHero.fs*1.2),0,0)
@@ -3116,6 +3195,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '迅捷斥候' || this.myHero.id == 12){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'aiying')
 				if(num == 1){
 					this.delayTel(1000,num)
 					this.cd(9000 - addTalent*150,1)
@@ -3162,6 +3242,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '云影之剑' || this.myHero.id == 13){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'xiaogang')
 				if(num == 1){
 					this.playVoice('../../static/sounds/shuixingjian.wav',false,0,3000)
 					this.delayTel(1000,num)
@@ -3292,6 +3373,7 @@ export default {
 			}
 			if(this.myHero.name == '刀锋之影' || this.myHero.id == 14){
 				this.playVoice('../../static/sounds/dfzy'+num+'.wav',true,num-1,3000)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'xiaogang')
 				if(strongIndex == 2){
 					this.myHero.dis1 = 170
 				}
@@ -3396,6 +3478,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '熔岩巨兽' || this.myHero.id == 15){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'laotie')
 				if(num == 1){
 					this.delayTel(500,num)
 					this.cd(8000 - addTalent*250,1)
@@ -3404,6 +3487,7 @@ export default {
 						this.fasheArrow(230,2,30,this.myHero.id,1,2)
 					},500)
 					this.playVoice('../../static/sounds/ryjs'+num+'.wav',true,num-1,3000)
+			
 				}
 				if(num == 2){
 					this.cd(6500 - addTalent2*150,2)
@@ -3452,6 +3536,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '东海龙王敖光' || this.myHero.id == 16){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhifeng_emo')
 				this.antijiansu = 0.5
 				if(num == 1){
 					if(this.ygbj){	//龙形态
@@ -3514,7 +3599,7 @@ export default {
 					if(this.ygbj){	//龙形态
 						this.cd(10000 - addTalent3*250,3)
 						this.blueComput(90+addTalent3*10,'reduce')
-						this.fasheArrow(3000,2,39,"无",3,14)
+						this.fasheArrow(3000,2,33,"无",3,14)
 						if(Math.abs(this.characterX - this.enemyX) <= 625 && Math.abs(this.characterY - this.enemyY)<=35){
 							let val = parseInt(this.myHero.fs*1.8) - parseInt(this.enemy.mk*1.5) + 30+addTalent3*15
 							if(val<=0){
@@ -3558,6 +3643,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '神明' || this.myHero.id == 17){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhifeng_emo')
 				if(num == 2){
 					this.cd(8000 - addTalent2*250,2)
 					this.blueComput(70 + addTalent2*10,'reduce')
@@ -3610,6 +3696,7 @@ export default {
 			}
 			if(this.myHero.name == '达摩' || this.myHero.id == 18){
 				// this.playVoice('../../static/sounds/dfzy'+num+'.wav',true,num-1,3000)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhifeng_emo')
 				if(this.xuli == 0){
 					this.myspeed = this.myspeed - 0.1
 					this.xuli = 1
@@ -3639,7 +3726,7 @@ export default {
 							this.heroChongci(2000,2,0.3)
 						}
 						setTimeout(()=>{
-							let val = this.harmComputer(1,addTalent)+ this.myHero.gj + 100 + addTalent*50
+							let val = this.harmComputer(1,addTalent)+ this.myHero.gj + 200 + addTalent*50
 							if(strongIndex == 1){
 								val = val + 230
 								if(this.reallyRandom(0,1) == 1){
@@ -3699,9 +3786,17 @@ export default {
 						this.shotDown = true
 						this.fastsp2 = this.enspeed - 0.5
 						if(this.enemyX <= this.characterX){
-							this.enemyX = this.enemyX - 100 - addTalent4*10
+							if(strongIndex == 1){
+								this.enemyX = this.enemyX - 130 - addTalent4*10
+							}else{
+								this.enemyX = this.enemyX - 100 - addTalent4*10
+							}
 						}else{
-							this.enemyX = this.enemyX + 100 + addTalent4*10
+							if(strongIndex == 1){
+								this.enemyX = this.enemyX + 130 + addTalent4*10
+							}else{
+								this.enemyX = this.enemyX + 100 + addTalent4*10
+							}
 						}
 						if(this.enemyY <= this.characterY){
 							if(Math.abs(this.enemyY - this.characterY)<60){
@@ -3721,6 +3816,9 @@ export default {
 							val1 = -100
 						}
 						let val2 = val1 + 650 + addTalent4*70
+						if(strongIndex == 1){
+							val2 = val2 + 350
+						}
 						this.beat(val2)
 						this.computeDistance()
 					},500)
@@ -3733,6 +3831,7 @@ export default {
 			}
 			if(this.myHero.name == '疾风灵鹰' || this.myHero.id == 19){
 				this.playVoice('../../static/sounds/jfly'+num+'.wav',false,num-1,4000)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhibing_emo')
 				if(num == 1){
 					this.cd(6000 - addTalent*250,1)
 					this.delayTel(300,num)
@@ -3913,6 +4012,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '托塔天王' || this.myHero.id == 21){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhifeng_emo')
 				if(num == 1){
 					if(strongIndex == 1){
 						this.cd(4000 - addTalent*250,1)
@@ -4015,6 +4115,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '隐世侠客' || this.myHero.id == 22){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'xiaogang')
 				if(num == 1){
 					this.cd(5000 - addTalent*250,1)
 					this.blueComput(30 + addTalent*3,'reduce')
@@ -4093,6 +4194,7 @@ export default {
 			}
 			if(this.myHero.name == '阿宁' || this.myHero.id == 23){
 				this.playVoice('../../static/sounds/aning'+num+'.wav',true,num-1,1200)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'aiting')
 				if(num == 1){
 					this.cd(5000 - addTalent*250,1)
 					this.blueComput(30 + addTalent*3,'reduce')
@@ -4160,6 +4262,7 @@ export default {
 			}
 			if(this.myHero.name == '亡灵战神' || this.myHero.id == 24){
 				this.playVoice('../../static/sounds/aning'+num+'.wav',true,num-1,1200)
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhifeng_emo')
 				if(num == 1){
 					if(this.xuli != 0){
 						this.cd(8500 - addTalent*250,1)
@@ -4217,10 +4320,11 @@ export default {
 					this.$refs.tallents.tallentShow3 = false
 					this.myNoMove = true
 					this.showTX(2,2)
+					this.fastsp = this.myspeed
 					if(this.characterX >= this.enemyX){
 						this.ygbj = setInterval(()=>{
 							this.computeDistance()
-							if(this.distanceComp(50)){
+							if(this.distanceComp(40)){
 								this.tallentExpert(2,1,2500)
 								clearInterval(this.ygbj)
 								let val = this.harmComputer(1,addTalent4) + 500  + this.randomNum(0,300) + addTalent4*70
@@ -4229,6 +4333,7 @@ export default {
 								this.$refs.tallents.tallentShow2 = true
 								this.$refs.tallents.tallentShow3 = true
 								this.myNoMove = false
+								this.fastsp = 0
 								this.showTX(2,2,true)
 							}else{
 								if(this.characterX < 20){
@@ -4236,17 +4341,18 @@ export default {
 									this.$refs.tallents.tallentShow2 = true
 									this.$refs.tallents.tallentShow3 = true
 									this.myNoMove = false
+									this.fastsp = 0
 									this.showTX(2,2,true)
 									clearInterval(this.ygbj)
 								}else{
-									this.characterX = this.characterX - 22
+									this.characterX = this.characterX - 12
 								}
 							}
-						},100)
+						},50)
 					}else{
 						this.ygbj = setInterval(()=>{
 							this.computeDistance()
-							if(this.distanceComp(50)){
+							if(this.distanceComp(40)){
 								this.tallentExpert(2,1,2500)
 								clearInterval(this.ygbj)
 								let val = this.harmComputer(1,addTalent4) + parseInt(this.myHero.gj*1.5) + 500 - parseInt(this.enemy.fy*1.5) + this.randomNum(0,300) + addTalent4*70
@@ -4255,24 +4361,27 @@ export default {
 								this.$refs.tallents.tallentShow2 = true
 								this.$refs.tallents.tallentShow3 = true
 								this.myNoMove = false
+								this.fastsp = 0
 								this.showTX(2,2,true)
 							}else{
 								if(this.characterX < this.screenWidth * 1.3){
-									this.characterX = this.characterX + 22
+									this.characterX = this.characterX + 12
 								}else{
 									this.$refs.tallents.tallentShow = true
 									this.$refs.tallents.tallentShow2 = true
 									this.$refs.tallents.tallentShow3 = true
 									this.myNoMove = false
+									this.fastsp = 0
 									this.showTX(2,2,true)
 									clearInterval(this.ygbj)
 								}
 							}
-						},100)
+						},50)
 					}
 				}
 			}
 			if(this.myHero.name == '韦鲁斯' || this.myHero.id == 1000){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'xiaogang')
 				if(this.fastsp < 0.4){
 					this.fastsp = parseFloat(this.fastsp + 0.05).toFixed(3)
 				}
@@ -4312,6 +4421,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '狂暴奎木狼' || this.myHero.id == 1001){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'laotie')
 				if(num == 1){
 					this.cd(5500 - addTalent*250,1)
 					this.blueComput(35 + addTalent*5,'reduce')
@@ -4361,13 +4471,14 @@ export default {
 				}
 			}
 			if(this.myHero.name == '百花仙子' || this.myHero.id == 1002){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhimiao_emo')
 				if(num == 1){
 					this.cd(7500 - addTalent*250,1)
 					this.blueComput(60 + addTalent*6,'reduce')
-					this.fasheArrow(450,2,35,this.myHero.id,1,2,2)
+					this.fasheArrow(450,2,35,"百花仙子",1,2,2)
 				}
 				if(num == 2){
-					this.playVoice('../../static/sounds/bhxz2.mp3',true,num-1,3000)
+					this.playVoice('../../static/sounds/kbkml.mp3',true,num-1,3000)
 					this.cd(13000 - addTalent2*350,2)
 					this.blueComput(100,'reduce')
 					this.delayTel(2000,0)
@@ -4377,11 +4488,9 @@ export default {
 				if(num == 3){
 					this.cd(8000 - addTalent3*250,3)
 					this.blueComput(70 + addTalent3*5,'reduce')
-					this.fasheArrow(350,2,30,this.myHero.id,2,16,1)
+					this.fasheArrow(350,2,30,"百花仙子",2,16,1)
 				}
 				if(num == 4){
-					this.heroAnm('../../static/imgs/hero/bhxz4.gif?'+ new Date().getTime())
-					this.backBgImg('bhxz4',3500)
 					this.playVoice('../../static/sounds/kbkml4.mp3',true,num-1,4000)
 					this.cd(13000 - addTalent4*250,4)
 					this.blueComput(100+addTalent4*5,'reduce')
@@ -4393,6 +4502,7 @@ export default {
 				}
 			}
 			if(this.myHero.name == '牛魔王' || this.myHero.id == 1003){
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'laotie')
 				if(num == 1){
 					this.cd(6000 - addTalent*200,1)
 					this.blueComput(50 + addTalent*5,'reduce')
@@ -4400,7 +4510,7 @@ export default {
 					setTimeout(()=>{
 						let val = this.harmComputer(2,addTalent) + 150
 						this.beat(val)
-						this.tallentExpert(2,1,1500+addTalent*100)
+						this.tallentExpert(2,1,1000+addTalent*100)
 					},600)
 				}
 				if(num == 2){
@@ -4425,6 +4535,7 @@ export default {
 					this.beat(val)
 					setTimeout(()=>{
 						this.enDuobi(70+ addTalent3*10)
+						this.tallentExpert(2,1,1000+addTalent3*100)
 					},100)
 				}
 				if(num == 4){
@@ -4443,6 +4554,244 @@ export default {
 							this.pomo = this.pomo + 0.25 + addTalent4*0.03
 						})
 					},1500)
+				}
+			}
+			if(this.myHero.name == '狂暴武僧' || this.myHero.id == 1004) {
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'laotie')
+				let randomVal = this.randomNum(50,250)
+				if(num == 1){
+					this.cd(3800 - addTalent*200,1)
+					this.playVoice('../../static/sounds/wuqi1.wav',false,0,4000)
+					this.delayTel(300,num)
+					this.heroChongci(this.myHero.dis1)
+					this.addBlood(randomVal,0,0)
+					let val = this.harmComputer(1,addTalent) + addTalent*35
+					+ randomVal + this.xuli + 350
+					this.beat(val)
+					this.blueComput(70 + addTalent*8,'reduce')
+					this.xuli = 0
+				}
+				if(num == 2){
+					this.cd(6000 - addTalent2*300,2)
+					this.playVoice('../../static/sounds/wuqi2.wav',false,1,2000)
+					this.xuli = parseInt(this.myHero.fs * (2.6 + addTalent2*0.25)) + 250 + addTalent2*35
+					this.blueComput(70 + addTalent2*10,'reduce')
+					this.myHero.gj = this.myHero.gj + 5
+				}
+				if(num == 3){
+					this.cd(8000 - addTalent3*300,3)
+					this.playVoice('../../static/sounds/wuqi3.wav',false,2,4000)
+					this.delayTel(500,num)
+					this.blueComput(100 + addTalent3*15,'reduce')
+					let val = Math.round(this.shotVal1) + Math.round(120 / parseFloat(this.enemy.gs)) + addTalent3*150
+					+ parseInt(this.myHero.fs) + parseInt(this.myHero.gj*1.3) - parseInt(this.enemy.mk*0.6*this.pomo) - parseInt(this.enemy.fy*(0.6*this.pojia)) + randomVal
+					if(val<=0){
+						val = randomVal
+					}
+					setTimeout(()=>{
+						this.beat(val,1)
+						this.tallentExpert(2,1,2500 + addTalent3*200)
+					},2500 + addTalent3*200)
+				}
+				if(num == 4){
+					this.cd(9000 - addTalent4*300,4)
+					this.playVoice('../../static/sounds/wuqi4.wav',false,3,5800)
+					this.delayTel(1000,num)
+					this.heroAnm('../../static/imgs/hero/wqds.gif?'+ new Date().getTime())
+					this.backBgImg('wqds',1500)
+					this.myHero.fy = parseInt(this.myHero.fy) + 30 + addTalent4*10
+					this.myHero.gj = parseInt(this.myHero.gj) + 20 + addTalent4*5
+					this.myHero.fs = parseInt(this.myHero.fs) + 30 + addTalent4*5
+					setTimeout(()=>{
+						this.myHero.fy = parseInt(this.myHero.fy) - 30 - addTalent4*10
+						this.myHero.gj = parseInt(this.myHero.gj) - 20 - addTalent4*5
+						this.myHero.fs = parseInt(this.myHero.fs) - 30 - addTalent4*5
+					},5000)
+					let val =  parseInt(this.myHero.gj * (2.5 + addTalent4*0.25)) + parseInt(this.myHero.fs * (2.5 + addTalent4*0.25))
+					 - parseInt(this.enemy.fy*2*(1*this.pojia)) - parseInt(this.enemy.mk*2*this.pomo)*2.2 + 500 + randomVal + addTalent4*70
+					this.blueComput(100 + addTalent4*25,'reduce')
+					setTimeout(()=>{
+						this.beat(val)
+					},1000)
+				}
+			}
+			if(this.myHero.name == '雷伊' || this.myHero.id == 1005) {
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'aicheng')
+				if(this.blood1 <= 50 && this.xuli == 0){
+					this.myHero.fs = this.myHero.fs + 30
+					this.xuli = 1
+				}
+				if(num == 1){
+					this.cd(5000 - addTalent*250,1)
+					this.blueComput(35 + addTalent*3,'reduce')
+					this.fasheArrow(450,2,35,this.myHero.id,1,16,2)
+				}
+				if(num == 2){
+					this.cd(10000 - addTalent2*250,2)
+					this.blueComput(60 + addTalent2*10,'reduce')
+					this.playVoice('../../static/sounds/ly2.mp3',true,num-1,4000)
+					this.heroAnm('../../static/imgs/hero/ly2.gif?'+ new Date().getTime())
+					this.backBgImg('ly2',1200)
+					let fsv = parseInt(this.myHero.fs*(0.25 + addTalent2*0.02))
+					this.myHero.fs = this.myHero.fs + fsv
+					this.myHero.gj = this.myHero.gj + 50 + addTalent2*10
+					this.fastsp = 0.15
+					setTimeout(()=>{
+						this.myHero.fs = this.myHero.fs - fsv
+						this.myHero.gj = this.myHero.gj - 50 - addTalent2*10
+						this.fastsp = 0
+					},4000 + addTalent2*500)
+				}
+				if(num == 3){
+					this.cd(7000 - addTalent3*250,3)
+					this.blueComput(60 + addTalent3*5,'reduce')
+					this.playVoice('../../static/sounds/ly3.wav',true,num-1,2000)
+					this.heroChongci(120)
+					if(this.characterX > this.enemyX){
+						this.characterX = this.enemyX - 40
+					}else{
+						this.characterX = this.enemyX + 40
+					}
+					if(this.characterY > this.enemyY){
+						this.characterY = this.enemyY - 40
+					}else{
+						this.characterY = this.enemyY + 40
+					}
+					let val = this.harmComputer(1,addTalent3) + 250 + addTalent3*50
+					this.beat(val)
+					if(!this.shotDown){
+						this.shotDown = true
+						setTimeout(()=>{
+							this.shotDown = false
+						},1000)
+					}
+				}
+				if(num == 4){
+					this.cd(11000 - addTalent4*350,4)
+					this.blueComput(130 + addTalent4*10,'reduce')
+					this.heroChongci(138)
+					this.playVoice('../../static/sounds/ly4.mp3',true,num-1,3000)
+					this.heroAnm('../../static/imgs/hero/ly4.gif?'+ new Date().getTime())
+					this.backBgImg('ly4',1000)
+					setTimeout(()=>{
+						let val = this.harmComputer(2,addTalent4) + parseInt(this.myHero.fs) + 350 + addTalent4*70
+						this.beat(val)
+						this.tallentExpert(4,1,5000)
+					},60)
+				}
+			}
+			if(this.myHero.name == '地狱火' || this.myHero.id == 1006) {
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhibing_emo')
+				if(num == 1){
+					this.cd(5000 - addTalent*250,1)
+					this.blueComput(35 + addTalent*3,'reduce')
+					this.fasheArrow(400,2,35,this.myHero.id,1,1,1)
+				}
+				if(num == 3){
+					this.cd(8000 - addTalent3*250,3)
+					this.blueComput(70 + addTalent3*7,'reduce')
+					this.playVoice('../../static/sounds/ly3.wav',true,num-1,2000)
+					this.delayTel(500,0)
+					this.xuli = 1
+					setTimeout(()=>{
+						this.xuli = 0
+					},3000+ addTalent3*500)
+				}
+				if(num == 4){
+					this.cd(13500 - addTalent4*350,4)
+					this.blueComput(150 + addTalent4*15,'reduce')
+					this.fasheArrow(400,2,38,this.myHero.id,4,3,2)
+				}
+			}
+			if(this.myHero.name == '二郎真君-杨戬' || this.myHero.id == 1007) {
+				this.playVoice(this.myHero.tallent[num].name,true,num-1,2000,'zhibing_emo')
+				if(num == 1){
+					if(this.ylzz){
+						return
+					}
+					this.blueComput(50 + addTalent*5,'reduce')
+					this.playVoice('../../static/sounds/elzj1.mp3',true,num-1,2500)
+					this.tallentObjects.push({
+						left: this.characterX - this.randomNum(30,70),
+						top: this.characterY + this.randomNum(20,60),
+						width: 130,
+						height: 136,
+						img: 'xtq.png'
+					});
+					let ind = 0
+					this.tallentObjects.map((i,d)=>{
+					  if(i.img == 'xtq.png'){
+						  ind = d
+					  }
+					})
+					this.ylzz = setInterval(()=>{
+						if(this.enemyX > this.tallentObjects[ind].left){
+							this.tallentObjects[ind].left = this.tallentObjects[ind].left + 3
+						}else if(this.tallentObjects[ind].left - this.enemyX > 36){
+							this.tallentObjects[ind].left = this.tallentObjects[ind].left - 3
+						}
+						if(this.enemyY > this.tallentObjects[ind].top){
+							this.tallentObjects[ind].top = this.tallentObjects[ind].top + 3
+						}else if(this.tallentObjects[ind].top - this.enemyY > 10){
+							this.tallentObjects[ind].top = this.tallentObjects[ind].top - 3
+						}
+						//哮天犬已靠近
+						if(Math.abs(this.tallentObjects[ind].left - this.enemyX) <= (60 + addTalent*5) && Math.abs(this.tallentObjects[ind].top - this.enemyY) <= 50 && this.xuli == 0){
+							setTimeout(()=>{
+								clearInterval(this.ylzz)
+								this.ylzz = null
+								this.xuli = 0
+								this.tallentObjects.splice(ind,1)
+								this.cd(6000 - addTalent*250,1)
+							},2000)
+							let val = parseInt(this.myHero.gj*1.7) - parseInt(this.enemy.fy*1.5) + 100 + this.randomNum(20,50)
+							if(val<50){
+								val = 50
+							}
+							this.consistBeat(val,500,2000)
+							this.xuli = 1
+						}
+					},30)
+				}
+				if(num == 2){
+					this.cd(8000 - addTalent2*250,2)
+					this.blueComput(30 + addTalent2*3,'reduce')
+					this.regGjAdd.gjHarm = parseInt(this.regGjAdd.gjHarm) + parseInt(this.myHero.gj*(0.15 + addTalent2*0.05))
+					if(this.myspeed > 0.3){
+						this.myspeed = this.myspeed - 0.3 - addTalent2*0.02
+					}
+					setTimeout(()=>{
+						this.regGjAdd.gjHarm = parseInt(this.regGjAdd.gjHarm) - parseInt(this.myHero.gj*(0.15 + addTalent2*0.05))
+						this.myspeed = this.myspeed + 0.3 + addTalent2*0.02
+					},3000+addTalent2*750)
+				}
+				if(num == 3){
+					if(this.ygbj){
+						this.cd(7500 - addTalent3*250,3)
+						this.ygbj = false
+					}else{
+						this.cd(1500,3)
+						this.ygbj = true
+					}
+					this.blueComput(25 + addTalent3*2,'reduce')
+					this.playVoice('../../static/sounds/elzj3.wav',true,num-1,2500)
+					this.fasheArrow(350,2,45,this.myHero.id,3,6,5)
+					this.heroAnm('../../static/imgs/hero/elzj3.gif?'+ new Date().getTime())
+					this.backBgImg('elzj3',2000)
+				}
+				if(num == 4){
+					this.cd(12000 - addTalent4*300,4)
+					this.blueComput(100 + addTalent4*10,'reduce')
+					this.heroChongci(200)
+					this.playVoice('../../static/sounds/chongji.wav',true,num-1,1800)
+					let val = this.harmComputer(1,addTalent4) + 500 + addTalent4*100
+					//敌方生命值小于30%
+					if(parseInt(this.blood1)/parseInt(this.enemy.blood) <= 0.3){
+						val = parseInt(val*1.5)
+					}
+					this.beat(val)
+					this.heroAnm('../../static/imgs/hero/elzj4.gif?'+ new Date().getTime())
+					this.backBgImg('elzj4',1500)
 				}
 			}
 		},
@@ -4530,7 +4879,7 @@ export default {
 			this.playVoice('../../static/sounds/'+this.myHero.id+'.wav',true,7,1500)
 			this.cd5 = false
 			let v = parseFloat(this.myHero.v) * 1000
-			let val = (parseInt(this.myHero.gj * 2.5) - parseInt(this.enemy.fy * 2.2)) * 1.5 + this.regGjAdd.gjHarm
+			let val = (parseInt(this.myHero.gj * 2.2) - parseInt(this.enemy.fy * 2.2)) * 1.5 + this.regGjAdd.gjHarm
 			let hasBj = false
 			//暴击
 			if(this.randomNum(0,10) <= (parseFloat(this.myHero.bj) * 10)){
@@ -4927,11 +5276,17 @@ export default {
 			this.flag2 = 0
 			this.xuli = 0
 			this.ygbj = false
+			this.audioVoice = [null,null,null,null,null,null,null,null]
 			clearInterval(this.goTime2)
 			clearInterval(this.arrowTimer)
 			if(this.myHero.id == 16){	//东海龙王
 				this.myHero.icon = 'ag.jpg'
 			}
+			if(this.myHero.id == 1006){	//地狱火被动
+				this.myHero.fs += 15
+				this.addBlood(200,0,0)
+			}
+			
 			if(this.gameType == 'spt'){	//胜利
 				this.money = editMoney(300 + 1200*parseInt(this.enemy.levelNum))
 				let has = false
@@ -5018,14 +5373,71 @@ export default {
 				
 			// })
 		},
-		playVoice(url,type,index,time) {
+		playVoice(url,type,index,time,voice) {
 			if(index == 10){
 				this.bgAudio = uni.createInnerAudioContext();
-				this.bgAudio.volume = 1
+				this.bgAudio.sessionCategory = 'ambient'
+				this.bgAudio.volume = 0.4
+				this.bgAudio.loop = true
 				this.bgAudio.src = url
 				this.bgAudio.play()
+			}else if(voice){
+				let self = this
+				//姐姐音xiaoxian
+				//温柔女siqi
+				//带货女maoxiaomei
+				//甜美女声zhimiao_emo
+				//小声温柔甜美aiting
+				//童声aiying
+				//中年男zhifeng_emo
+				//东北男laotie
+				//青年zhibing_emo
+				//年轻xiaogang
+				//伊泽aicheng
+				if(!self.audioVoice[index]){
+					uni.request({
+						url: 'https://user.api.hudunsoft.com/v1/alivoice/texttoaudio',
+						header: {
+							authority: 'user.api.hudunsoft.com',
+							origin: 'https://www.luyinzhushou.com',
+							'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+						},
+						method: 'POST',
+						data: {
+					        client: 'web',
+					        source: '335',
+					        soft_version:'V4.4.0.0',
+					        device_id:'785c8014a163480b84b5d017a9a11886',
+					        text: url,
+					        bgid:'0',
+					        bg_volume:'1',
+					        format:'mp3',
+							emotion: 'happy',
+					        voice: voice,
+					        volume: url.length>=5?10:9,
+					        speech_rate: url.length>=5?4 : 6,
+					        pitch_rate:4,
+					        title: url,
+					        token:'785c8014a163480b84b5d017a9a11886',
+					        bg_url: ''
+						},
+						success: function(res) {
+							self.audioVoice[index] = uni.createInnerAudioContext();
+							self.audioVoice[index].sessionCategory = 'ambient'
+							self.audioVoice[index].volume = 1
+							self.audioVoice[index].src = res.data.data.file_link
+							self.audioVoice[index].play()
+						},
+						fail: function(e) {
+							console.log(e)
+						}
+					});
+				}else{
+					self.audioVoice[index].play()
+				}
 			}else{
 				this.innerAudioContext[index] = uni.createInnerAudioContext();
+				this.innerAudioContext[index].sessionCategory = 'ambient'
 				if(type){
 					this.innerAudioContext[index].volume = 1
 				}else{
@@ -5099,6 +5511,7 @@ export default {
 			this.bloodVal1 = 100
 			this.begin = false
 			this.bettleEnd = false
+			this.audioVoice = [null,null,null,null,null,null,null,null]
 			clearInterval(this.beatTime)
 			this.enemyX = this.reallyRandom(0,5)*parseInt((this.screenWidth - 150)/5)
 			this.enemyY = this.reallyRandom(0,5)*parseInt((this.screenHeight - 80)/5)
@@ -5362,6 +5775,13 @@ export default {
 						setTimeout(()=>{
 							this.pojia += 0.1
 						},3000)
+					}
+				}
+			}
+			if(this.myHero.name == '二郎真君-杨戬' || this.myHero.id == 1007) {
+				if(this.reallyRandom(0,2) == 1){
+					if(this.myHero.bj < 0.7){
+						this.myHero.bj = this.myHero.bj + 0.2
 					}
 				}
 			}
@@ -5971,6 +6391,30 @@ export default {
 					}
 				})
 			}
+			if(this.mapObjects.length != 0 && (this.myHero.name == '地狱火' || this.myHero.id == 1006)){
+				this.mapObjects.map((it,idx)=>{
+					if(this.mapObjects[idx].img == 'huozhu.png'){
+						let x = Math.abs(it.left+5 - this.enemyX)
+						let y = Math.abs(it.top+5 - this.enemyY)
+						let dis = Math.sqrt(x*x+y*y)
+						let addTalent = parseInt(this.addData.add9)
+						if(dis <= 40){	//踩到
+							let val = parseInt(this.myHero.fs * (0.6 + addTalent*0.07)) - parseInt(this.enemy.mk*1.7) + this.randomNum(addTalent*15,50 + addTalent*10)
+							if(val <= 30){
+								val = this.randomNum(30,50)
+							}
+							if(this.xuli == 1){
+								val = parseInt(this.myHero.fs * (0.6 + addTalent*0.07))
+							}
+							this.beat(val,1)
+						}
+					}
+				})
+			}
+			//牛魔王
+			if(this.enemy.id == 1003){
+				this.enemyConsistAddBlood(this.randomNum(4,5),20,30)
+			}
 		},
 		//英雄冲刺
 		heroChongci(dis,type,speed) {
@@ -5996,13 +6440,13 @@ export default {
 						this.fastsp = 0
 					}
 					if(this.characterX > this.enemyX){
-						this.characterX = this.enemyX + 5
+						this.characterX = this.enemyX + 30
 					}
 					if(this.characterY > this.enemyY){
 						this.characterY = this.enemyY + 5
 					}
 					if(this.characterX <= this.enemyX){
-						this.characterX = this.enemyX - 5
+						this.characterX = this.enemyX - 30
 					}
 					if(this.characterY <= this.enemyY){
 						this.characterY = this.enemyY - 5
@@ -6041,13 +6485,13 @@ export default {
 					this.playVoice('../../static/sounds/enchongji.wav',false,7,2000)
 					this.fastsp2 = this.enspeed - 0.2
 					if(this.enemyX > this.characterX){
-						this.enemyX = this.characterX + 5
+						this.enemyX = this.characterX + 30
 					}
 					if(this.enemyY > this.characterY){
 						this.enemyY = this.characterY + 5
 					}
 					if(this.enemyX <= this.characterX){
-						this.enemyX = this.characterX - 5
+						this.enemyX = this.characterX - 30
 					}
 					if(this.enemyY <= this.characterY){
 						this.enemyY = this.characterY - 5
@@ -6271,8 +6715,8 @@ export default {
 						}
 					},time)
 				}
-				if(type == 7){	//烧伤-30%
-					let val = Math.ceil(parseInt(this.blood1)/12)
+				if(type == 7){	//烧伤-25%
+					let val = Math.ceil(parseInt(this.blood1)/16)
 					this.beat(val,1)
 					setTimeout(()=>{
 						this.beat(val,1)
@@ -6419,13 +6863,13 @@ export default {
 						this.myHero.icon = this.origHero.icon
 					},time)
 				}
-				if(type == 7){	//烧伤-30%
+				if(type == 7){	//烧伤-25%
 					uni.showToast({
 						title: '你已被烧伤',
 						icon:'none',
 						duration: 700
 					});
-					let val = Math.ceil(parseInt(this.blood2)/12) + this.myHero.fy*2
+					let val = Math.ceil(parseInt(this.blood2)/16) + this.myHero.fy*2
 					this.enemyBeat2(val)
 					setTimeout(()=>{
 						this.enemyBeat2(val)
@@ -6477,6 +6921,20 @@ export default {
 						this.myHero.icon = this.origHero.icon
 					},time)
 				}
+			}
+		},
+		//切换到下一个我方英雄事件
+		nextHeroHandle() {
+			//灵魂莲华
+			if(this.myHero.id == 4 && parseInt(this.addData.strongIndex) == 2){
+				setTimeout(()=>{
+					this.myHero.gj = this.myHero.gj + this.randomNum(65,120)
+					this.myHero.blood = this.myHero.blood + this.randomNum(1000,1500)
+					this.myHero.v = 0.5
+					this.origHero = {...this.myHero}
+					this.blood2 = this.myHero.blood
+					this.bloodVal2 = 100
+				},100)
 			}
 		},
 		heroAddSpeed(val,time) {
@@ -7095,7 +7553,35 @@ export default {
 						this.tallentExpert(8,2)
 					}
 				}
-				
+				if(heroId == '雷伊'){
+					if(num == 1){
+						let val = this.harmComputer(3)
+						this.enemyBeat2(val)
+						if(this.randomNum(0,2) == 2){
+							this.tallentExpert(4,2,5000)
+						}
+					}
+				}
+				if(heroId == '地狱火'){
+					if(num == 1){
+						let val = 0
+						if(this.ygbj){
+							val = parseInt(this.enemy.gj * 2.6)*2
+							this.enemyBeat2(val)
+						}else{
+							 val = this.harmComputer(3) + 250
+							 this.enemyBeat2(val)
+						}
+					}
+					if(num == 4){
+						this.tallentExpert(7,2)
+					}
+				}
+				//二郎真君-杨戬
+				if(heroId == '二郎真君-杨戬'){
+					let val = this.harmComputer(3) + 150
+					this.enemyBeat2(val)
+				}
 			}else{	//我方
 				//百花仙子
 				if(this.enemy.id == 1002 && this.enImmunity){
@@ -7352,6 +7838,38 @@ export default {
 						this.tallentExpert(8,1)
 					}
 				}
+				if(heroId == 1005){
+					if(num == 1){
+						let val = this.harmComputer(2,addTalent) + 150
+						this.beat(val)
+						if(this.reallyRandom(0,2) == 2){
+							this.tallentExpert(4,1,5000)
+						}
+					}
+				}
+				//地狱火
+				if(heroId == 1006){
+					if(num == 1){
+						let val = 0
+						if(this.xuli==1){
+							val = parseInt(this.myHero.fs * (2.5 + addTalent*0.2))*2
+							this.beat(val,1)
+						}else{
+							 val = this.harmComputer(2,addTalent) + 150
+							 this.beat(val)
+						}
+					}
+					if(num == 4){
+						this.tallentExpert(7,1)
+					}
+				}
+				//二郎真君-杨戬
+				if(heroId == 1007){
+					if(num == 3){
+						let val = this.harmComputer(2,addTalent3) + 250
+						this.beat(val)
+					}
+				}
 			}
 		},
 		//地图随机道具
@@ -7589,6 +8107,30 @@ export default {
 			if(this.myHero.id == 1001 && this.distance > 300){
 				this.addBlood(20,0,0)
 			}
+			//牛魔王
+			if(this.myHero.id == 1003){
+				this.addBlood(this.randomNum(4,5),0,0)
+			}
+			//地狱火
+			if(this.enmapObjects.length != 0 && (this.enemy.name == '地狱火')){
+				this.enmapObjects.map((it,idx)=>{
+					if(this.enmapObjects[idx].img == 'huozhu.png'){
+						let x = Math.abs(it.left+5 - this.characterX)
+						let y = Math.abs(it.top+5 - this.characterY)
+						let dis = Math.sqrt(x*x+y*y)
+						if(dis <= 40){	//踩到
+							let val = parseInt(this.enemy.gj * 0.75) - parseInt(this.myHero.fy*1.7) + this.randomNum(15,60)
+							if(val <= 30){
+								val = this.randomNum(30,50)
+							}
+							if(this.ygbj){
+								val = parseInt(this.enemy.gj * 0.75) + this.randomNum(10,30)
+							}
+							this.enemyBeat2(val)
+						}
+					}
+				})
+			}
 		},
 		scroll: function(e) {
 			this.old.scrollTop = e.detail.scrollTop
@@ -7670,6 +8212,26 @@ export default {
 				  })
 				},3500 + addTalent*150)
 			}
+			//地狱火
+			if(this.myHero.id == 1006 && this.$refs.tallents.tallentShow2){
+				this.$refs.tallents.tallentShow2 = false
+				this.cd(5500 - addTalent2*200,2)
+				this.blueComput(35+addTalent2*3,'reduce')
+				this.mapObjects.push({
+					left: pageX - 28,
+					top: pageY - 31,
+					width: 80,
+					height: 135,
+					img: 'huozhu.png'
+				});
+				setTimeout(()=>{
+				  this.mapObjects.map((i,d)=>{
+					  if(i.img == 'huozhu.png'){
+						  this.mapObjects.splice(d,1)
+					  }
+				  })
+				},3500 + addTalent2*150)
+			}
 		},
 		 getSystemInfo() {
 			const systemInfo = uni.getSystemInfoSync();
@@ -7703,6 +8265,7 @@ export default {
 				return
 			}
 			if(this.enemy.name == '韦鲁斯'){
+				this.playVoice(this.enemy.tallent[num].name,true,num+3,2000,'xiaogang')
 				if(num == 1){
 					if(!this.distanceComp(100)){
 						this.heroAnm('../../static/imgs/hero/wls1.gif?'+ new Date().getTime(),1)
@@ -7731,6 +8294,7 @@ export default {
 				}
 			}
 			if(this.enemy.name == '狂暴奎木狼'){
+				this.playVoice(this.enemy.tallent[num].name,true,num+3,2000,'laotie')
 				if(num == 1){
 					this.heroAnm('../../static/imgs/hero/jfly1.gif?'+ new Date().getTime())
 					this.backBgImg('jfly1',1000)
@@ -7764,10 +8328,11 @@ export default {
 				}
 				if(num == 4){
 					this.playVoice('../../static/sounds/kbkml4.mp3',true,num+3,4000)
-					this.tallentExpert(6,1)
+					this.tallentExpert(6,1,5000)
 				}
 			}
 			if(this.enemy.name == '百花仙子'){
+				this.playVoice(this.enemy.tallent[num].name,true,num+3,2000,'zhimiao_emo')
 				if(num == 1){
 					this.fasheArrow(450,1,35,"百花仙子",1,2,5)
 				}
@@ -7791,11 +8356,12 @@ export default {
 				}
 			}
 			if(this.enemy.name == '牛魔王'){
+				this.playVoice(this.enemy.tallent[num].name,true,num+3,2000,'laotie')
 				if(num == 1){
 					let val = this.harmComputer(3) + 150
 					this.enemyBeat2(val)
 					if(this.randomNum(0,1) == 1){
-						this.tallentExpert(2,2,1500)
+						this.tallentExpert(2,2,1000)
 					}
 				}
 				if(num == 2){
@@ -7819,12 +8385,229 @@ export default {
 					this.enemyBeat2(val)
 					setTimeout(()=>{
 						this.shanxian(90 + this.randomNum(0,30))
+						this.tallentExpert(2,2,1000)
 					},100)
 				}
 				if(num == 4){
 					let val = this.harmComputer(3) + 350 + this.randomNum(0,200)
 					this.enemyBeat2(val)
 					this.myHero.fy = this.myHero.fy - 9
+				}
+			}
+			if(this.enemy.name == '狂暴武僧'){
+				this.playVoice(this.enemy.tallent[num].name,true,num+3,2000,'laotie')
+				let randomVal = this.randomNum(50,250)
+				this.playVoice('../../static/sounds/wuqi'+num+'.wav',false,num+3,5500)
+				if(num == 1){
+					this.enChongci(this.enemy.dis1)
+					let val = this.harmComputer(3)
+					+ randomVal + 350 
+					this.enemyBeat2(val)
+					this.enemyConsistAddBlood(randomVal,20,30)
+				}
+				if(num == 2){
+					this.enemy.gj = this.enemy.gj + 35
+					setTimeout(()=>{
+						this.enemy.gj = this.enemy.gj - 30
+					},3500)
+				}
+				if(num == 3){
+					if(this.distanceComp(this.enemy.dis3)){
+						uni.showToast({
+							title: '你被禁止释放技能',
+							icon:'none',
+							duration: 1200
+						});
+						this.delayTel(2500,0)
+						let val = Math.round(this.shotVal2) + Math.round(120 / parseFloat(this.myHero.v))
+						+ parseInt(this.enemy.gj*1.8) - parseInt(this.myHero.fy*0.6) + randomVal
+						if(val<=0){
+							val = randomVal
+						}
+						setTimeout(()=>{
+							this.enemyBeat2(val)
+						},2500)
+					}
+				}
+				if(num == 4){
+						this.heroAnm('../../static/imgs/hero/wqds.gif?'+ new Date().getTime(),1)
+						this.backBgImg('wqds',1500,1)
+							this.enemy.fy = parseInt(this.enemy.fy) + 30
+							this.enemy.mk = parseInt(this.enemy.mk) + 30
+							this.enemy.gj = parseInt(this.enemy.gj) + 15
+							setTimeout(()=>{
+								this.enemy.fy = parseInt(this.enemy.fy) - 30
+								this.enemy.mk = parseInt(this.enemy.mk) - 30
+								this.enemy.gj = parseInt(this.enemy.gj) - 15
+							},5000)
+						setTimeout(()=>{
+							if(this.distanceComp(100)){
+								let val =  parseInt(this.enemy.gj * 2.7)
+								 - parseInt(this.myHero.fy*2) + 500 + randomVal
+								this.enemyBeat2(val)
+							}
+						},1000)
+				}
+			}
+			if(this.enemy.name == '雷伊'){
+				this.playVoice(this.enemy.tallent[num].name,true,num+3,2000,'aicheng')
+				if(num == 1){
+					this.fasheArrow(450,1,35,'雷伊',1,16,2)
+				}
+				if(num == 2){
+					this.heroAnm('../../static/imgs/hero/ly2.gif?'+ new Date().getTime(),1)
+					this.backBgImg('ly2',1200,1)
+					this.playVoice('../../static/sounds/ly2.mp3',true,num+3,4000)
+					let fsv = parseInt(this.enemy.gj*0.2)
+					this.enemy.gj = this.enemy.gj + fsv
+					this.fastsp2 = 0.15
+					setTimeout(()=>{
+						this.fastsp2 = 0
+						this.enemy.gj = this.enemy.gj - fsv
+					},3500)
+				}
+				if(num == 3){
+					this.enChongci(120)
+					this.playVoice('../../static/sounds/ly3.wav',true,num+3,2000)
+					if(this.distanceComp(120)){
+						if(this.enemyX > this.characterX){
+							this.enemyX = this.characterX - 40
+						}else{
+							this.enemyX = this.characterX + 40
+						}
+						if(this.enemyY > this.characterY){
+							this.enemyY = this.characterY - 40
+						}else{
+							this.enemyY = this.characterY + 40
+						}
+						let val = this.harmComputer(3) + 100
+						this.enemyBeat2(val)
+						uni.showToast({
+							title: '你被禁止释放技能',
+							icon:'none',
+							duration: 1000
+						});
+						this.delayTel(1000,0)
+					}
+					
+				}
+				if(num == 4){
+					this.heroChongci(138)
+					this.playVoice('../../static/sounds/ly4.mp3',true,num+3,3000)
+					this.heroAnm('../../static/imgs/hero/ly4.gif?'+ new Date().getTime(),1)
+					this.backBgImg('ly4',1000,1)
+					if(this.distanceComp(138)){
+						setTimeout(()=>{
+							let val = this.harmComputer(3) + 500
+							this.enemyBeat2(val)
+							this.tallentExpert(4,2,5000)
+						},60)
+					}
+				}
+			}
+			if(this.enemy.name == '地狱火') {
+				this.playVoice(this.enemy.tallent[num].name,true,num+3,2000,'zhibing_emo')
+				if(num == 1){
+					this.fasheArrow(400,1,35,'地狱火',1,1,1)
+				}
+				if(num == 2){
+					this.enmapObjects.push({
+						left: this.characterX >=this.enemyX? (this.characterX - this.randomNum(10,100)):(this.characterX + this.randomNum(10,100)),
+						top: this.randomNum(0,1) == 0?(this.characterY - this.randomNum(10,60)):(this.characterY + this.randomNum(10,60)),
+						width: 80,
+						height: 135,
+						img: 'huozhu.png'
+					});
+					setTimeout(()=>{
+					  this.enmapObjects.map((i,d)=>{
+						  if(i.img && i.img == 'huozhu.png'){
+							  this.enmapObjects.splice(d,1)
+						  }
+					  })
+					},3500)
+				}
+				if(num == 3){
+					this.ygbj = true
+					setTimeout(()=>{
+						this.ygbj = false
+					},3000)
+				}
+				if(num == 4){
+					this.fasheArrow(450,1,38,'地狱火',4,3,2)
+				}
+			}
+			if(this.enemy.name == '二郎真君-杨戬') {
+				this.playVoice(this.enemy.tallent[num].name,true,num-1,2000,'zhibing_emo')
+				if(num == 1){
+					if(this.enFlagTime){
+						return
+					}
+					this.enmapObjects.push({
+						left: this.enemyX - this.randomNum(30,70),
+						top: this.enemyY + this.randomNum(20,60),
+						width: 130,
+						height: 136,
+						img: 'xtq.png'
+					});
+					let ind = 0
+					this.enmapObjects.map((i,d)=>{
+					  if(i.img == 'xtq.png'){
+						  ind = d
+					  }
+					})
+					this.enFlagTime = setInterval(()=>{
+						if(this.characterX > this.enmapObjects[ind].left){
+							this.enmapObjects[ind].left = this.enmapObjects[ind].left + 3
+						}else if(this.enmapObjects[ind].left - this.characterX > 36){
+							this.enmapObjects[ind].left = this.enmapObjects[ind].left - 3
+						}
+						if(this.characterY > this.enmapObjects[ind].top){
+							this.enmapObjects[ind].top = this.enmapObjects[ind].top + 3
+						}else if(this.enmapObjects[ind].top - this.characterY > 10){
+							this.enmapObjects[ind].top = this.enmapObjects[ind].top - 3
+						}
+						//哮天犬已靠近
+						if(Math.abs(this.characterX - this.enmapObjects[ind].left) <= 70 && Math.abs(this.characterY - this.enmapObjects[ind].top) <= 50 && !this.enFlag){
+							setTimeout(()=>{
+								clearInterval(this.enFlagTime)
+								this.enFlagTime = null
+								this.enmapObjects.splice(ind,1)
+								this.enFlag = false
+							},2000)
+							let val = parseInt(this.enemy.gj*1.6) - parseInt(this.myHero.fy*1.5) + 100 + this.randomNum(20,50)
+							if(val<50){
+								val = 50
+							}
+							this.consistEnemyBeat(val,500,2550)
+							this.enFlag = true
+						}
+					},30)
+				}
+				if(num == 2){
+					if(this.enspeed > 0.2){
+						this.enspeed = this.enspeed - 0.2
+					}
+					setTimeout(()=>{
+						if(this.enspeed >= 0.2){
+							this.enspeed = this.enspeed + 0.2
+						}
+					},3000)
+				}
+				if(num == 3){
+					this.fasheArrow(380,1,45,'二郎真君-杨戬',3,6,5)
+					this.heroAnm('../../static/imgs/hero/elzj3.gif?'+ new Date().getTime(),1)
+					this.backBgImg('elzj3',2000,1)
+				}
+				if(num == 4){
+					this.enChongci(200)
+					let val = this.harmComputer(3) + 500
+					//生命值小于30%
+					if(parseInt(this.blood2)/parseInt(this.myHero.blood) <= 0.3){
+						val = parseInt(val*1.5)
+					}
+					this.enemyBeat2(val)
+					this.heroAnm('../../static/imgs/hero/elzj4.gif?'+ new Date().getTime(),1)
+					this.backBgImg('elzj4',1500,1)
 				}
 			}
 		}
@@ -8037,7 +8820,7 @@ export default {
 			}
 			.blood {
 				width: 30%;
-				height: 34rpx;
+				height: 42rpx;
 				// border: 4rpx solid $main-color;
 				box-shadow: 0rpx 0rpx 6rpx 4rpx #4a4a4a;
 				border-radius: 4rpx;
@@ -8049,13 +8832,13 @@ export default {
 					text-align: center;
 					color: #ececec;
 					z-index: 3;
-					line-height: 34rpx;
+					line-height: 42rpx;
 					vertical-align: middle;
 				}
 				.bloodVal {
 					position: relative;
 					z-index: 2;
-					height: 34rpx;
+					height: 42rpx;
 					border-radius: 4rpx;
 					background: linear-gradient(90deg, rgba(247, 64, 67, 0.5) 0%, #ed0003 100%);
 				}
@@ -8067,8 +8850,8 @@ export default {
 				}
 				.bloodVal2 {
 					position: relative;
-					top: -34rpx;
-					height: 34rpx;
+					top: -42rpx;
+					height: 42rpx;
 					border-radius: 4rpx;
 					background-color: #ed8e90;
 					transition-property: width;
