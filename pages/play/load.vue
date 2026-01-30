@@ -130,6 +130,17 @@ export default {
 		if(this.match.name == '湫') {
 			this.bgImg = 'qiu.jpg'
 		}
+		if(uni.getStorageSync('gameType') == 'spt'){
+			if(JSON.parse(uni.getStorageSync('sptBoss')).name == '百花仙子') {
+				this.bgImg = 'bhgzbg.jpg'
+			}
+			if(JSON.parse(uni.getStorageSync('sptBoss')).name == '不朽战神') {
+				this.bgImg = 'bxzsbg.jpg'
+			}
+			if(JSON.parse(uni.getStorageSync('sptBoss')).name == '二郎真君-杨戬') {
+				this.bgImg = 'elzjbg.jpg'
+			}
+		}
 	},
 	onLoad(option) {
 		if(option){
@@ -310,6 +321,8 @@ export default {
 .container {
 	width: 100%;
 	height: 100vh;
+	background-repeat: no-repeat;
+	background-size: cover;
 	.tips {
 		display: flex;
 		justify-content: center;

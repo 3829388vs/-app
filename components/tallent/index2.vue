@@ -597,6 +597,42 @@
 		</view>
 		<view class="zw" v-else></view>
 	</view>
+	<view class="tallentItem" v-if="heroId == 1008 && !noflz">
+		<view class="item item1" :style="{opacity: dist > disList[0]? 0.5 : 1}" v-if="tallentShow" @click="dmxyzl(1)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/190/19010.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item2" :style="{opacity: dist > disList[1]? 0.5 : 1}" v-if="tallentShow2" @click="dmxyzl(2)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/190/19000.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item3" :style="{opacity: dist > disList[2]? 0.5 : 1}" v-if="tallentShow3" @click="dmxyzl(3)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/190/19020.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item4 bigTel" :style="{opacity: dist > disList[3]? 0.5 : 1}" v-if="tallentShow4" @click="dmxyzl(4)">
+			<image class="itemImg" src="../../static/imgs/tianyuanding.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+	</view>
+	<view class="tallentItem" v-if="heroId == 1009 && !noflz">
+		<view class="item item1" :style="{opacity: dist > disList[0]? 0.5 : 1}" v-if="tallentShow" @click="dmxyzl(1)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/502/50210.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item2" :style="{opacity: dist > disList[1]? 0.5 : 1}" v-if="tallentShow2" @click="dmxyzl(2)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/502/50220.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item3" :style="{opacity: dist > disList[2]? 0.5 : 1}" v-if="tallentShow3" @click="dmxyzl(3)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/529/52910.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item4 bigTel" :style="{opacity: dist > disList[3]? 0.5 : 1}" v-if="tallentShow4" @click="dmxyzl(4)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/yxzj/img201606/heroimg/529/52930.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+	</view>
 	</view>
 </template>
 

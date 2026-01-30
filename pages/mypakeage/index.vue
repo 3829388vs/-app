@@ -938,6 +938,24 @@ export default {
 						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17830.png',
 						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/17820.png'
 					]
+				},
+				{
+					id: 1008,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/190/19010.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/190/19000.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/190/19020.png',
+						'../../static/imgs/tianyuanding.png'
+					]
+				},
+				{
+					id: 1009,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/502/50210.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/502/50220.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/529/52910.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/529/52930.png'
+					]
 				}
 			]
 			let img = ''
