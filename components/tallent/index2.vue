@@ -183,7 +183,7 @@
 		</view>
 		<view class="zw" v-else></view>
 	</view>
-	<view class="tallentItem" v-if="heroId == 101 && !noflz">
+	<view class="tallentItem" v-if="(heroId == 101 || heroId == 1010) && !noflz">
 		<view class="item item1" :style="{opacity: dist > disList[0]? 0.5 : 1}" v-if="tallentShow" @click="dmxyzl(1)">
 			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/MonkeyKingDoubleAttack.png"></image>
 		</view>
@@ -633,6 +633,24 @@
 		</view>
 		<view class="zw" v-else></view>
 	</view>
+	<view class="tallentItem" v-if="heroId == 103 && !noflz">
+		<view class="item item1" :style="{opacity: dist > disList[0]? 0.5 : 1}" v-if="tallentShow" @click="dmxyzl(1)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/passive/Caitlyn_Headshot.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item2" :style="{opacity: dist > disList[1]? 0.5 : 1}" v-if="tallentShow2" @click="dmxyzl(2)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/CaitlynYordleTrap.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item3" :style="{opacity: dist > disList[2]? 0.5 : 1}" v-if="tallentShow3" @click="dmxyzl(3)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/CaitlynEntrapment.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+		<view class="item item4 bigTel" :style="{opacity: dist > disList[3]? 0.5 : 1}" v-if="tallentShow4" @click="dmxyzl(4)">
+			<image class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/CaitlynAceintheHole.png"></image>
+		</view>
+		<view class="zw" v-else></view>
+	</view>
 	</view>
 </template>
 
@@ -649,7 +667,7 @@ export default {
 	methods: {
 		dmxyzl(type){
 			if(type == 1){
-				if(this.dist <= this.disList[0]){
+				if(this.dist <= this.disList[0] && this.begin){
 					this.tallentShow = false
 				}else{
 					uni.showToast({
@@ -661,7 +679,7 @@ export default {
 				}
 			}
 			if(type == 2){
-				if(this.dist <= this.disList[1]){
+				if(this.dist <= this.disList[1] && this.begin){
 					this.tallentShow2 = false
 				}else{
 					uni.showToast({
@@ -673,7 +691,7 @@ export default {
 				}
 			}
 			if(type == 3){
-				if(this.dist <= this.disList[2]){
+				if(this.dist <= this.disList[2] && this.begin){
 					this.tallentShow3 = false
 				}else{
 					uni.showToast({
@@ -685,7 +703,7 @@ export default {
 				}
 			}
 			if(type == 4){
-				if(this.dist <= this.disList[3]){
+				if(this.dist <= this.disList[3] && this.begin){
 					this.tallentShow4 = false
 				}else{
 					uni.showToast({
@@ -707,6 +725,7 @@ export default {
 		name:String,
 		heroId: Number,
 		noflz: Boolean,
+		begin: Boolean,
 		disList: Array,
 		dist: Number
 	}

@@ -89,21 +89,37 @@ export default {
 			})
 		},
 		begin() {
-			let self = this
-			uni.showModal({
-				title: '提示',
-				content: '确定要挑战'+self.selBoss.name+'吗？',
-				success: function (r) {
-					if (r.confirm) {
-						uni.setStorageSync('sptBoss',JSON.stringify(self.selBoss))
-						uni.redirectTo({
-							url: "/pages/tianti/index"
-						})
-					} else if (r.cancel) {
-						
+				let storeList = JSON.parse(uni.getStorageSync('myStore'))
+				let hasnum = 0
+				storeList.forEach(item=>{
+					if(item.levelNum == this.selBoss.levelNum - 1){
+						hasnum += 1
 					}
+				})
+				if(hasnum>=2 || this.selBoss.levelNum < 4){
+					let self = this
+					uni.showModal({
+						title: '提示',
+						content: '确定要挑战'+self.selBoss.name+'吗？',
+						success: function (r) {
+							if (r.confirm) {
+								uni.setStorageSync('sptBoss',JSON.stringify(self.selBoss))
+								uni.redirectTo({
+									url: "/pages/tianti/index"
+								})
+							} else if (r.cancel) {
+								
+							}
+						}
+					});
+				}else{
+					uni.showToast({
+						title: '至少要拥有两个'+(this.selBoss.levelNum - 1)+'星的英雄，才可以挑战哦',
+						icon:'none',
+						duration: 2000
+					});
 				}
-			});
+			
 		},
 		playVoice() {
 			this.innerAudioContext = uni.createInnerAudioContext();

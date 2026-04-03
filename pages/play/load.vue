@@ -78,7 +78,8 @@ export default {
 			this.match = JSON.parse(uni.getStorageSync('sptBoss'))
 			this.myHero = JSON.parse(uni.getStorageSync('tiantiHero'))[0]
 		}
-		if(uni.getStorageSync('gameType') == 'paiwei' || uni.getStorageSync('gameType') == 'tianti'){
+		if(uni.getStorageSync('gameType') == 'paiwei' || uni.getStorageSync('gameType') == 'tianti'
+		 || uni.getStorageSync('gameType').indexOf('tanxian') != -1){
 			this.showVS = false
 		}
 	},
@@ -118,7 +119,7 @@ export default {
 		if(this.match.name == '杨贵妃') {
 			this.bgImg = 'load2.png'
 		}
-		if(this.match.name == '齐天大圣') {
+		if(this.match.name == '齐天大圣' || this.match.name == '狂暴孙悟空') {
 			this.bgImg = 'qtdsbg.jpg'
 		}
 		if(this.match.name == '扫地僧') {
@@ -296,14 +297,23 @@ export default {
 									time3.clearInterval()
 								},800)
 							}else{
-								setTimeout(()=>{
-									uni.redirectTo({
-										url: "/pages/play/landScap?item="+JSON.stringify(this.myHero)+'&en='+JSON.stringify(this.match)
-									})
-									time.clearInterval()
-									time2.clearInterval()
-									time3.clearInterval()
-								},800)
+								if(uni.getStorageSync('gameType').indexOf('tanxian') != -1){
+									setTimeout(()=>{
+										uni.redirectTo({
+											url: "/pages/play/tanxianLandScap?item="+JSON.stringify(this.myHero)
+										})
+									},800)
+								}else{
+									setTimeout(()=>{
+										uni.redirectTo({
+											url: "/pages/play/landScap?item="+JSON.stringify(this.myHero)+'&en='+JSON.stringify(this.match)
+										})
+										time.clearInterval()
+										time2.clearInterval()
+										time3.clearInterval()
+									},800)
+								}
+								
 							}
 						}else{
 							this.percent += 9

@@ -6,6 +6,7 @@
 			<view class="title">
 				<label>我的英雄</label>
 			</view>
+			<button size="mini" class="mypack" @click="mypack">背包</button>
 			<view class="sel">
 				<scroll-view scroll-y="true" class="scroll-Y">
 					<view class="roles">
@@ -259,6 +260,11 @@ export default {
 		back2() {
 			uni.redirectTo({
 				url: "/pages/index/index?isLogin=true"
+			})
+		},
+		mypack() {
+			uni.redirectTo({
+				url: "/pages/mypakeage/mypack"
 			})
 		},
 		addP(index) {
@@ -956,7 +962,25 @@ export default {
 						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/529/52910.png',
 						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/529/52930.png'
 					]
-				}
+				},
+				{
+					id: 1010,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/MonkeyKingDoubleAttack.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/MonkeyKingDecoy.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/MonkeyKingNimbus.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/MonkeyKingSpinToWin.png'
+					]
+				},
+				{
+					id: 103,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/passive/Caitlyn_Headshot.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/CaitlynYordleTrap.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/CaitlynEntrapment.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/CaitlynAceintheHole.png'
+					]
+				},
 			]
 			let img = ''
 			imgs.map(i=>{
@@ -1103,6 +1127,13 @@ export default {
 	.back {
 		position: absolute;
 		top: 60rpx;
+		width: 160rpx;
+		z-index: 99;
+	}
+	.mypack {
+		position: absolute;
+		top: 60rpx;
+		right: 30rpx;
 		width: 160rpx;
 		z-index: 99;
 	}

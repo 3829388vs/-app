@@ -116,9 +116,7 @@ export default {
 							});
 						}else{
 							self.myMoney = editMoney(-self.selItem.price)
-							if(!self.selItem.isOther){
-								self.selItem.buyTime = new Date().getTime()
-							}
+							self.selItem.buyTime = new Date().getTime()
 							let has = false
 							self.myStore.map((i,d)=>{
 								if(i.id == self.selItem.id && i.isOther){

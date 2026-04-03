@@ -2,12 +2,30 @@
     "data":[
 		{"id":101,"name":"齐天大圣","isOther":false,"buyTime":0,"details":"斗战胜佛-孙悟空（使用期限3天）","gj":80,"fs":0,"fy":79,"v":1,"bj":0,"distance": 75,"dis1": 100,"dis2": 2000,"dis3": 135,"dis4": 100,"blood":3500,"flz":900,"icon":"qtds.jpg","img":"","price":6300,"tallent":[{"name":"金刚不坏","text":"孙悟空随着等级的变化提升自己初始的防御力"},{"name":"粉碎打击","text":"造成物理伤害，并使敌方防御降低30%，持续3.5秒，若在分身状态下触发该技能，冷却时间减少1秒"},{"name":"分身术","text":"灵魂出窍，使敌方攻击不到你3~3.5秒，如果在出窍状态使用别的技能，则恢复原始状态。"},{"name":"腾云突击","text":"孙悟空腾云俯冲攻击敌人，1.2秒内敌人无法攻击他，并造成一定物理伤害，提升0.3s攻击速度持续3~4秒，如果在出窍状态下使用，则造成的伤害加重。"},{"name":"大闹天宫","text":"孙悟空大闹天宫，使敌方持续造成物理伤害。在此期间孙悟空的防御力提升50%"}]},
 		{"id":102,"name":"影流之主","isOther":false,"buyTime":0,"details":"均衡教派-影流之主 劫（使用期限3天）","gj":83,"fs":0,"fy":72,"v":1,"bj":0,"distance": 70,"dis1": 110,"dis2": 2000,"dis3": 75,"dis4": 160,"blood":3200,"flz":1000,"icon":"jie.jpg","img":"","price":6300,"tallent":[{"name":"灭魂劫","text":"敌方生命值低于50%，普通攻击伤害提升，持续5秒。"},{"name":"诸刃","text":"丢出一把匕首，造成物理伤害。"},{"name":"分身","text":"劫分出一个与自己技能释放相等的分身在地图上，分身持续4~5秒,再次点击可以和分身互换位置，攻击距离为分身的攻击距离加上自己的攻击距离,后续释放的所有技能都造成160%伤害。"},{"name":"鬼斩","text":"劫斩杀敌人，对敌人造成一定物理伤害。"},{"name":"瞬狱影杀阵","text":"劫分出一个分身留在当前位置，分身持续5~6秒，并突击敌方，该分身也可以模仿自己发动技能，造成自己技能的50%伤害，此分身技能命中概率75%。3.5秒后再给敌方造成爆发伤害，有50%概率造成吨级伤害。如对方生命值低于30%，伤害再增加"}]},
-		{"id":103,"name":"香炉护身","isOther":true,"icon":"3504.png","details":"英雄的防御力增加60点，需选择一个英雄。【仅限排位赛】。","price":300,"istool":1},
-		{"id":104,"name":"军团圣盾","isOther":true,"icon":"3105.png","details":"己方所有英雄的生命值增加600，防御力增加30，自动装备。【仅限排位赛】。","price":650,"istool":1},
-		{"id":105,"name":"舒瑞娅的战歌","isOther":true,"icon":"222065.png","details":"己方所有英雄的攻击速度提升0.1，攻击力提升30，法术强度提升35，自动装备。【仅限排位赛】。","price":500,"istool":1},
-		{"id":106,"name":"米凯尔的祝福","isOther":true,"icon":"223222.png","details":"需与一个英雄绑定，该参战的英雄每个回合可以获得1000生命值，不参战则不能获得生命值，直到其阵亡。【仅限排位赛】","price":500,"istool":1},
-		{"id":107,"name":"铁索","isOther":true,"icon":"4015.png","details":"需选择一个敌方英雄，该敌方英雄攻击速度降低0.2【仅限排位赛】。","price":300,"istool":1},
-		{"id":108,"name":"黎明核心","isOther":true,"icon":"6621.png","details":"黎明的胜利！如果己方仅剩一位英雄，则英雄的生命值增加1500，攻击力增加30，法术强度增加35，【仅限排位赛】。","price":550,"istool":1}
-	
+		{"id":103,"name":"女警","isOther":false,"buyTime":0,"details":"社会治安-女警（使用期限3天）","gj":80,"fs":0,"fy":68,"v":1,"bj":0.1,"distance": 130,"dis1": 2000,"dis2": 2000,"dis3": 2000,"dis4": 2000,"blood":3200,"flz":1000,"icon":"nj.jpg","img":"","price":6300,"tallent":[{"name":"爆头","text":"每积攒3次普通攻击,就会给敌人爆头,普通攻击附加攻击力x2倍伤害。"},{"name":"和平子弹","text":"发出一枚子弹,给敌人造成物理伤害。"},{"name":"诱捕器","text":"放置一个诱捕器在地图上，敌人踩到会禁锢2~4秒,并造成物理伤害。"},{"name":"绳网","text":"女警用绳网捕获敌人,命中的敌人减速3~5秒,并造成物理伤害,自己由于后坐力会退后80~120码。"},{"name":"瞄准！击落","text":"女警用2.5秒来瞄准远处的敌方英雄，期间自己无法释放其他技能，瞄准完毕后射出大口径子弹，子弹会命中敌人，造成物理伤害，并降低敌方30%~50%的防御力，持续3~5秒。"}]},
+		{"id":104,"name":"香炉护身","isOther":true,"icon":"3504.png","details":"英雄的防御力增加60点，需选择一个英雄。【仅限排位赛】。","price":300,"istool":1},
+		{"id":105,"name":"军团圣盾","isOther":true,"icon":"3105.png","details":"己方所有英雄的生命值增加600，防御力增加30，自动装备。【仅限排位赛】。","price":650,"istool":1},
+		{"id":106,"name":"舒瑞娅的战歌","isOther":true,"icon":"222065.png","details":"己方所有英雄的攻击速度提升0.1，攻击力提升30，法术强度提升35，自动装备。【仅限排位赛】。","price":500,"istool":1},
+		{"id":107,"name":"米凯尔的祝福","isOther":true,"icon":"223222.png","details":"需与一个英雄绑定，该参战的英雄每个回合可以获得1000生命值，不参战则不能获得生命值，直到其阵亡。【仅限排位赛】","price":500,"istool":1},
+		{"id":108,"name":"铁索","isOther":true,"icon":"4015.png","details":"需选择一个敌方英雄，该敌方英雄攻击速度降低0.2【仅限排位赛】。","price":300,"istool":1},
+		{"id":109,"name":"黎明核心","isOther":true,"icon":"6621.png","details":"黎明的胜利！如果己方仅剩一位英雄，则英雄的生命值增加1500，攻击力增加30，法术强度增加35，【仅限排位赛】。","price":550,"istool":1},
+		{"id":110,"name":"圣旨","isOther":true,"icon":"shengzhi.png","details":"减少探险模式敌人出现的概率，探险模式没有成功撤退则失去此物品。","price":5000,"istool":1},
+		{"id":111,"name":"探险钥匙","isOther":true,"icon":"yaoshi.png","details":"探险钥匙，可以打开探险模式的最后一道门—轮回之地。","price":5998,"istool":1},
+		{"id":112,"name":"圣灵羽翼","isOther":true,"icon":"shenglingyuyi.png","details":"圣灵羽翼，装备后可提升移动速度38%，防御力提升25","fy":25,"speed":0.38,"price":25000,"istool":0},
+		{"id":113,"name":"机甲羽翼","isOther":true,"icon":"jijiayy.png","details":"机甲羽翼，装备后可提升移动速度33%，防御力提升15","fy":15,"speed":0.33,"price":18000,"istool":0},
+		{"id":114,"name":"恶魔羽翼","isOther":true,"icon":"emoyy.png","details":"恶魔羽翼，装备后可提升移动速度28%，防御力提升45","fy":45,"speed":0.28,"price":18000,"istool":0},
+		{"id":115,"name":"金龙像框","isOther":true,"icon":"jinlongCircle.png","details":"金龙像框","price":3000,"istool":0},
+		{"id":116,"name":"传奇像框","isOther":true,"icon":"chuanqiCircle.png","details":"传奇像框","price":3000,"istool":0},
+		{"id":117,"name":"凤凰像框","isOther":true,"icon":"fenghuangCircle.png","details":"凤凰像框","price":5000,"istool":0},
+		{"id":118,"name":"游龙像框","isOther":true,"icon":"youlongCircle.png","details":"游龙像框","price":3500,"istool":0},
+		{"id":119,"name":"圣诞像框","isOther":true,"icon":"shengdanCircle.png","details":"圣诞像框","price":5000,"istool":0},
+		{"id":120,"name":"花仙像框","isOther":true,"icon":"huaxianCircle.png","details":"花仙像框","price":3000,"istool":0},
+		{"id":121,"name":"枫林像框","isOther":true,"icon":"fenglinCircle.png","details":"枫林像框","price":5000,"istool":0},
+		{"id":122,"name":"冬至狂欢像框","isOther":true,"icon":"dongzhiCircle.png","details":"冬至狂欢像框","price":5000,"istool":0},
+		{"id":123,"name":"金凤凰像框","isOther":true,"icon":"jinfenghuangCircle.png","details":"金凤凰像框","price":5000,"istool":0},
+		{"id":124,"name":"宇宙像框","isOther":true,"icon":"yuzhouCircle.png","details":"宇宙像框","price":5000,"istool":0},
+		{"id":125,"name":"幻仙像框","isOther":true,"icon":"huanxianCircle.png","details":"幻仙像框","price":5000,"istool":0},
+		{"id":126,"name":"太阳之子像框","isOther":true,"icon":"taiyangzhiziCircle.png","details":"太阳之子像框","price":5000,"istool":0},
+		{"id":127,"name":"恶魔像框","isOther":true,"icon":"emoCircle.png","details":"恶魔像框","price":7000,"istool":0}
 	]
 }

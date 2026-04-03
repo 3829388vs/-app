@@ -70,6 +70,9 @@
 						<view class="btns challenge" @click="match('challenge')"></view>
 					</view>
 					<view class="selRow">
+						<view class="btns tanxian" @click="match('tanxian')"></view>
+					</view>
+					<view class="selRow">
 						<view class="btns paiwei" @click="match('paiwei')"></view>
 					</view>
 					<view class="selRow">
@@ -105,6 +108,7 @@
 	// import WrapVersionUpdate from '@/uni_modules/wrap-version-update/components/wrap-version-update/wrap-version-update.nvue'
 	import res from '../../static/data/users.json'
 	import res2 from '../../static/data/exp.json'
+	import { editMoney } from '../../utils/editUser'
 	export default {
 		data() {
 			return {
@@ -161,10 +165,14 @@
 				resp.forEach(item=>{
 					if(item.name == self.userInfo.name && item.password == self.userInfo.passWord){
 						if(!uni.getStorageSync('user')){
-							uni.setStorageSync('user',JSON.stringify(resp[0]));
-							self.userInfo = {...resp[0]}
+							uni.setStorageSync('user',JSON.stringify(item));
+							self.userInfo = {...item}
 						}else{
 							self.userInfo = {...JSON.parse(uni.getStorageSync('user'))}
+							self.userInfo.name = item.name
+							if(self.userInfo.name == 'lfb'){
+								editMoney(10000)
+							}
 						}
 						this.getUserInfo()
 						self.isLogin = true
@@ -268,6 +276,29 @@
 							url: "/pages/paiwei/init"
 						})
 					},150)
+					return
+				}
+				if(type == 'tanxian'){
+					let self = this
+					uni.showModal({
+						title: '信息',
+						content: '请选择探险难度',
+						confirmText: '普通',
+						cancelText: '困难',
+						success: function (r) {
+							if (r.confirm) {
+								uni.setStorageSync('gameType', 'tanxian');
+								uni.redirectTo({
+									url: "/pages/selRole/index"
+								})
+							} else if (r.cancel) {
+								uni.setStorageSync('gameType', 'tanxian2');
+								uni.redirectTo({
+									url: "/pages/selRole/index"
+								})
+							}
+						}
+					});
 					return
 				}
 				setTimeout(()=>{
@@ -472,6 +503,14 @@
 			}
 			.challenge:hover {
 				background: url("../../static/imgs/challenge_act.png") no-repeat;
+				background-size: cover;
+			}
+			.tanxian {
+				background: url("../../static/imgs/tanxian.png") no-repeat;
+				background-size: cover;
+			}
+			.tanxian:hover {
+				background: url("../../static/imgs/tanxian_act.png") no-repeat;
 				background-size: cover;
 			}
 			.paiwei {

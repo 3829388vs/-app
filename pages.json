@@ -34,6 +34,14 @@
 		    }
 		},
 		{
+		    "path" : "pages/play/tanxianLandScap",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
 		    "path" : "pages/play/load",
 		    "style" :                                                                                    
 		    {
@@ -115,6 +123,14 @@
 		},
 		{
 		    "path" : "pages/mypakeage/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/mypakeage/mypack",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",

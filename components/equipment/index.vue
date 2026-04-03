@@ -68,6 +68,7 @@ export default {
 			data: {},
 			myEquip: [],
 			toolList: [],
+			tanxianPack: [],
 			money: 0,
 			selType: '全部',
 			needSoult: false
@@ -147,7 +148,24 @@ export default {
 		},
 		getEquipment() {
 			const self = this
+			if(!uni.getStorageSync('tanxianPack')){
+				uni.setStorageSync('tanxianPack',JSON.stringify([]))
+			}else{
+				self.tanxianPack = JSON.parse(uni.getStorageSync('tanxianPack'))
+			}
 			let resp = [...res.data]
+			self.tanxianPack.forEach(item=>{
+				item.icon = '../../static/imgs/mapObjs/'+item.img
+				item.price = 0
+				item.mk = 0
+				item.blood = 0
+				item.gs = 0
+				item.bj = 0
+				item.istool = 0
+				if(item.gj || item.flz || item.fs || item.fy){
+					resp.push(item)
+				}
+			})
 			self.list = resp.slice()
 			self.list2 = resp.slice()
 			// uniCloud.callFunction({
@@ -219,11 +237,11 @@ export default {
 										});
 										return
 									}
-									if(l.length > 2 && (item.gj != 0 || item.fs != 0)){
+									if(l.length > 2 && (item.gj > 25 || item.fs > 30)){
 										uni.showToast({
-											title: '进攻性装备不能超过3件',
+											title: '强进攻性的装备不能超过3件，但可买攻击力小于等于25，法术小于等于30的装备',
 											icon:'none',
-											duration: 2000
+											duration: 3000
 										});
 										return
 									}else{
