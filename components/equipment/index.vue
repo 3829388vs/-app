@@ -161,8 +161,8 @@ export default {
 				item.blood = 0
 				item.gs = 0
 				item.bj = 0
-				item.istool = 0
-				if(item.gj || item.flz || item.fs || item.fy){
+				if(!item.istool)item.istool = 0
+				if(item.gj || item.flz || item.fs || item.fy || item.speed){
 					resp.push(item)
 				}
 			})
@@ -237,17 +237,8 @@ export default {
 										});
 										return
 									}
-									if(l.length > 2 && (item.gj > 25 || item.fs > 30)){
-										uni.showToast({
-											title: '强进攻性的装备不能超过3件，但可买攻击力小于等于25，法术小于等于30的装备',
-											icon:'none',
-											duration: 3000
-										});
-										return
-									}else{
-										self.myEquip.push(item)
-										self.money -= item.price
-									}
+									self.myEquip.push(item)
+									self.money -= item.price
 								}else{
 									uni.showToast({
 										title: '该装备已存在，请另选',
@@ -258,9 +249,9 @@ export default {
 								}
 								
 							}else{
-								if(self.tools.length >= 4 || self.toolList.length >= 2){
+								if(self.tools.length >= 9 || self.toolList.length >= 9){
 									uni.showToast({
-										title: '道具上限4件',
+										title: '道具上限9件',
 										icon:'none',
 										duration: 2000
 									});

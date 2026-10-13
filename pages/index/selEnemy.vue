@@ -8,7 +8,7 @@
 				<view class="roles">
 					<view class="item" v-for="item in heroList" :key="item.id">
 						<view class="left" @click="sel(item)">
-							<image class="icon" :src="'../../static/imgs/'+item.icon"></image>
+							<image :class="{'icon':true, 'betBoss': item.money >= 10000}" :src="'../../static/imgs/'+item.icon"></image>
 							<view class="heroName">{{ item.name }}</view>
 							<view class="heroName">
 								<image style="width: 32rpx;height: 32rpx;" src="../../static/imgs/core.png"></image>
@@ -207,6 +207,9 @@ export default {
 					padding-top: 12rpx;
 					color: $main-color;
 				}
+			}
+			.betBoss {
+				box-shadow: 0rpx 0rpx 22rpx 12rpx #ff3410;
 			}
 		}
 		.roleInfo {

@@ -1,5 +1,8 @@
 <template>
-	<view class="container" :style="{'background': 'url('+require('../../static/imgs/'+bgImg)+')','background-size': 'cover','background-repeat':'no-repeat'}">
+	<view>
+		<video v-show="showVideo" id="myVideo" class="video" @play="onVideoPlay" :src="videoUrl" :controls="false" :autoplay="true" @ended="loading"></video>
+	</view>
+	<!-- <view class="container" :style="{'background': 'url('+require('../../static/imgs/'+bgImg)+')','background-size': 'cover','background-repeat':'no-repeat'}">
 		<view class="vsInfo" v-if="showVS">
 			<view class="enemyInfo">
 				<view>
@@ -26,7 +29,7 @@
 		<view class="loadText">
 			<label>资源加载中...{{percent}}%</label>
 		</view>
-	</view>
+	</view> -->
 </template>
 
 <script>
@@ -46,23 +49,25 @@ export default {
 			type: '',
 			enmList: [],
 			match: {},
-			showVS: true
+			showVS: true,
+			videoUrl: '',
+			strongId: null,
+			showVideo: true
 		}
 	},
 	mounted() {
-		this.loading()
 		let type = uni.getStorageSync('gameType')
-		if(type == 'match') {
+		if(type == 'match' || type == 'spMatch') {
 			this.type = '匹配模式'
 			this.getEnmList()
 		}
-		if(type == 'fuben') {
+		if(type.indexOf('fuben') != -1) {
 			this.type = '副本模式'
 		}
 		if(type == 'tianti') {
 			this.type = '天梯模式'
 		}
-		if(type == 'shijiebei') {
+		if(type.indexOf('shijiebei')!=-1) {
 			this.type = '世界杯'
 			this.getWorldcupEnmList()
 		}
@@ -70,7 +75,7 @@ export default {
 			this.type = '无限战争'
 			this.getWxEnmList()
 		}
-		if(type == 'jinbiao') {
+		if(type.indexOf('jinbiao') != -1) {
 			this.type = '锦标赛模式'
 			this.getJBEnmList()
 		}
@@ -78,7 +83,7 @@ export default {
 			this.match = JSON.parse(uni.getStorageSync('sptBoss'))
 			this.myHero = JSON.parse(uni.getStorageSync('tiantiHero'))[0]
 		}
-		if(uni.getStorageSync('gameType') == 'paiwei' || uni.getStorageSync('gameType') == 'tianti'
+		if(uni.getStorageSync('gameType').indexOf('paiwei') != -1 || uni.getStorageSync('gameType') == 'tianti'
 		 || uni.getStorageSync('gameType').indexOf('tanxian') != -1){
 			this.showVS = false
 		}
@@ -131,22 +136,22 @@ export default {
 		if(this.match.name == '湫') {
 			this.bgImg = 'qiu.jpg'
 		}
-		if(uni.getStorageSync('gameType') == 'spt'){
-			if(JSON.parse(uni.getStorageSync('sptBoss')).name == '百花仙子') {
-				this.bgImg = 'bhgzbg.jpg'
-			}
-			if(JSON.parse(uni.getStorageSync('sptBoss')).name == '不朽战神') {
-				this.bgImg = 'bxzsbg.jpg'
-			}
-			if(JSON.parse(uni.getStorageSync('sptBoss')).name == '二郎真君-杨戬') {
-				this.bgImg = 'elzjbg.jpg'
-			}
-		}
+		// if(uni.getStorageSync('gameType') == 'spt'){
+		// 	if(JSON.parse(uni.getStorageSync('sptBoss')).name == '百花仙子') {
+		// 		this.bgImg = 'bhgzbg.jpg'
+		// 	}
+		// 	if(JSON.parse(uni.getStorageSync('sptBoss')).name == '不朽战神') {
+		// 		this.bgImg = 'bxzsbg.jpg'
+		// 	}
+		// 	if(JSON.parse(uni.getStorageSync('sptBoss')).name == '二郎真君-杨戬') {
+		// 		this.bgImg = 'elzjbg.jpg'
+		// 	}
+		// }
 	},
 	onLoad(option) {
 		if(option){
 			this.myHero = JSON.parse(option.item)
-			if(uni.getStorageSync('gameType') == 'fuben' || uni.getStorageSync('gameType') == 'paiwei') {
+			if(uni.getStorageSync('gameType').indexOf('fuben') != -1 || uni.getStorageSync('gameType').indexOf('paiwei') != -1) {
 				this.match = JSON.parse(option.enemy)
 			}
 			let data = JSON.parse(uni.getStorageSync('heroAddData'))
@@ -157,11 +162,17 @@ export default {
 							if(i.id == it.id && it.strongIndex == i.index){
 								this.myHero.icon = i.icon
 								this.myHero.name = i.name
+								this.strongId = i.id+'_'+it.strongIndex
 							}
 						})
 					}
 				}
 			})
+			if(this.strongId){
+				this.videoUrl = '../../static/imgs/hero/'+this.strongId + '.mp4'
+			}else{
+				this.videoUrl = '../../static/imgs/hero/'+this.myHero.id + '.mp4'
+			}
 		}
 	},
 	methods: {
@@ -263,66 +274,125 @@ export default {
 			// })
 		},
 		loading() {
-			let time = null
-			let time2 = null
-			let time3 = null
-			let inttime = 380
-			let inttime2 = 280
-			if(this.percent < 100){
-				if(uni.getStorageSync('gameType') == 'paiwei'){
-					inttime = 150
-					inttime2 = 120
+			setTimeout(()=>{
+				const videoContext = uni.createVideoContext('myVideo');
+				videoContext.exitFullScreen();
+				this.showVideo = false
+				if(this.type == '天梯模式' || uni.getStorageSync('gameType') == 'spt'){
+					setTimeout(()=>{
+						uni.redirectTo({
+							url: "/pages/tianti/tiantiLandScap"
+						})
+					},800)
+				}else{
+					if(uni.getStorageSync('gameType').indexOf('tanxian') != -1){
+						setTimeout(()=>{
+							uni.redirectTo({
+								url: "/pages/play/tanxianLandScap?item="+JSON.stringify(this.myHero)
+							})
+						},800)
+					}else{
+						setTimeout(()=>{
+							uni.redirectTo({
+								url: "/pages/play/landScap?item="+JSON.stringify(this.myHero)+'&en='+JSON.stringify(this.match)
+							})
+						},800)
+					}
 				}
-				time = setInterval(()=>{
-					if(this.percent < 18){
-						this.percent += 1
-					}
-				},100)
-				time2 = setInterval(()=>{
-					if(this.percent >= 18 && this.percent <= 50){
-						this.percent += 4
-					}
-				},inttime2)
-				time3 = setInterval(()=>{
-					if(this.percent >= 50 && this.percent < 100){
-						if(this.percent+9 > 100){
-							this.percent = 100
-							if(this.type == '天梯模式' || uni.getStorageSync('gameType') == 'spt'){
-								setTimeout(()=>{
-									uni.redirectTo({
-										url: "/pages/tianti/tiantiLandScap"
-									})
-									time.clearInterval()
-									time2.clearInterval()
-									time3.clearInterval()
-								},800)
-							}else{
-								if(uni.getStorageSync('gameType').indexOf('tanxian') != -1){
-									setTimeout(()=>{
-										uni.redirectTo({
-											url: "/pages/play/tanxianLandScap?item="+JSON.stringify(this.myHero)
-										})
-									},800)
-								}else{
-									setTimeout(()=>{
-										uni.redirectTo({
-											url: "/pages/play/landScap?item="+JSON.stringify(this.myHero)+'&en='+JSON.stringify(this.match)
-										})
-										time.clearInterval()
-										time2.clearInterval()
-										time3.clearInterval()
-									},800)
-								}
+			},600)
+		},
+		onVideoPlay() {
+			this.showVideo = true
+			// 使用 $nextTick 确保视频组件已渲染
+			// this.$nextTick(() => {
+			// 	const videoContext = uni.createVideoContext('myVideo');
+			// 	videoContext.requestFullScreen();
+			// });
+			this.playVoice('../../static/sounds/'+this.myHero.id+'-voice.mp3',true,5000)
+		},
+		playVoice(url,type,time) {
+			this.innerAudioContext = uni.createInnerAudioContext();
+			this.innerAudioContext.sessionCategory = 'ambient'
+			this.innerAudioContext.volume = 0.6
+			this.innerAudioContext.src = url
+			this.innerAudioContext.play()
+			setTimeout(()=>{
+				if (this.innerAudioContext) {
+				  try {
+					this.innerAudioContext.pause();
+					this.innerAudioContext.destroy()
+					this.innerAudioContext = null
+				  } catch (e) {
+					//TODO handle the exception
+				  }
+				}
+			},time)
+		},
+		// loading() {
+		// 	let time = null
+		// 	let time2 = null
+		// 	let time3 = null
+		// 	let inttime = 380
+		// 	let inttime2 = 280
+		// 	if(this.percent < 100){
+		// 		if(uni.getStorageSync('gameType') == 'paiwei'){
+		// 			inttime = 150
+		// 			inttime2 = 120
+		// 		}
+		// 		time = setInterval(()=>{
+		// 			if(this.percent < 18){
+		// 				this.percent += 1
+		// 			}
+		// 		},100)
+		// 		time2 = setInterval(()=>{
+		// 			if(this.percent >= 18 && this.percent <= 50){
+		// 				this.percent += 4
+		// 			}
+		// 		},inttime2)
+		// 		time3 = setInterval(()=>{
+		// 			if(this.percent >= 50 && this.percent < 100){
+		// 				if(this.percent+9 > 100){
+		// 					this.percent = 100
+		// 					if(this.type == '天梯模式' || uni.getStorageSync('gameType') == 'spt'){
+		// 						setTimeout(()=>{
+		// 							uni.redirectTo({
+		// 								url: "/pages/tianti/tiantiLandScap"
+		// 							})
+		// 							time.clearInterval()
+		// 							time2.clearInterval()
+		// 							time3.clearInterval()
+		// 						},800)
+		// 					}else{
+		// 						if(uni.getStorageSync('gameType').indexOf('tanxian') != -1){
+		// 							setTimeout(()=>{
+		// 								uni.redirectTo({
+		// 									url: "/pages/play/tanxianLandScap?item="+JSON.stringify(this.myHero)
+		// 								})
+		// 							},800)
+		// 						}else{
+		// 							setTimeout(()=>{
+		// 								uni.redirectTo({
+		// 									url: "/pages/play/landScap?item="+JSON.stringify(this.myHero)+'&en='+JSON.stringify(this.match)
+		// 								})
+		// 								time.clearInterval()
+		// 								time2.clearInterval()
+		// 								time3.clearInterval()
+		// 							},800)
+		// 						}
 								
-							}
-						}else{
-							this.percent += 9
-						}
-					}
-				},inttime)
-			}
+		// 					}
+		// 				}else{
+		// 					this.percent += 9
+		// 				}
+		// 			}
+		// 		},inttime)
+		// 	}
 			
-		}
+		// }
+	},
+	onUnload() {
+		if(this.innerAudioContext)this.innerAudioContext.destroy()
+		this.innerAudioContext = null
 	}
 }
 </script>
@@ -397,7 +467,20 @@ export default {
 			}
 		}
 	}
+
 }
+	.video{
+		width: 100%;
+		height: 100vh;
+	}
+	.go {
+		position: absolute;
+		top: 95%;
+		right: 30rpx;
+		color: #f1f1f1;
+		font-size: 36rpx;
+		z-index: 999;
+	}
 body {
 	overflow: hidden;
 }

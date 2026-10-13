@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="container" :style="{'background': 'url('+bgImg+') no-repeat'}">
 		<view class="enemyList">
 			<view class="role">
 				<view v-if="enemy[0]" :class="{'roleFrame':true,'seled': selAct}" style="color:#95111e" @click="selEnemy(1)">
@@ -146,7 +146,8 @@ export default {
 			enemyInfo: {},
 			hero: {},
 			myTool: [],
-			storeList: []
+			storeList: [],
+			bgImg: '../../static/imgs/tianti2.jpg'
 		}
 	},
 	onLoad(option) {
@@ -410,38 +411,43 @@ export default {
 			this.showBtn = false
 		},
 		enemyStrong() {
-			let datas = JSON.parse(uni.getStorageSync('heroAddData'))
-			let allPointer = 0
-			this.heros.forEach(i=>{
-				datas.forEach((it,idx)=>{
-					if(i.id == it.id){
-						allPointer += it.allPointer
-					}
-				})
-			})
+			// let datas = JSON.parse(uni.getStorageSync('heroAddData'))
+			// let allPointer = 0
+			// this.heros.forEach(i=>{
+			// 	datas.forEach((it,idx)=>{
+			// 		if(i.id == it.id){
+			// 			allPointer += it.allPointer
+			// 		}
+			// 	})
+			// })
 			//计算平均英雄等级
-			let level = Math.ceil(parseInt(allPointer/6)/500)
-			this.enemy.forEach(item=>{
-				if(level>=25){
-					item.blood = parseInt(item.blood + this.randomNum(level*50,parseInt(item.blood*0.1) + level*90))
-				}else if(level>=20 && level<25){
-					item.blood = parseInt(item.blood + this.randomNum(level*45,parseInt(item.blood*0.1) + level*75))
-				}else if(level>=15 && level<20){
-					item.blood = parseInt(item.blood + this.randomNum(level*30,parseInt(item.blood*0.06) + level*65))
-				}else if(level>=7 && level<15){
-					item.blood = parseInt(item.blood + this.randomNum(level*20,parseInt(item.blood*0.06) + level*45))
-				}else{
-					item.blood = parseInt(item.blood + this.randomNum(level*15,parseInt(item.blood*0.06) + level*35))
-				}
-				this.blood1 = item.blood
-				item.gj = item.gj + this.randomNum(level,level+parseInt(item.gj*(level*0.006)))
-				item.fy = item.fy + this.randomNum(level,level+parseInt(item.fy*(level*0.005)))
-				item.mk = item.mk + this.randomNum(level,level+parseInt(item.mk*(level*0.005)))
-			})
+			// let level = Math.ceil(parseInt(allPointer/6)/500)
+			// this.enemy.forEach(item=>{
+			// 	if(level>=25){
+			// 		item.blood = parseInt(item.blood + this.randomNum(level*50,parseInt(item.blood*0.1) + level*90))
+			// 	}else if(level>=20 && level<25){
+			// 		item.blood = parseInt(item.blood + this.randomNum(level*45,parseInt(item.blood*0.1) + level*75))
+			// 	}else if(level>=15 && level<20){
+			// 		item.blood = parseInt(item.blood + this.randomNum(level*30,parseInt(item.blood*0.06) + level*65))
+			// 	}else if(level>=7 && level<15){
+			// 		item.blood = parseInt(item.blood + this.randomNum(level*20,parseInt(item.blood*0.06) + level*45))
+			// 	}else{
+			// 		item.blood = parseInt(item.blood + this.randomNum(level*15,parseInt(item.blood*0.06) + level*35))
+			// 	}
+			// 	this.blood1 = item.blood
+			// 	item.gj = item.gj + this.randomNum(level,level+parseInt(item.gj*(level*0.006)))
+			// 	item.fy = item.fy + this.randomNum(level,level+parseInt(item.fy*(level*0.005)))
+			// 	item.mk = item.mk + this.randomNum(level,level+parseInt(item.mk*(level*0.005)))
+			// })
 		},
 		getEnemyList() {
 			let userInfo = JSON.parse(uni.getStorageSync('user'))
 			let chaLi = []
+			if(parseInt(userInfo.pwlv) > 7){
+				this.bgImg = '../../static/imgs/dianfeng.jpg'
+			}else{
+				this.bgImg = '../../static/imgs/tianti2.jpg'
+			}
 			res.data.forEach(item=>{
 				if(parseInt(userInfo.pwlv) >= 3){
 					if(parseInt(userInfo.pwlv) >= 3 && parseInt(userInfo.pwlv) < 5){
@@ -464,8 +470,8 @@ export default {
 				if(!item.isOther){
 					let ite = {...item}
 					ite.gj = parseInt(ite.gj*1.5)
-					ite.fy = parseInt(ite.fy*1.7)
-					ite.blood = parseInt(ite.blood*1.5)
+					ite.fy = parseInt(ite.fy*1.5)
+					ite.blood = parseInt(ite.blood*1.3)
 					ite.gs = ite.v
 					ite.mk = ite.fy
 					ite.icon = 'hero/' + ite.icon
@@ -569,6 +575,24 @@ export default {
 					this.level = 35
 				}
 			}
+			if(parseInt(userInfo.pwlv) == 7){
+				this.minLevel = 33
+				this.level = 41
+
+				if(parseInt(userInfo.pwE) == 3 || parseInt(userInfo.pwE) == 4){
+					this.minLevel = 36
+					this.level = 41
+				}
+			}
+			if(parseInt(userInfo.pwlv) == 8){
+				this.minLevel = 37
+				this.level = 47
+			
+				if(parseInt(userInfo.pwE) == 3 || parseInt(userInfo.pwE) == 4){
+					this.minLevel = 41
+					this.level = 47
+				}
+			}
 			this.minLevel = this.minLevel
 			this.level = this.level
 			list3.forEach(item=>{
@@ -582,19 +606,31 @@ export default {
 					item.blood += Math.floor(parseInt(item.blood)*0.04*lv)
 				}else if(item.lv >= 10 && item.lv < 20){
 					item.gj += Math.floor(parseInt(item.gj)*0.03*lv)
-					item.fy += Math.floor(parseInt(item.fy)*0.04*lv)
-					item.mk += Math.floor(parseInt(item.mk)*0.04*lv)
+					item.fy += Math.floor(parseInt(item.fy)*0.02*lv)
+					item.mk += Math.floor(parseInt(item.mk)*0.02*lv)
 					item.gs = parseFloat(parseFloat(item.gs) - parseFloat(0.006*lv)).toFixed(2);
 					item.blood += Math.floor(parseInt(item.blood)*0.05*lv)
-				}else if(item.lv >= 20){
+				}else if(item.lv >= 20 && item.lv < 30){
 					item.gj += Math.floor(parseInt(item.gj)*0.04*lv)
-					item.fy += Math.floor(parseInt(item.fy)*0.05*lv)
-					item.mk += Math.floor(parseInt(item.mk)*0.05*lv)
+					item.fy += Math.floor(parseInt(item.fy)*0.016*lv)
+					item.mk += Math.floor(parseInt(item.mk)*0.016*lv)
 					item.gs = parseFloat(parseFloat(item.gs) - parseFloat(0.01*lv)).toFixed(2);
-					item.blood += Math.floor(parseInt(item.blood)*0.05*lv)
+					item.blood += Math.floor(parseInt(item.blood)*0.04*lv)
+				}else if(item.lv >= 30 && item.lv < 40){
+					item.gj += Math.floor(parseInt(item.gj)*0.04*lv)
+					item.fy += Math.floor(parseInt(item.fy)*0.016*lv)
+					item.mk += Math.floor(parseInt(item.mk)*0.016*lv)
+					item.gs = parseFloat(parseFloat(item.gs) - parseFloat(0.01*lv)).toFixed(2);
+					item.blood += Math.floor(parseInt(item.blood)*0.04*lv)
+				}else if(item.lv >= 40){
+					item.gj += Math.floor(parseInt(item.gj)*0.042*lv)
+					item.fy += Math.floor(parseInt(item.fy)*0.018*lv)
+					item.mk += Math.floor(parseInt(item.mk)*0.018*lv)
+					item.gs = parseFloat(parseFloat(item.gs) - parseFloat(0.01*lv)).toFixed(2);
+					item.blood += Math.floor(parseInt(item.blood)*0.046*lv)
 				}
-				if(item.blood > 12000) {
-					item.blood = 12000
+				if(item.blood > 13500) {
+					item.blood = 13500
 				}
 			})
 			this.enemy = [...list3]
@@ -644,8 +680,10 @@ export default {
 			if(parseInt(userInfo.pwE) < 5 && type == 1){
 				userInfo.pwE = parseInt(userInfo.pwE) + 1
 			}else if(parseInt(userInfo.pwE) >= 5 && type == 1){
-				userInfo.pwlv = parseInt(userInfo.pwlv) + 1
-				userInfo.pwE = 0
+				if(parseInt(userInfo.pwlv) < 8){
+					userInfo.pwlv = parseInt(userInfo.pwlv) + 1
+					userInfo.pwE = 0
+				}
 			}else if(type == 0){
 				if(parseInt(userInfo.pwE) <= 0){
 					if(parseInt(userInfo.pwlv) > 1){
@@ -806,9 +844,9 @@ export default {
 				}
 				if(i.name == '黎明核心'){
 					if(this.heros.length == 1){
-						this.hero.gj = this.hero.gj + 30
-						this.hero.fs = this.hero.fs + 35
-						this.hero.blood = parseInt(this.hero.blood) + 1500
+						this.hero.gj = this.hero.gj + 70
+						this.hero.fs = this.hero.fs + 95
+						this.hero.blood = parseInt(this.hero.blood) + 3000
 					}
 				}
 			})
@@ -924,7 +962,7 @@ export default {
 		height: 100vh;
 		background-size: cover;
 		background-repeat: no-repeat;
-		background: url('../../static/imgs/tianti2.jpg');
+		background: url('../../static/imgs/tianti2.jpg') no-repeat;
 		box-sizing: border-box;
 		text-align: center;
 		font-size: 42rpx;

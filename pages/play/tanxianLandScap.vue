@@ -1,9 +1,20 @@
 <template>
 	<!-- <view class="container" :style="{'background-image': 'url('+require('../../static/imgs/hero/'+bgImg)+')','background-size': 'cover','background-repeat':'no-repeat'}"> -->
-	<view class="container" @tap="handleTap">
+	<view class="container">
 		<audio id="audio1" autoplay="true">
 			<source src="../../static/sounds/bgMp3.wav">
 		</audio>
+		<view
+			class="joystick"
+			id="joystick"
+			@touchstart="onJoyStart"
+			@touchmove.stop.prevent="onJoyMove"
+			@touchend="onJoyEnd"
+			@touchcancel="onJoyEnd"
+		>
+			<view class="joy-ring"></view>
+			<view class="joy-stick" :style="stickStyle"></view>
+		</view>
 		<view class="openbox" v-if="showOpenbox">
 			<image class="openboxImg" src="../../static/imgs/mapObjs/open.gif"></image>
 			<div class="toolImgs" v-if="!showLoad">
@@ -54,12 +65,12 @@
 						 :textInside="true" :strokeWidth="8"></ai-progress>
 					</view>
 				</view>
-				<view class="direct">
+			<!-- 	<view class="direct">
 					<image class="left" src="../../static/imgs/left2.png" @click.stop="go(1)" @longtap="go(5)"></image>
 					<image class="right" src="../../static/imgs/right2.png" @click.stop="go(2)" @longtap="go(6)"></image>
 					<image class="top" src="../../static/imgs/top.png" @click.stop="go(3)" @longtap="go(7)"></image>
 					<image class="down" src="../../static/imgs/down.png" @click.stop="go(4)" @longtap="go(8)"></image>
-				</view>
+				</view> -->
 				<!-- 地图物体 -->
 					<image 
 						v-if="mapObjects.length != 0"
@@ -121,7 +132,6 @@
 					<image v-if="showTower2" class="towerImg2" :style="{left: towerLeft2 + 'px'}" src="../../static/imgs/tower2.png"></image>
 					<view v-if="showTower || showTower2" class="towercircle" :style="{left: (towerLeft - 50) + 'px'}"></view>
 					<view v-if="showTower || showTower2" class="towercircle towercircle2" :style="{left: (towerLeft2 - 50) + 'px'}"></view>
-					<image v-if="bgImg.indexOf('battlebg3') != -1" class="river"  src="../../static/imgs/river.png"></image>
 			</view>
 		</scroll-view>
 	</view>
@@ -135,7 +145,7 @@ import res4 from '../../static/data/goods.json'
 import heroStrongList from '../../static/data/heroStrong.json'
 import { editMoney } from '../../utils/editUser'
 import aiProgress from '@/components/ai-progress/ai-progress.vue'
-
+const PLAYER_SIZE = 45; // 人物直径(px)，需与 CSS 中 .player 宽高一致
 export default {
 	data() {
 		return {
@@ -280,15 +290,36 @@ export default {
 			enemyLoadPer: 0,
 			myStore: [],
 			iconStyle: '',	//头像装饰
-			flyStyle: ''	//羽翼
+			flyStyle: '',	//羽翼
+			speed: 32,
+			usetransitionDuration: false,
+			joyStickjieliu: null,
+			playerStyle: 'transform: translate3d(0px, 0px, 0);',
+			stickStyle: 'transform: translate3d(0px, 0px, 0);'
 		}
+	},
+	onReady() {
+		/* ---------- 非响应式状态（避免每帧 setData） ---------- */
+		this.player = { x: 0, y: 0 };     // 人物左上角坐标
+		this.dir = { x: 0, y: 0 };        // 当前移动方向（单位向量）
+		this.stageSize = { w: 0, h: 0 };  // 舞台尺寸
+		this.joyCenter = null;            // 摇杆中心（屏幕坐标）
+		this.joyRadius = 40;              // 摇杆小球最大偏移(px)
+		this.deadZone = 6;                // 死区(px)，防止手抖
+		this.lastTime = 0;
+		this.timer = null;
+		this.initLayout();
+	},
+	onHide() {
+		// 切到后台停止循环，避免继续跑
+		this.stopLoop();
+		this.resetDir();
 	},
 	 computed: {
 	    characterStyle() {
 	      return {
 	        left: this.characterX + 'px',
 	        top: this.characterY + 'px',
-	        transitionDuration:  parseFloat(parseFloat(this.myspeed)-parseFloat(this.fastsp)).toFixed(2)+ 's',
 			border: this.bigGJTX2
 	      }
 	    },
@@ -378,6 +409,7 @@ export default {
 		}
 	},
 	onLoad(option) {
+		if (this.stageSize && this.stageSize.w) this.startLoop();
 		if(option){
 			this.myHero = JSON.parse(option.item)
 			this.gameType = uni.getStorageSync('gameType')
@@ -409,6 +441,7 @@ export default {
 							self.flyStyle = i.icon
 							self.myspeed = 0.8
 							self.myspeed -= parseFloat(i.speed).toFixed(2)
+							self.speed = self.speed + parseFloat(i.speed).toFixed(2)*100
 						}
 					}else{
 						let li = JSON.parse(uni.getStorageSync('myStore'))
@@ -444,6 +477,28 @@ export default {
 				return
 			}
 			if(option.type && option.type == 'win'){
+				if(option.lunhui){
+					this.bgImg = '../../static/imgs/tanxianBg5.jpeg?'+ new Date().getTime()
+					this.characterX = 200
+					this.characterY = 180
+					this.putMapTools()
+					this.enemy = {}
+					this.enemy2 = null
+					this.enemy3 = null
+					this.enemy4 = null
+					this.enemy5 = null
+					this.showEnIcon = false
+					clearInterval(this.goTime2)
+					clearInterval(this.goTime3)
+					clearInterval(this.goTime4)
+					clearInterval(this.goTime5)
+					this.myTool = JSON.parse(uni.getStorageSync('tanxianPack'))
+					this.showWinLogo = true
+					setTimeout(()=>{
+						this.showWinLogo = false
+					},1500)
+					return
+				}
 				this.enemyLoadPer = this.randomNum(30,65)
 				this.bgImg = option.map.slice(1,option.map.length - 1)
 				this.playVoice('../../static/sounds/tanxian.wav',true,10,170000)
@@ -661,7 +716,6 @@ export default {
 			}
 			this.addLog(1)
 			clearInterval(this.time1)
-			clearInterval(this.beatTime)
 			if(this.myEquipName.includes('梅贾的窃魂卷')) {
 				if(this.gameType == 'paiwei'){
 					if(uni.getStorageSync('paiweiHero')){
@@ -677,7 +731,6 @@ export default {
 					this.myHero.fs = this.myHero.fs + 20
 				}
 			}
-			this.beatTime = null
 			this.showEnIcon = false
 		},
 		//战斗失败
@@ -715,11 +768,9 @@ export default {
 			}
 			clearInterval(this.time1)
 			clearInterval(this.time3)
-			clearInterval(this.beatTime)
 			clearInterval(this.wzhy)
 			clearInterval(this.goTime2)
 			clearInterval(this.arrowTimer)
-			this.beatTime = null
 			if(this.gameType == 'paiwei'){
 				let time = parseInt(this.min) * 60 + parseInt(this.second)
 				if(parseInt(this.blood1) + parseInt(this.enemy.blood)*0.1 > parseInt(this.enemy.blood)){
@@ -1502,6 +1553,45 @@ export default {
 		},
 		//我方移动事件
 		myMoveEffect() {
+			//地图视角移动
+			if(this.characterX <= this.screenWidth * 0.5){
+				this.$nextTick(function() {
+					this.scrollLeft = 0
+				});
+			}
+			if(this.characterX > this.screenWidth * 0.85){
+				this.$nextTick(function() {
+					this.scrollLeft = this.screenWidth
+				});
+			}
+			if(this.characterY < parseInt(this.screenHeight*0.45)){
+				this.scrollTop = this.old.scrollTop
+				this.$nextTick(function() {
+					this.scrollTop = 0
+				});
+			}
+			if(this.characterY > parseInt(this.screenHeight*0.75)){
+				this.$nextTick(function() {
+					this.scrollTop = this.screenHeight
+				});
+			}
+			//防过边界
+			if(this.characterY >= parseInt(this.screenHeight * 1.22)){
+				this.characterY = parseInt(this.screenHeight * 1.19)
+				this.player.y = this.characterY
+			}
+			if(this.characterX >= this.screenWidth * 1.33){
+				this.characterX = this.screenWidth * 1.31
+				this.player.x = this.characterX
+			}
+			if(this.characterY < 45){
+				this.characterY = 50
+				this.player.y = this.characterY
+			}
+			if(this.characterX < 8){
+				this.characterX = 10
+				this.player.x = this.characterX
+			}
 			if(this.mapObjects.length != 0){
 				this.mapObjects.map((it,idx)=>{
 					let x = Math.abs(it.left - this.characterX)
@@ -1525,7 +1615,10 @@ export default {
 					}
 				}
 			}
-			
+			//避免重复触发
+			if(this.beatTime){
+				return
+			}
 			let door = 0
 			let top = 0
 			if(this.bgImg.indexOf("tanxianBg1.jpeg") != -1){
@@ -1558,7 +1651,8 @@ export default {
 					icon:'none',
 					duration: 500
 				});
-				this.myNoMove = true
+				this.beatTime = true
+				// this.myNoMove = true
 				setTimeout(()=>{
 					this.$nextTick(function() {
 						this.scrollLeft = 0
@@ -1567,10 +1661,15 @@ export default {
 						this.scrollTop = 0
 					});
 					setTimeout(()=>{
+						setTimeout(()=>{
+							this.beatTime = null
+						},1000)
 						if(this.bgImg.indexOf("tanxianBg1.jpeg") != -1){
 							this.bgImg = '../../static/imgs/tanxianBg2.jpeg?'+ new Date().getTime()
 							this.characterX = 200
 							this.characterY = 100
+							this.player.x = this.characterX
+							this.player.y = this.characterY
 							this.putMapTools()
 							if(this.gameType == 'tanxian2'){
 								this.putMapEnemy(this.reallyRandom(2,3))
@@ -1580,6 +1679,8 @@ export default {
 								this.bgImg = '../../static/imgs/tanxianBg3.jpeg?'+ new Date().getTime()
 								this.characterX = 300
 								this.characterY = 250
+								this.player.x = this.characterX
+								this.player.y = this.characterY
 								this.putMapTools()
 								if(this.gameType == 'tanxian2'){
 									this.putMapEnemy(this.reallyRandom(3,4))
@@ -1589,6 +1690,8 @@ export default {
 									this.bgImg = '../../static/imgs/tanxianBg4.jpeg?'+ new Date().getTime()
 									this.characterX = 300
 									this.characterY = 250
+									this.player.x = this.characterX
+									this.player.y = this.characterY
 									this.putMapTools()
 									if(this.gameType == 'tanxian2'){
 										this.putMapEnemy(this.reallyRandom(4,5))
@@ -1612,24 +1715,11 @@ export default {
 											let self = this
 											uni.showModal({
 												title: '提示',
-												content: '是否通过探险钥匙进入轮回之地，寻找更稀有的宝物？',
+												content: '是否通过探险钥匙进入轮回之地，寻找更稀有的宝物？（需要击败轮回之地守门人，才能进入）',
 												success: function (r) {
 													if (r.confirm) {
-														self.bgImg = '../../static/imgs/tanxianBg5.jpeg?'+ new Date().getTime()
-														self.characterX = 200
-														self.characterY = 180
 														self.myTool.splice(indx,1)
-														self.putMapTools()
-														self.enemy = {}
-														self.enemy2 = null
-														self.enemy3 = null
-														self.enemy4 = null
-														self.enemy5 = null
-														self.showEnIcon = false
-														clearInterval(self.goTime2)
-														clearInterval(self.goTime3)
-														clearInterval(self.goTime4)
-														clearInterval(self.goTime5)
+														self.getlunhuizdEnemy()
 													} else if (r.cancel) {
 														self.exit()
 													}
@@ -1649,19 +1739,6 @@ export default {
 				},1000)
 			}
 		},
-		//点击背景图释放技能
-		handleTap(e) {
-			const pageY = e.changedTouches[0].pageY + parseInt(this.scrollTop/2.6)
-			const pageX = e.changedTouches[0].pageX + parseInt(this.scrollLeft/2.2)
-			let addTalent = parseInt(this.addData.add8)
-			let addTalent2 = parseInt(this.addData.add9)
-			let addTalent3 = parseInt(this.addData.add10)
-			let addTalent4 = parseInt(this.addData.add11)
-			let strongIndex = 0
-			if(this.addData.strongIndex){
-				strongIndex = parseInt(this.addData.strongIndex)
-			}
-		},
 		 getSystemInfo() {
 			const systemInfo = uni.getSystemInfoSync();
 			setTimeout(()=>{
@@ -1669,6 +1746,9 @@ export default {
 				this.screenHeight = systemInfo.windowHeight;
 				this.characterX = parseInt(this.screenWidth*0.8) - this.reallyRandom(0,5)*45
 				this.characterY = parseInt(this.screenHeight*0.6) - this.reallyRandom(0,5)*15
+				this.player.x = this.characterX
+				this.player.y = this.characterY
+				this.initLayout();
 				this.enemyX = this.reallyRandom(0,5)*45
 				this.enemyY = this.enemyY + this.reallyRandom(0,5)*10
 				if(this.showTower || this.showTower2){
@@ -1686,6 +1766,54 @@ export default {
 			}else{
 				return false
 			}
+		},
+		//轮回之地守门人
+		getlunhuizdEnemy() {
+			let chaLi = []
+			let en = null
+			res.data.forEach(item=>{
+				if(item.level >= 211 && item.level <= 216){
+					chaLi.push(item)
+				}
+			})
+			res3.data.forEach(item=>{
+				if(!item.isOther){
+					let ite = {...item}
+					if(this.gameType == 'tanxian2'){
+						ite.gj = parseInt(parseInt(ite.gj*2) + this.randomNum(0,8)*12)
+						ite.fy = parseInt(ite.fy*1.7 + this.randomNum(0,5)*13)
+						ite.blood = parseInt(ite.blood*2) + this.randomNum(0,2200)
+					}else{
+						ite.gj = parseInt(parseInt(ite.gj*1.7) + this.randomNum(0,10)*8)
+						ite.fy = parseInt(ite.fy*1.6)
+						ite.blood = parseInt(ite.blood*1.8) + this.randomNum(0,1200)
+					}
+					ite.gs = ite.v
+					ite.mk = ite.fy
+					ite.icon = 'hero/' + ite.icon
+					ite.speed = 0.8 - this.randomNum(0,2)*0.1
+					ite.isHero = true
+					chaLi.push(ite)
+				}
+			})
+			en = chaLi[this.randomNum(0,chaLi.length-1)]
+			if (this.bgAudio) {
+			  try {
+				this.bgAudio.pause();
+				this.bgAudio.destroy()
+				this.bgAudio = null
+			  } catch (e) {
+				//TODO handle the exception
+			  }
+			}
+			uni.setStorageSync('tanxianPack',JSON.stringify(this.myTool))
+			setTimeout(()=>{
+				this.meeting = false
+				uni.redirectTo({
+					url: "/pages/white?item="+JSON.stringify(this.myHero)+'&en='+JSON.stringify(en)+'&map='+'"'+this.bgImg+'"'+'&tanxian=true&lunhui=true'
+				})
+			},200)
+			this.enNoMove = true
 		},
 		openMypack() {
 			this.showMypack = true
@@ -1712,18 +1840,18 @@ export default {
 				if(!item.isOther){
 					let ite = {...item}
 					if(this.gameType == 'tanxian2'){
-						ite.gj = parseInt(ite.gj*1.8 + this.reallyRandom(0,5)*10)
-						ite.fy = parseInt(ite.fy*2.2 + this.reallyRandom(0,5)*10)
-						ite.blood = parseInt(ite.blood*2.2)
+						ite.gj = parseInt(parseInt(ite.gj*2) + this.randomNum(0,8)*11)
+						ite.fy = parseInt(ite.fy*1.7 + this.randomNum(0,5)*13)
+						ite.blood = parseInt(ite.blood*2) + this.randomNum(0,1700)
 					}else{
-						ite.gj = parseInt(ite.gj*1.8 + this.reallyRandom(0,5)*5)
-						ite.fy = parseInt(ite.fy*2.2)
-						ite.blood = parseInt(ite.blood*1.8)
+						ite.gj = parseInt(parseInt(ite.gj*1.8) + this.randomNum(0,10)*7)
+						ite.fy = parseInt(ite.fy*1.5)
+						ite.blood = parseInt(ite.blood*1.6) + this.randomNum(0,1000)
 					}
 					ite.gs = ite.v
 					ite.mk = ite.fy
 					ite.icon = 'hero/' + ite.icon
-					ite.speed = 0.8 - this.reallyRandom(0,2)*0.1
+					ite.speed = 0.8 - this.randomNum(0,2)*0.1
 					ite.isHero = true
 					chaLi.push(ite)
 				}
@@ -1898,24 +2026,26 @@ export default {
 						name: '斩魔刀',
 						detail: '斩魔刀，黄金制成，世间利器。',
 						img: 'zhanmodao.png',
-						gj: 85,
+						gj: 30,
 						fy: 0,
-						fs: 0,
+						fs: 100,
 						flz: 0,
-						price: 88000
+						speed: 0,
+						price: 30000
 					})
 				}
-				//仙灵羽翼扇
+				//仙灵雨翼扇
 				if(val>=422 && val<430){
 					this.openToolImg = 'xianling.png'
 					this.myTool.push({
 						id: new Date().getTime(),
-						name: '仙灵羽翼扇',
-						detail: '赤脚大仙府邸的宝物，拥有法力无边的威力，盘古开天后形成的宝物。',
-						fs: 306,
+						name: '仙灵雨翼扇',
+						detail: '赤脚大仙府邸的宝物，拥有法力无边的威力，盘古开天后形成的宝物。释放一个法术型技能后，普通攻击附带魔法伤害，持续3秒',
+						fs: 236,
 						flz: 1000,
 						gj: 0,
 						fy: 0,
+						speed: 0,
 						img: 'xianling.png',
 						price: 300000
 					})
@@ -1966,6 +2096,7 @@ export default {
 						fy: 30,
 						fs: 0,
 						flz: 0,
+						speed: 0,
 						img: 'kaishanfu.png',
 						price: 10000
 					})
@@ -1976,13 +2107,14 @@ export default {
 					this.myTool.push({
 						id: new Date().getTime(),
 						name: '至尊幻焰剑',
-						detail: '至尊幻焰剑，神挡杀神，无可匹及的存在。',
+						detail: '至尊幻焰剑，神挡杀神，无可匹及的存在。普通攻击附带法术伤害。',
 						img: 'zhizun.png',
-						gj: 209,
-						fs: 170,
+						gj: 165,
+						fs: 0,
 						fy: 0,
 						flz: 0,
-						price: 300000
+						speed: 0,
+						price: 200000
 					})
 				}
 				//胸甲
@@ -1995,6 +2127,10 @@ export default {
 							detail: '合成钢做的胸甲，坚硬无比。',
 							img: 'xiongjia.png',
 							fy: 65,
+							gj: 0,
+							fs: 0,
+							flz: 0,
+							speed: 0,
 							price: 3000
 						})
 					}else{
@@ -2010,16 +2146,48 @@ export default {
 				}
 				//钻石
 				if(val>=565 && val<577){
-					this.openToolImg = 'zhuanshi.png'
-					this.spImg = 'zhuanshi.gif'
-					this.openSpImg = true
-					this.myTool.push({
-						id: new Date().getTime(),
-						name: '钻石',
-						detail: '地球稀有矿物，可打造很多钻石饰品，价值非常高。',
-						img: 'zhuanshi.png',
-						price: 100000
-					})
+					if(this.randomNum(0,1) == 0){
+						this.openToolImg = 'zhuanshi.png'
+						this.spImg = 'zhuanshi.gif'
+						this.openSpImg = true
+						this.myTool.push({
+							id: new Date().getTime(),
+							name: '钻石',
+							detail: '地球稀有矿物，可打造很多钻石饰品，价值非常高。',
+							img: 'zhuanshi.png',
+							price: 100000
+						})
+					}else{
+						this.openToolImg = 'hyxsyy.png'
+						let myToolList = JSON.parse(uni.getStorageSync('myStore'))
+						let has = false
+						myToolList.forEach(i=>{
+							if(i.name == '火云邪神羽翼'){
+								has = true
+							}
+						})
+						if(!has){
+							uni.showToast({
+								title: '获得【火云邪神羽翼】',
+								icon:'none',
+								duration: 1200
+							});
+						
+							myToolList.push({
+								id: new Date().getTime(),
+								name: '火云邪神羽翼',
+								details: '火云邪神羽翼。装备后可提升移动速度33%，防御力提升50',
+								icon: 'hyxsyy.png',
+								buyTime: new Date().getTime(),
+								fy: 50,
+								speed: 0.33,
+								istool:0,
+								isOther: true,
+								price: 20000
+							})
+							uni.setStorageSync('myStore',JSON.stringify(myToolList))
+						}
+					}
 				}
 				//降龙剑
 				if(val>=577 && val<582){
@@ -2027,12 +2195,13 @@ export default {
 					this.myTool.push({
 						id: new Date().getTime(),
 						name: '降龙剑',
-						detail: '降龙宝剑，世间威力最大的剑，可斩龙，可上天入地...',
+						detail: '降龙宝剑，世间威力最大的剑，可斩龙，可上天入地...每击败一名敌人，获得5~9攻击力。BOSS模式下释放英雄技能可以吸取BOSS血',
 						img: 'xianglong.png',
-						gj: 258,
-						fs: 210,
+						gj: 198,
+						fs: 160,
 						fy: 0,
 						flz: 0,
+						speed: 0,
 						price: 350000
 					})
 				}
@@ -2059,6 +2228,7 @@ export default {
 						gj: 0,
 						fs: 0,
 						flz: 0,
+						speed: 0,
 						price: 800
 					})
 				}
@@ -2070,10 +2240,11 @@ export default {
 						name: '聚龙锤',
 						detail: '一锤可定天下。拥有神龙的力量，可召唤出神龙。',
 						img: 'julong.png',
-						fs: 100,
-						gj: 169,
+						fs: 70,
+						gj: 119,
 						fy: 0,
 						flz: 0,
+						speed: 0,
 						price: 250000
 					})
 				}
@@ -2122,7 +2293,7 @@ export default {
 					})
 				}
 				//手镯
-				if(val>=950 && val<980){
+				if(val>=950 && val<960){
 					this.openToolImg = 'shouzhuo.png'
 					this.myTool.push({
 						id: new Date().getTime(),
@@ -2130,6 +2301,22 @@ export default {
 						detail: '一个昂贵的手镯，纯金打造。',
 						img: 'shouzhuo.png',
 						price: 30000
+					})
+				}
+				//箭矢
+				if(val>=960 && val<980){
+					this.openToolImg = 'arrowplus.png'
+					this.myTool.push({
+						id: new Date().getTime(),
+						name: '皇后的箭矢',
+						detail: '皇后的箭矢。装备后射手远程型英雄使用发射型技能时，会造成额外的真实伤害。',
+						img: 'arrowplus.png',
+						fs: 0,
+						gj: 40,
+						fy: 0,
+						flz: 0,
+						speed: 0,
+						price: 15000
 					})
 				}
 				if(val>=980){
@@ -2143,17 +2330,20 @@ export default {
 				}
 			}
 			if(boxType == 'bigbox.png'){
-				if(this.reallyRandom(0,5) == 0){
-					this.openToolImg = 'ding.png'
-					this.myTool.push({
-						id: new Date().getTime(),
-						name: '鼎',
-						detail: '一顶很好看的鼎，用来承装东西，有一定的收藏价值，交易行很流行的物品。',
-						img: 'ding.png',
-						price: 3500
-					})
+				let ralRan = this.reallyRandom(0,5)
+				if(ralRan == 0){
+					//光明骑士
+					this.openToolImg = 'gmqs.jpg'
+					let datas = JSON.parse(uni.getStorageSync('heroAddData'))
+						datas.forEach((it,idx)=>{
+							if(it.id == 2){
+								datas[idx].strongIndex = 3
+								datas[idx].strongDeadTime = new Date().getTime()+ 2*24*60*60*1000
+							}
+						})
+					uni.setStorageSync('heroAddData',JSON.stringify(datas))
 				}
-				if(this.reallyRandom(0,5) == 1){
+				if(ralRan == 1){
 					this.openToolImg = 'shouji.png'
 					this.myTool.push({
 						id: new Date().getTime(),
@@ -2163,41 +2353,150 @@ export default {
 						price: 3800
 					})
 				}
-				if(this.reallyRandom(0,5) == 2){
-					this.openToolImg = 'zijinkuang.png'
-					this.myTool.push({
-						id: new Date().getTime(),
-						name: '紫金矿',
-						detail: '矿物质，交易行的流通矿物之一。',
-						img: 'zijinkuang.png',
-						price: 700
-					})
+				if(ralRan == 2){
+					if(this.randomNum(0,1) == 1){
+						this.openToolImg = 'haiyanglh.png'
+						let myToolList = JSON.parse(uni.getStorageSync('tanxianPack'))
+						let has = false
+						myToolList.forEach(i=>{
+							if(i.name == '海洋龙魂'){
+								has = true
+							}
+						})
+						if(!has){
+							uni.showToast({
+								title: '获得【海洋龙魂】',
+								icon:'none',
+								duration: 2000
+							});
+							myToolList.push({"id":new Date().getTime(),"name":"海洋龙魂","gj": 0,"fy": 0,"fs": 0,"flz": 0,"speed": 10,"img":"haiyanglh.png","icon":"haiyanglh.png","detail":"脱离战斗时，每秒回复5%生命值，30法力值。主动释放龙魂会回复70%生命值和500法力值。","price":0,"istool":1})
+							uni.setStorageSync('tanxianPack',JSON.stringify(myToolList))
+						}else{
+							uni.showToast({
+								title: '你已经领取过海洋龙魂',
+								icon:'none',
+								duration: 1500
+							});
+						}
+					}else{
+						this.openToolImg = 'taiyangshenyy.png'
+						
+						let myToolList = JSON.parse(uni.getStorageSync('myStore'))
+						let has = false
+						myToolList.forEach(i=>{
+							if(i.name == '太阳神羽翼'){
+								has = true
+							}
+						})
+						if(!has){
+							uni.showToast({
+								title: '获得【太阳神羽翼】',
+								icon:'none',
+								duration: 1200
+							});
+						
+							myToolList.push({
+								id: new Date().getTime(),
+								name: '太阳神羽翼',
+								details: '太阳神羽翼。装备后可提升移动速度38%，防御力提升70',
+								icon: 'taiyangshenyy.png',
+								buyTime: new Date().getTime(),
+								fy: 70,
+								speed: 0.38,
+								istool:0,
+								isOther: true,
+								price: 39000
+							})
+							uni.setStorageSync('myStore',JSON.stringify(myToolList))
+						}
+					}
 				}
-				if(this.reallyRandom(0,5) == 3){
-					this.openToolImg = 'gon.png'
-					this.myTool.push({
-						id: new Date().getTime(),
-						name: '枪',
-						detail: '一把现代的沙鹰手枪，威力很大。',
-						img: 'gon.png',
-						price: 1500
-					})
+				if(ralRan == 3){
+					if(this.randomNum(0,1) == 1){
+						let hs = false
+						this.myTool.forEach(item=>{
+							if(item == '宝莲灯'){
+								hs = true
+							}
+						})
+						if(!hs){
+							this.openToolImg = 'baoliandeng.png'
+							this.myTool.push({
+								id: new Date().getTime(),
+								name: '宝莲灯',
+								detail: '盘古开天碎片形成的宝莲灯，世间仅有一个，法术无与伦比，拥有此物可上天入地无人能敌，乃至与天庭抗衡。',
+								img: 'baoliandeng.png',
+								fs: 412,
+								flz: 1000,
+								fy: 99,
+								gj: 262,
+								speed: 0.6,
+								price: 580000
+							})
+						}else{
+							this.openToolImg = 'julong.png'
+							this.myTool.push({
+								id: new Date().getTime(),
+								name: '聚龙锤',
+								detail: '一锤可定天下。拥有神龙的力量，可召唤出神龙。',
+								img: 'julong.png',
+								fs: 70,
+								gj: 119,
+								fy: 0,
+								flz: 0,
+								speed: 0,
+								price: 250000
+							})
+						}
+						
+					}else{
+						this.openToolImg = 'taiyangshenyy.png'
+						let myToolList = JSON.parse(uni.getStorageSync('myStore'))
+						let has = false
+						myToolList.forEach(i=>{
+							if(i.name == '太阳神羽翼'){
+								has = true
+							}
+						})
+						if(!has){
+							uni.showToast({
+								title: '获得【太阳神羽翼】',
+								icon:'none',
+								duration: 1200
+							});
+						
+							myToolList.push({
+								id: new Date().getTime(),
+								name: '太阳神羽翼',
+								details: '太阳神羽翼。装备后可提升移动速度38%，防御力提升70',
+								icon: 'taiyangshenyy.png',
+								buyTime: new Date().getTime(),
+								fy: 70,
+								speed: 0.38,
+								istool:0,
+								isOther: true,
+								price: 39000
+							})
+							uni.setStorageSync('myStore',JSON.stringify(myToolList))
+						}
+					}
 				}
-				if(this.reallyRandom(0,5) == 4){
+				if(ralRan == 4){
 					this.openToolImg = 'chanzhang.png'
 					this.myTool.push({
 						id: new Date().getTime(),
 						name: '长老的禅杖',
 						detail: '唐僧的禅杖，法力很大。',
-						fs: 185,
-						flz: 300,
+						fs: 135,
+						flz: 500,
 						fy: 0,
 						gj: 0,
+						speed: 0,
 						img: 'chanzhang.png',
 						price: 50000
 					})
 				}
-				if(this.reallyRandom(0,5) == 5){
+				if(ralRan == 5){
 					if(this.randomNum(0,1) == 1){
 						this.openToolImg = 'guangying.png'
 						this.myTool.push({
@@ -2205,26 +2504,37 @@ export default {
 							name: '光影剑',
 							detail: '传说中的光影剑，价值不可估量...',
 							img: 'guangying.png',
-							fs: 150,
-							gj: 150,
+							fs: 70,
+							gj: 115,
 							fy: 0,
 							flz: 0,
-							price: 220000
+							speed: 0,
+							price: 200000
 						})
-					}
-					if(this.randomNum(0,1) == 0){
-						this.openToolImg = 'jian2.png'
-						this.myTool.push({
-							id: new Date().getTime(),
-							name: '驱魔宝剑',
-							detail: '驱魔宝剑，斩妖除魔的利器，是一把比较稀有的宝剑。',
-							img: 'jian2.png',
-							fs: 130,
-							gj: 0,
-							fy: 0,
-							flz: 0,
-							price: 6000
+					}else{
+						this.openToolImg = 'lianyulh.png'
+						let myToolList = JSON.parse(uni.getStorageSync('tanxianPack'))
+						let has = false
+						myToolList.forEach(i=>{
+							if(i.name == '炼狱龙魂'){
+								has = true
+							}
 						})
+						if(!has){
+							uni.showToast({
+								title: '获得【炼狱龙魂】',
+								icon:'none',
+								duration: 2000
+							});
+							myToolList.push({"id":new Date().getTime(),"name":"炼狱龙魂","gj": 30,"fy": 0,"fs": 0,"flz": 0,"speed": 0,"img":"lianyulh.png","icon":"lianyulh.png","detail":"释放技能后，给敌方每秒造成60~135真实伤害，持续3秒。","price":0,"istool":1})
+							uni.setStorageSync('tanxianPack',JSON.stringify(myToolList))
+						}else{
+							uni.showToast({
+								title: '你已经领取过炼狱龙魂',
+								icon:'none',
+								duration: 1500
+							});
+						}
 					}
 				}
 			}
@@ -2355,10 +2665,11 @@ export default {
 						name: '驱魔宝剑',
 						detail: '驱魔宝剑，斩妖除魔的利器，是一把比较稀有的宝剑。',
 						img: 'jian2.png',
-						fs: 130,
+						fs: 70,
 						gj: 0,
 						fy: 0,
 						flz: 0,
+						speed: 0,
 						price: 6000
 					})
 				}
@@ -2368,12 +2679,13 @@ export default {
 					this.myTool.push({
 						id: new Date().getTime(),
 						name: '至尊幻焰剑',
-						detail: '至尊幻焰剑，神挡杀神，无可匹及的存在。',
+						detail: '至尊幻焰剑，神挡杀神，无可匹及的存在。普通攻击附带法术伤害。',
 						img: 'zhizun.png',
-						gj: 209,
-						fs: 170,
+						gj: 165,
+						fs: 0,
 						fy: 0,
 						flz: 0,
+						speed: 0,
 						price: 300000
 					})
 				}
@@ -2389,21 +2701,54 @@ export default {
 						fy: 0,
 						fs: 0,
 						flz: 0,
+						speed: 0,
 						price: 3000
 					})
 				}
 				//钻石
 				if(val>=540 && val<553){
-					this.openToolImg = 'zhuanshi.png'
-					this.spImg = 'zhuanshi.gif'
-					this.openSpImg = true
-					this.myTool.push({
-						id: new Date().getTime(),
-						name: '钻石',
-						detail: '地球稀有矿物，可打造很多钻石饰品，价值非常高。',
-						img: 'zhuanshi.png',
-						price: 100000
-					})
+					if(this.randomNum(0,1) == 0){
+						this.openToolImg = 'zhuanshi.png'
+						this.spImg = 'zhuanshi.gif'
+						this.openSpImg = true
+						this.myTool.push({
+							id: new Date().getTime(),
+							name: '钻石',
+							detail: '地球稀有矿物，可打造很多钻石饰品，价值非常高。',
+							img: 'zhuanshi.png',
+							price: 100000
+						})
+					}else{
+						this.openToolImg = 'hyxsyy.png'
+						let myToolList = JSON.parse(uni.getStorageSync('myStore'))
+						let has = false
+						myToolList.forEach(i=>{
+							if(i.name == '火云邪神羽翼'){
+								has = true
+							}
+						})
+						if(!has){
+							uni.showToast({
+								title: '获得【火云邪神羽翼】',
+								icon:'none',
+								duration: 1200
+							});
+						
+							myToolList.push({
+								id: new Date().getTime(),
+								name: '火云邪神羽翼',
+								details: '火云邪神羽翼。装备后可提升移动速度33%，防御力提升50',
+								icon: 'hyxsyy.png',
+								buyTime: new Date().getTime(),
+								fy: 50,
+								speed: 0.33,
+								istool:0,
+								isOther: true,
+								price: 20000
+							})
+							uni.setStorageSync('myStore',JSON.stringify(myToolList))
+						}
+					}
 				}
 				//古茗翡翠
 				if(val>=553 && val<600){
@@ -2472,7 +2817,7 @@ export default {
 					})
 				}
 				//诗经
-				if(val>=870 && val<930){
+				if(val>=870 && val<910){
 					this.openToolImg = 'shijin.png'
 					this.myTool.push({
 						id: new Date().getTime(),
@@ -2480,6 +2825,22 @@ export default {
 						detail: '一套诗经集。',
 						img: 'shijin.png',
 						price: 200
+					})
+				}
+				//箭矢
+				if(val>=910 && val<930){
+					this.openToolImg = 'arrowplus.png'
+					this.myTool.push({
+						id: new Date().getTime(),
+						name: '皇后的箭矢',
+						detail: '皇后的箭矢。装备后射手远程型英雄使用发射型技能时，会造成额外的真实伤害。',
+						img: 'arrowplus.png',
+						fs: 0,
+						gj: 40,
+						fy: 0,
+						flz: 0,
+						speed: 0,
+						price: 15000
 					})
 				}
 				if(boxType == 'box2.png' && val >= 930){
@@ -2504,51 +2865,113 @@ export default {
 				}
 			}
 			if(boxType == 'bigbox.png'){
-				if(this.reallyRandom(0,5) == 0){
-					this.openToolImg = 'zhanglaojuanzou.png'
-					this.myTool.push({
-						id: new Date().getTime(),
-						name: '长老卷轴',
-						detail: '长老的卷轴，收藏品。',
-						img: 'zhanglaojuanzou.png',
-						price: 380
-					})
+				let ralRan = this.reallyRandom(0,5)
+				if(ralRan == 0){
+					//均衡教派
+					this.openToolImg = 'jhjp.jpg'
+					let datas = JSON.parse(uni.getStorageSync('heroAddData'))
+						datas.forEach((it,idx)=>{
+							if(it.id == 102){
+								datas[idx].strongIndex = 3
+								datas[idx].strongDeadTime = new Date().getTime() + 2*24*60*60*1000
+							}
+						})
+					uni.setStorageSync('heroAddData',JSON.stringify(datas))
 				}
-				if(this.reallyRandom(0,5) == 1){
-					this.openToolImg = 'feicui.png'
-					this.myTool.push({
-						id: new Date().getTime(),
-						name: '古茗翡翠',
-						detail: '翡翠，可携带在身上辟邪，提升阳气，女士佩戴美观，男士佩戴雅观。',
-						img: 'feicui.png',
-						price: 1800
-					})
+				if(ralRan == 1){
+					if(this.randomNum(0,1) == 1){
+						this.openToolImg = 'feicui.png'
+						this.myTool.push({
+							id: new Date().getTime(),
+							name: '古茗翡翠',
+							detail: '翡翠，可携带在身上辟邪，提升阳气，女士佩戴美观，男士佩戴雅观。',
+							img: 'feicui.png',
+							price: 1800
+						})
+					}else{
+						this.openToolImg = 'taiyangshenyy.png'
+						let myToolList = JSON.parse(uni.getStorageSync('myStore'))
+						let has = false
+						myToolList.forEach(i=>{
+							if(i.name == '太阳神羽翼'){
+								has = true
+							}
+						})
+						if(!has){
+							uni.showToast({
+								title: '获得【太阳神羽翼】',
+								icon:'none',
+								duration: 1200
+							});
+						
+							myToolList.push({
+								id: new Date().getTime(),
+								name: '太阳神羽翼',
+								details: '太阳神羽翼。装备后可提升移动速度38%，防御力提升70',
+								icon: 'taiyangshenyy.png',
+								buyTime: new Date().getTime(),
+								fy: 70,
+								speed: 0.38,
+								istool:0,
+								isOther: true,
+								price: 39000
+							})
+							uni.setStorageSync('myStore',JSON.stringify(myToolList))
+						}
+					}
 				}
-				if(this.reallyRandom(0,5) == 2){
+				if(ralRan == 2){
 					this.openToolImg = 'jian2.png'
 					this.myTool.push({
 						id: new Date().getTime(),
 						name: '驱魔宝剑',
 						detail: '驱魔宝剑，斩妖除魔的利器，是一把比较稀有的宝剑。',
 						img: 'jian2.png',
-						fs: 130,
+						fs: 70,
 						gj: 0,
 						fy: 0,
 						flz: 0,
+						speed: 0,
 						price: 6000
 					})
 				}
-				if(this.reallyRandom(0,5) == 3){
-					this.openToolImg = 'camera.png'
-					this.myTool.push({
-						id: new Date().getTime(),
-						name: '相机',
-						detail: '一部数码相机，可以拍出很清晰的照片。',
-						img: 'camera.png',
-						price: 2500
-					})
+				if(ralRan == 3){
+					if(this.randomNum(0,1) == 1){
+						this.openToolImg = 'camera.png'
+						this.myTool.push({
+							id: new Date().getTime(),
+							name: '相机',
+							detail: '一部数码相机，可以拍出很清晰的照片。',
+							img: 'camera.png',
+							price: 2500
+						})
+					}else{
+						this.openToolImg = 'haiyanglh.png'
+						let myToolList = JSON.parse(uni.getStorageSync('tanxianPack'))
+						let has = false
+						myToolList.forEach(i=>{
+							if(i.name == '海洋龙魂'){
+								has = true
+							}
+						})
+						if(!has){
+							uni.showToast({
+								title: '获得【海洋龙魂】',
+								icon:'none',
+								duration: 2000
+							});
+							myToolList.push({"id":new Date().getTime(),"name":"海洋龙魂","gj": 0,"fy": 0,"fs": 0,"flz": 0,"speed": 10,"img":"haiyanglh.png","icon":"haiyanglh.png","detail":"主动释放龙魂会回复70%生命值和500法力值，释放之后，离敌方英雄距离稍远触发：移动英雄则回复3%生命值，5法力值。","price":0,"istool":1})
+							uni.setStorageSync('tanxianPack',JSON.stringify(myToolList))
+						}else{
+							uni.showToast({
+								title: '你已经领取过海洋龙魂',
+								icon:'none',
+								duration: 1500
+							});
+						}
+					}
 				}
-				if(this.reallyRandom(0,5) == 4){
+				if(ralRan == 4){
 					this.openToolImg = 'zhuanshi.png'
 					this.spImg = 'zhuanshi.gif'
 					this.openSpImg = true
@@ -2560,7 +2983,7 @@ export default {
 						price: 100000
 					})
 				}
-				if(this.reallyRandom(0,5) == 5){
+				if(ralRan == 5){
 					if(this.randomNum(0,1) == 1){
 						this.openToolImg = 'kaishanfu.png'
 						this.myTool.push({
@@ -2570,28 +2993,300 @@ export default {
 							img: 'kaishanfu.png',
 							gj: 60,
 							fy: 30,
-							fs: 70,
+							fs: 0,
 							flz: 0,
+							speed: 0,
 							price: 10000
 						})
-					}
-					if(this.randomNum(0,1) == 0){
+					}else{
 						this.openToolImg = 'zhanmodao.png'
 						this.myTool.push({
 							id: new Date().getTime(),
 							name: '斩魔刀',
 							detail: '斩魔刀，黄金制成，世间利器。',
 							img: 'zhanmodao.png',
-							gj: 85,
+							gj: 30,
 							fy: 0,
-							fs: 70,
+							fs: 100,
 							flz: 0,
-							price: 88000
+							speed: 0,
+							price: 30000
 						})
 					}
 				}
 			}
+		},
+		/* ================= 初始化 ================= */
+			initLayout() {
+				const query = uni.createSelectorQuery().in(this);
+				this.renderPlayer();
+				// 摇杆中心（屏幕坐标，用于和 touch 的 clientX/clientY 相减）
+				query.select('#joystick').boundingClientRect(rect => {
+					if (!rect) return;
+					this.joyCenter = {
+						x: this.screenWidth - 110,
+						y: 110
+					};
+				});
+		
+				query.exec(() => {
+					this.startLoop();
+				});
+			},
+		
+			/* ================= 摇杆事件 ================= */
+			onJoyStart(e) {
+				this.startLoop();
+				const t = e.touches[0];
+				// 兜底：万一没量到中心，用触点当中心
+				if (!this.joyCenter) {
+					this.joyCenter = { x: t.clientX, y: t.clientY };
+				}
+				this.player.x = this.characterX
+				this.player.y = this.characterY
+				this.updateDir(t.clientX, t.clientY);
+			},
+		
+			onJoyMove(e) {
+				const t = e.touches[0];
+				this.updateDir(t.clientX, t.clientY);
+			},
+		
+			onJoyEnd() {
+				this.stopLoop()
+				this.resetDir();
+			},
+		
+			resetDir() {
+				this.dir = { x: 0, y: 0 };
+				this.stickStyle = 'transform: translate3d(0px, 0px, 0);';
+			},
+		
+			/**
+			 * 核心：根据触点位置计算方向
+			 */
+			updateDir(cx, cy) {
+				const dx = cx - this.joyCenter.x;
+				const dy = cy - this.joyCenter.y;
+				const dist = Math.sqrt(dx * dx + dy * dy);
+		
+				// 1. 摇杆小球视觉位置（限制在半径内）
+				let ox = dx, oy = dy;
+				if (dist > this.joyRadius) {
+					ox = (dx / dist) * this.joyRadius;
+					oy = (dy / dist) * this.joyRadius;
+				}
+				this.stickStyle = `transform: translate3d(${ox}px, ${oy}px, 0);`;
+				// 3. 归一化成单位向量 —— 保证斜向速度与直向一致
+				this.dir = { x: dx / dist, y: dy / dist };
+				this.dirText = `方向 x:${this.dir.x.toFixed(2)} y:${this.dir.y.toFixed(2)}`;
+			},
+		
+			/* ================= 游戏主循环 ================= */
+			startLoop() {
+				if (this.timer) return;
+				this.lastTime = Date.now();
+				this.timer = setInterval(this.tick, 10); // ≈60fps
+			},
+		
+			stopLoop() {
+				if (this.timer) {
+					clearInterval(this.timer);
+					this.timer = null;
+				}
+			},
+		
+			tick() {
+				const now = Date.now();
+				let dt = (now - this.lastTime) / 1000;
+				this.lastTime = now;
+				if (dt <= 0) return;
+				if (dt > 0.1) dt = 0.1; // 防止切后台回来瞬移
+				if (this.dir.x === 0 && this.dir.y === 0) return;
+		
+				const { w, h } = this.stageSize;
+				let nx = this.player.x + this.dir.x * this.speed * dt;
+				let ny = this.player.y + this.dir.y * this.speed * dt;
+		
+				// 边界限制
+				// nx = Math.max(0, Math.min(w - PLAYER_SIZE, nx));
+				// ny = Math.max(0, Math.min(h - PLAYER_SIZE, ny));
+		
+				this.player.x = nx;
+				this.player.y = ny;
+				this.renderPlayer();
+			},
+		
+			renderPlayer() {
+				this.characterX = parseInt(this.player.x)
+				this.characterY = parseInt(this.player.y)
+				if(!this.joyStickjieliu){
+					this.joyStickjieliu = setTimeout(()=>{
+						this.myMoveEffect()
+						clearTimeout(this.joyStickjieliu)
+						this.joyStickjieliu = null
+					},600)
+				}
+				// 用 transform 移动，走 GPU 合成，比改 left/top 流畅
+				// this.playerStyle = `transform: translate3d(${this.player.x}px, ${this.player.y}px, 0);`;
+			}
+	},
+	onUnload() {
+		this.stopLoop();
+		if(this.innerAudioContext[0])this.innerAudioContext[0].destroy()
+		if(this.innerAudioContext[1])this.innerAudioContext[1].destroy()
+		if(this.innerAudioContext[2])this.innerAudioContext[2].destroy()
+		if(this.innerAudioContext[3])this.innerAudioContext[3].destroy()
+		if(this.innerAudioContext[4])this.innerAudioContext[4].destroy()
+		if(this.innerAudioContext[5])this.innerAudioContext[5].destroy()
+		if(this.innerAudioContext[6])this.innerAudioContext[6].destroy()
+		if(this.innerAudioContext[7])this.innerAudioContext[7].destroy()
+		if (this.bgAudio) {
+		  try {
+			this.bgAudio.pause();
+			this.bgAudio.destroy()
+		  } catch (e) {
+		  }
 		}
+		this.myHero = null
+		this.begin = null
+		this.showMypack = null
+		this.enemy = null
+		this.enemy2 = null
+		this.enemy3 = null
+		this.enemy4 = null
+		this.enemy5 = null
+		this.blood1 = null
+		this.blood2 = null
+		this.time1 = null
+		this.time2 = null
+		this.time3 = null
+		this.time4 = null
+		this.beatTime = null
+		this.beatTime2 = null
+		this.min = null
+		this.second = null
+		this.gs1 = null
+		this.bettleEnd = null
+		this.openEq = null
+		this.myEquip = null
+		this.myTool = null
+		this.openToolImg = null
+		this.myEquipName = null
+		this.enList = null
+		this.flag = null
+		this.flag2 = null
+		this.bgImg = null
+		this.bgImg2 = null
+		this.win = null
+		this.money = null
+		this.gameType = null
+		this.showTInfo = null
+		this.showIntro = null
+		this.tallentList = null
+		this.innerAudioContext = null
+		this.audioVoice = null
+		this.bgAudio = null
+		this.yinshen = null
+		this.yinshen2 = null
+		this.bgImgIndex = null
+		this.addData = null
+		this.tallentDuring = null
+		this.showTallentTime = null
+		this.bgZIndex = null
+		this.origHero = null
+		this.mygjAnm = null
+		this.engjAnm = null
+		this.showMygjAnm = null
+		this.showEngjAnm = null
+		this.showOpenbox = null
+		this.showWinLogo = null
+		this.showWinLogo2 = null
+		this.showlose = null
+		this.myspeed = null
+		this.fastsp = null
+		this.fastsp2 = null
+		this.enspeed = null
+		this.goTime = null
+		this.goTime2 = null
+		this.goTime3 = null
+		this.goTime4 = null
+		this.goTime5 = null
+		this.characterX = null
+		this.characterY = null
+		this.enemyX = null
+		this.enemyY = null
+		this.enemyX2 = null
+		this.enemyY2 = null
+		this.enemyX3 = null
+		this.enemyY3 = null
+		this.enemyX4 = null
+		this.enemyY4 = null
+		this.enemyX5 = null
+		this.enemyY5 = null
+		this.directType = null
+		this.directType2 = null
+		this.directType3 = null
+		this.directType4 = null
+		this.directType5 = null
+		this.directType6 = null
+		this.directType7 = null
+		this.directType8 = null
+		this.distance = null
+		this.enemyGJdis = null
+		this.heroGJdis = null
+		this.screenWidth = null
+		this.screenHeight = null
+		this.enmoveModel = null
+		this.enmoveModelTime = null
+		this.enNoMove = null
+		this.myNoMove = null
+		this.mapObjects = null
+		this.enmapObjects = null
+		this.tallentObjects = null
+		this.antijiansu = null
+		this.txImg = null
+		this.txImg2 = null
+		this.arrowWid = null
+		this.arrowHei = null
+		this.arrowWid2 = null
+		this.arrowHei2 = null
+		this.heroMoveType = null
+		this.arrowTimer = null
+		this.arrowTimer2 = null
+		this.enemyBeatCD = null
+		this.scrollTop = null
+		this.scrollLeft = null
+		this.old = null
+		this.showTower = null
+		this.showTower2 = null
+		this.meeting = null
+		this.towerLeft = null
+		this.towerLeft2 = null
+		this.regGjTimeout = null
+		this.showEnIcon = null
+		this.showMyIcon = null
+		this.arrowtimeout = null
+		this.arrowtimeout2 = null
+		this.tempEnemyIcon = null
+		this.nowToolInfo = null
+		this.allPrice = null
+		this.door1 = null
+		this.door3 = null
+		this.door5 = null
+		this.door6 = null
+		this.doorTop1 = null
+		this.doorTop3 = null
+		this.doorTop5 = null
+		this.doorTop6 = null
+		this.openSpImg = null
+		this.showLoad = null
+		this.noTool = null
+		this.spImg = null
+		this.enemyLoadPer = null
+		this.myStore = null
+		this.iconStyle = null
+		this.flyStyle = null
 	}
 }
 </script>
@@ -2764,32 +3459,32 @@ export default {
 	.direct {
 		z-index: 18;
 		.left {
-			width: 70rpx;
-			height: 70rpx;
+			width: 90rpx;
+			height: 90rpx;
 			position: fixed;
 			right: 240rpx;
 			top: 160rpx;
 			z-index: 18;
 		}
 		.right {
-			width: 70rpx;
-			height: 70rpx;
+			width: 90rpx;
+			height: 90rpx;
 			position: fixed;
 			right: 60rpx;
 			top: 160rpx;
 			z-index: 18;
 		}
 		.top {
-			width: 70rpx;
-			height: 70rpx;
+			width: 90rpx;
+			height: 90rpx;
 			position: fixed;
 			right: 152rpx;
 			top: 70rpx;
 			z-index: 18;
 		}
 		.down {
-			width: 70rpx;
-			height: 70rpx;
+			width: 90rpx;
+			height: 90rpx;
 			position: fixed;
 			right: 152rpx;
 			top: 250rpx;
@@ -2906,6 +3601,45 @@ export default {
 			width: 92%;
 		}
 	}
+}
+
+/* ============ 虚拟摇杆 ============ */
+/* 外层加大触摸热区（220x220），视觉上只显示中间 140 的圈 */
+.joystick {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 220px;
+	height: 220px;
+	z-index: 22;
+}
+
+.joy-ring {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 140px;
+	height: 140px;
+	margin-left: -70px;
+	margin-top: -70px;
+	box-sizing: border-box;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.07);
+	border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.joy-stick {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 60px;
+	height: 60px;
+	margin-left: -30px;
+	margin-top: -30px;
+	border-radius: 50%;
+	background: radial-gradient(circle at 34% 32%, #ffffff, #7fb2ff);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+	will-change: transform;
 }
 
 </style>

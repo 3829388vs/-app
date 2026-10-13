@@ -66,7 +66,7 @@ export default {
 		},
 		begin() {
 			uni.redirectTo({
-				url: "/pages/play/load"
+				url: "/pages/play/load?item="+JSON.stringify(this.heros[0])
 			})
 		}
 	}

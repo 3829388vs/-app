@@ -57,6 +57,7 @@
 
 <script>
 import res from '../../static/data/heroList.json'
+import heroStrongList from '../../static/data/heroStrong.json'
 export default {
 	data() {
 		return {
@@ -94,7 +95,7 @@ export default {
 	},
 	onLoad(option) {
 		this.type = uni.getStorageSync('gameType')
-		if(this.type == 'fuben') {
+		if(this.type.indexOf('fuben') != -1) {
 			this.enemy = JSON.parse(option.enemy)
 		}
 		let resp = [...res.data]
@@ -128,7 +129,7 @@ export default {
 		},
 		getHeros() {
 			let resp = [...res.data]
-			let list = resp.slice()
+			let list = resp
 			JSON.parse(uni.getStorageSync('heroAddData')).forEach(i=>{
 				if(i.isLive == 0){
 					list.forEach((it,idx)=>{
@@ -144,7 +145,24 @@ export default {
 					})	
 				}
 			})
-			this.heroList = [...list].concat(this.myStoreHero)
+			let heli = [...list].concat(this.myStoreHero)
+			let data = JSON.parse(uni.getStorageSync('heroAddData'))
+			heli.forEach((item=>{
+				data.forEach(it=>{
+					if(it.id == item.id){
+						if(it.strongIndex){
+							heroStrongList.data.map(i=>{
+								if(i.id == it.id && it.strongIndex == i.index){
+									item.icon = i.icon
+									item.name = i.name
+								}
+							})
+						}
+					}
+				})
+			}))
+			
+			this.heroList = heli
 			// uniCloud.callFunction({
 			// 	name: 'getHeros'
 			// }).then((res) => {
@@ -220,7 +238,7 @@ export default {
 				uni.setStorageSync('heroAddData',JSON.stringify(data))
 			}
 			
-			if(this.type == 'fuben') {
+			if(this.type.indexOf('fuben') != -1) {
 				uni.redirectTo({
 					url: "/pages/play/load?item="+JSON.stringify(item)+'&enemy='+JSON.stringify(this.enemy)
 				})

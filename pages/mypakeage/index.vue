@@ -31,7 +31,8 @@
 						<view style="margin-top: 10rpx;display: flex;">
 							<view v-if="addInfo.isLive == 0"><button size="mini" @click="living">复活</button></view>
 							<view v-if="selIndex != 0">
-								<button style="margin-left: 16rpx;" type="primary" size="mini" @click="selStrongHero">出战</button>
+								<button style="margin-left: 16rpx;" type="primary" size="mini"
+								 :disabled="heroInfo.price == 10000" @click="selStrongHero">出战</button>
 								<button style="margin-left: 16rpx;" size="mini" @click="showDetails">详情</button>
 							</view>
 						</view>
@@ -874,6 +875,15 @@ export default {
 					]
 				},
 				{
+					id: 25,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/IreliaQ.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/IreliaW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/IreliaE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/IreliaR.png'
+					]
+				},
+				{
 					id: 1000,
 					imgs: [
 						'https://game.gtimg.cn/images/lol/act/img/spell/VarusQ.png',
@@ -979,6 +989,51 @@ export default {
 						'https://game.gtimg.cn/images/lol/act/img/spell/CaitlynYordleTrap.png',
 						'https://game.gtimg.cn/images/lol/act/img/spell/CaitlynEntrapment.png',
 						'https://game.gtimg.cn/images/lol/act/img/spell/CaitlynAceintheHole.png'
+					]
+				},
+				{
+					id: 1011,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/JhinW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/JhinE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/JhinR.png',
+						'https://game.gtimg.cn/images/lol/act/img/rune/LegendHaste.png'
+					]
+				},
+				{
+					id: 1012,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/YasuoQ1Wrapper.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/YasuoW.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/YasuoE.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/YasuoR.png'
+					]
+				},
+				{
+					id: 1013,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/108/10800.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/108/10810.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/108/10830.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/108/10820.png'
+					]
+				},
+				{
+					id: 1014,
+					imgs: [
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/197/19710.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/197/19720.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/197/19730.png',
+						'https://game.gtimg.cn/images/yxzj/img201606/heroimg/197/19700.png'
+					]
+				},
+				{
+					id: 1015,
+					imgs: [
+						'https://game.gtimg.cn/images/lol/act/img/spell/AhriOrbofDeception.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/AhriFoxFire.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/AhriSeduce.png',
+						'https://game.gtimg.cn/images/lol/act/img/spell/AhriTumble.png'
 					]
 				},
 			]

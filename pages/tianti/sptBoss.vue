@@ -3,6 +3,9 @@
 		<view class="back">
 			<button @click="back" size="mini">返回</button>
 		</view>
+		<view class="task" @click="showTask">
+			<image class="taskImg" src="../../static/imgs/task.png"></image>
+		</view>
 		<view class="main">
 			<view class="bossItem">
 				<view class="left" @click="changeBoss(0)"></view>
@@ -26,11 +29,19 @@
 				<image class="btnImg" src="../../static/imgs/challengeBoss.png" @click="begin"></image>
 			</view>
 		</view>
+		<view class="taskModel" v-if="showTaskModel">
+			<view class="closetask" @click="closeTask">×</view>
+			<view class="taskText">
+				<p v-for="(item,index) in tasks" :key="item">（{{index+1}}）{{item}}</p>
+			</view>
+			<image class="taskModelImg" src="../../static/imgs/taskModel.png"></image>
+		</view>
 	</view>
 </template>
 
 <script>
 import res from '../../static/data/challegeEnemy.json'
+import res2 from '../../static/data/goods.json'
 export default {
 	data() {
 		return {
@@ -38,7 +49,9 @@ export default {
 			selBoss: {},
 			index: 0,
 			opacity: 1,
-			innerAudioContext: null
+			innerAudioContext: null,
+			showTaskModel: false,
+			tasks: []
 		}
 	},
 	onLoad(option) {
@@ -51,6 +64,7 @@ export default {
 		})
 		this.boss = [...li]
 		this.selBoss = this.boss[0]
+		this.getTask()
 	},
 	methods:{
 		changeBoss(type) {
@@ -96,7 +110,7 @@ export default {
 						hasnum += 1
 					}
 				})
-				if(hasnum>=2 || this.selBoss.levelNum < 4){
+				// if(hasnum>=2 || this.selBoss.levelNum < 4){
 					let self = this
 					uni.showModal({
 						title: '提示',
@@ -112,16 +126,20 @@ export default {
 							}
 						}
 					});
-				}else{
-					uni.showToast({
-						title: '至少要拥有两个'+(this.selBoss.levelNum - 1)+'星的英雄，才可以挑战哦',
-						icon:'none',
-						duration: 2000
-					});
-				}
+				// }else{
+				// 	uni.showToast({
+				// 		title: '至少要拥有两个'+(this.selBoss.levelNum - 1)+'星的英雄，才可以挑战哦',
+				// 		icon:'none',
+				// 		duration: 2000
+				// 	});
+				// }
 			
 		},
 		playVoice() {
+			if (this.innerAudioContext) {
+				this.innerAudioContext.destroy()
+				this.innerAudioContext = null
+			}
 			this.innerAudioContext = uni.createInnerAudioContext();
 			this.innerAudioContext.volume = 0.5
 			this.innerAudioContext.src = '../../static/sounds/changeTab.wav'
@@ -138,6 +156,170 @@ export default {
 				}
 			},900)
 		},
+		showTask() {
+			this.showTaskModel = true
+			let num = 0
+			let userInfo = JSON.parse(uni.getStorageSync('user'))
+			let storeList = JSON.parse(uni.getStorageSync('myStore'))
+			let has = false
+			let myToolList = []
+			myToolList = JSON.parse(uni.getStorageSync('tanxianPack'))
+			myToolList.forEach(i=>{
+				if(i.name == '钰仙剑'){
+					has = true
+				}
+			})
+			if(new Date().getDay() == 1 || new Date().getDay() == 2){
+				storeList.forEach(item=>{
+					if(item.name.indexOf('不朽战神')!= -1 || item.name.indexOf('狂暴孙悟空')!= -1||
+					item.name.indexOf('二郎真君')!= -1|| item.name.indexOf('无量仙翁')!= -1){
+						num = num+1
+					}
+				})
+				if(num>=4 && !has){
+					uni.showToast({
+						title: '恭喜完成当日任务，获得【钰仙剑】',
+						icon:'none',
+						duration: 2000
+					});
+					myToolList.push({
+						id: new Date().getTime(),
+						name: '钰仙剑',
+						detail: '钰仙剑，仙界专属剑。装备后可提升移动速度10%，攻击力提升125，法术提升80，法力值提升600',
+						img: 'yuxianjian.png',
+						gj: 125,
+						fy: 0,
+						fs: 80,
+						flz: 600,
+						speed: 0.1,
+						price: 58000
+					})
+					uni.setStorageSync('tanxianPack',JSON.stringify(myToolList))
+					
+				}
+			}
+			if(new Date().getDay() == 3 || new Date().getDay() == 4){
+				let myToolList = []
+				let has = false
+				myToolList = JSON.parse(uni.getStorageSync('tanxianPack'))
+				myToolList.forEach(i=>{
+					if(i.name == '魔法神袍'){
+						has = true
+					}
+				})
+				storeList.forEach(item=>{
+					if(item.name.indexOf('艾欧尼亚之影')!= -1 && parseInt(userInfo.money)>=1200000 && !has){
+						uni.showToast({
+							title: '恭喜完成当日任务，获得【魔法神袍】',
+							icon:'none',
+							duration: 2000
+						});
+
+						myToolList.push({
+							id: new Date().getTime(),
+							name: '魔法神袍',
+							detail: '魔法神袍。装备后可提升防御力158',
+							img: 'mfsp.png',
+							gj: 0,
+							fy: 158,
+							fs: 0,
+							flz: 0,
+							speed: 0,
+							price: 30000
+						})
+						uni.setStorageSync('tanxianPack',JSON.stringify(myToolList))
+					}
+				})
+			}
+			if(new Date().getDay() == 5 || new Date().getDay() == 6 || new Date().getDay() == 7){
+				storeList.forEach(item=>{
+					if(item.levelNum == 5 || item.levelNum == 4 || item.levelNum == 3 || item.levelNum == 2){
+						num += 1
+					}
+				})
+				let myToolList = []
+				let has = false
+				myToolList = JSON.parse(uni.getStorageSync('myStore'))
+				myToolList.forEach(i=>{
+					if(i.name == '太阳神羽翼'){
+						has = true
+					}
+				})
+				if(num >= 9 && !has){
+					uni.showToast({
+						title: '恭喜完成当日任务，获得【太阳神羽翼】',
+						icon:'none',
+						duration: 2000
+					});
+
+					myToolList.push({
+						id: new Date().getTime(),
+						name: '太阳神羽翼',
+						details: '太阳神羽翼。装备后可提升移动速度38%，防御力提升70',
+						icon: 'taiyangshenyy.png',
+						buyTime: new Date().getTime(),
+						fy: 70,
+						speed: 0.38,
+						istool:0,
+						isOther: true,
+						price: 39900
+					})
+					
+					uni.setStorageSync('myStore',JSON.stringify(myToolList))
+				}
+			}
+			let num2 = 0
+			storeList.forEach(item=>{
+				if(item.name.indexOf('艾欧尼亚之箭')!=-1 || item.name.indexOf('艾欧尼亚之影')!=-1 ||
+					item.name.indexOf('艾欧尼亚之闪')!=-1 || item.name.indexOf('艾欧尼亚之灵')!=-1){
+					 num2 += 1
+				}
+			})
+			if(num2 == 4){
+				let store = JSON.parse(uni.getStorageSync('myStore'))
+				let goodList = [...res2.data]
+				let buyTime = new Date().getTime()
+				let herodata = null
+				let has = false
+				store.map((i,d)=>{
+					if(i.id == 1015){
+						has = true
+					}
+				})
+				goodList.map(item=>{
+					if(item.id == 1015){
+						herodata = {...item}
+					}
+				})
+				if(!has){
+					herodata.buyTime = buyTime
+					store.push(herodata)
+					uni.setStorageSync('myStore',JSON.stringify(store));
+					uni.showToast({
+						title: '恭喜完成艾欧尼亚任务，获得英雄【艾欧尼亚之心】',
+						icon:'none',
+						duration: 2800
+					});
+				}
+			}
+		},
+		closeTask() {
+			this.showTaskModel = false
+		},
+		getTask() {
+			this.tasks.push('击败艾欧尼亚之【箭】【影】【闪】【灵】。获得【艾欧尼亚之心】')
+			let data = (new Date().getMonth()+1)+ '月' + new Date().getDate()+'日任务：'
+			if(new Date().getDay() == 1 || new Date().getDay() == 2){
+				data = data+'击败不朽战神、狂暴孙悟空、二郎真君、无量仙翁。获得【钰仙剑】'
+			}
+			if(new Date().getDay() == 3 || new Date().getDay() == 4){
+				data = data+'击败艾欧尼亚之影并且金币达到120万。获得【魔法神袍】'
+			}
+			if(new Date().getDay() == 5 || new Date().getDay() == 6 || new Date().getDay() == 7){
+				data = data+'获得全部6星级以下英雄且金币达到100万。获得【太阳神羽翼】'
+			}
+			this.tasks.push(data)
+		}
 	}
 }
 </script>
@@ -160,6 +342,46 @@ export default {
 	position: absolute;
 	left: 30rpx;
 	top: 50rpx;
+}
+.task {
+	position: absolute;
+	right: 30rpx;
+	top: 10rpx;
+}
+.taskImg {
+	width: 200rpx;
+	height: 180rpx;
+}
+.taskModel {
+	width: 100%;
+	height: 800rpx;
+	z-index: 10;
+	position: absolute;
+	left: 0;
+	top: 10%;
+}
+.taskText {
+	position: absolute;
+	top: 53%;
+	text-align: center;
+	z-index: 12;
+	font-size: 30rpx;
+	padding: 0rpx 15%;
+	color: #fff;
+}
+.closetask {
+	z-index: 11;
+	font-size: 56rpx;
+	font-weight: bold;
+	color: #fff;
+	position: relative;
+	top: 250rpx;
+	right: 90rpx;
+	text-align: right;
+}
+.taskModelImg {
+	width: 100%;
+	height: 100%;
 }
 .main {
 	width: 100%;

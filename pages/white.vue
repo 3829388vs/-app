@@ -38,14 +38,28 @@
 						})
 					}
 					if(this.url.tanxian){
-						uni.redirectTo({
-							url: "/pages/play/landScap?item="+this.url.item+'&en='+this.url.en+'&map='+this.url.map
-						})
+						//轮回之地敌人
+						if(this.url.lunhui){
+							uni.redirectTo({
+								url: "/pages/play/landScap?item="+this.url.item+'&en='+this.url.en+'&map='+this.url.map+'&lunhui=true'
+							})
+						}else{
+							uni.redirectTo({
+								url: "/pages/play/landScap?item="+this.url.item+'&en='+this.url.en+'&map='+this.url.map
+							})
+						}
 					}
 					if(this.url.tanxianBattle){
-						uni.redirectTo({
-							url: "/pages/play/tanxianLandScap?item="+this.url.item+'&type=win'+'&map='+this.url.map
-						})
+						if(this.url.lunhui){
+							uni.redirectTo({
+								url: "/pages/play/tanxianLandScap?item="+this.url.item+'&type=win'+'&map='+this.url.map+'&lunhui=true'
+							})
+						}else{
+							uni.redirectTo({
+								url: "/pages/play/tanxianLandScap?item="+this.url.item+'&type=win'+'&map='+this.url.map
+							})
+						}
+						
 					}
 				}
 				

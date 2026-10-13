@@ -80,20 +80,38 @@
 					</view>
 				</view>
 				<view v-else>
-					<view class="selRow">
+					<view class="selRow" v-if="!showShapan">
 						<view class="btns tianti" @click="match('tianti')"></view>
 					</view>
-					<view class="selRow">
+					<view class="selRow" v-if="!showShapan">
 						<view class="btns jinbiao" @click="match('jinbiao')"></view>
 					</view>
-					<view class="selRow">
+					<view class="selRow" v-if="!showShapan">
 						<view class="btns shijiebei" @click="match('shijiebei')"></view>
 					</view>
-					<view class="selRow">
+					<view class="selRow" v-if="!showShapan">
 						<view class="btns spt" @click="match('spt')"></view>
 					</view>
-					<view class="selRow">
+					<view class="selRow" v-if="!showShapan">
 						<view class="btns wuxian" @click="match('wuxian')"></view>
+					</view>
+					<view class="selRow" v-if="!showShapan">
+						<view class="btns shapan" @click="selShapan"></view>
+					</view>
+					<view class="selRow" v-if="showShapan">
+						<view class="btns shapanMa" @click="match('spMatch')"></view>
+					</view>
+					<view class="selRow" v-if="showShapan">
+						<view class="btns shapanPW" @click="match('sp-paiwei')"></view>
+					</view>
+					<view class="selRow" v-if="showShapan">
+						<view class="btns shapanJB" @click="match('sp-jinbiao')"></view>
+					</view>
+					<view class="selRow" v-if="showShapan">
+						<view class="btns shapanFB" @click="match('sp-fuben')"></view>
+					</view>
+					<view class="selRow" v-if="showShapan">
+						<view class="btns shapanSJB" @click="match('sp-shijiebei')"></view>
 					</view>
 					<view class="selRow">
 						<view class="btns back" @click="back"></view>
@@ -127,7 +145,8 @@
 				selModel: false,
 				bgImg: 'index.jpg',
 				bgSize: 'cover',
-				isChallenge: true
+				isChallenge: true,
+				showShapan: false
 			}
 		},
 		mounted() {
@@ -179,6 +198,9 @@
 						return
 					}
 				})
+			},
+			selShapan(){
+				this.showShapan = true
 			},
 				// uniCloud.callFunction({
 				// 	name: 'login',
@@ -242,7 +264,9 @@
 				})
 			},
 			info() {
-				
+				uni.redirectTo({
+					url: "/pages/index/gameInfo"
+				})
 			},
 			match(type) {
 				if(type == 'challenge'){
@@ -262,7 +286,7 @@
 					})
 					return
 				}
-				if(type == 'fuben'){
+				if(type.indexOf('fuben') != -1){
 					setTimeout(()=>{
 						uni.redirectTo({
 							url: "/pages/index/selEnemy"
@@ -270,7 +294,7 @@
 					},150)
 					return
 				}
-				if(type == 'paiwei'){
+				if(type.indexOf('paiwei') != -1){
 					setTimeout(()=>{
 						uni.redirectTo({
 							url: "/pages/paiwei/init"
@@ -318,6 +342,7 @@
 				const self = this
 				this.isChallenge = true
 				self.selModel = false
+				this.showShapan = false
 				// uni.showLoading({
 				// 	title: '加载中'
 				// });
@@ -539,6 +564,34 @@
 			}
 			.spt {
 				background: url("../../static/imgs/spt.png") no-repeat;
+				background-size: cover;
+			}
+			.shapan {
+				background: url("../../static/imgs/shapan.png") no-repeat;
+				background-size: cover;
+			}
+			.shapan:hover {
+				background: url("../../static/imgs/shapan2.png") no-repeat;
+				background-size: cover;
+			}
+			.shapanMa {
+				background: url("../../static/imgs/spMatch.png") no-repeat;
+				background-size: cover;
+			}
+			.shapanPW {
+				background: url("../../static/imgs/spPaiwei.png") no-repeat;
+				background-size: cover;
+			}
+			.shapanJB {
+				background: url("../../static/imgs/spJinbiao.png") no-repeat;
+				background-size: cover;
+			}
+			.shapanFB {
+				background: url("../../static/imgs/spFuben.png") no-repeat;
+				background-size: cover;
+			}
+			.shapanSJB{
+				background: url("../../static/imgs/spSJB.png") no-repeat;
 				background-size: cover;
 			}
 		}

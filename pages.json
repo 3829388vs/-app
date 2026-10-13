@@ -144,6 +144,14 @@
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }
+		},
+		{
+		    "path" : "pages/index/gameInfo",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
 		}
     ],
 	// "tabBar": {

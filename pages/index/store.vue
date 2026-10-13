@@ -28,7 +28,7 @@
 					</view>
 				</view>
 				<view class="buy">
-					<button type="warn" @click="buy">购买(￥{{money}})</button>
+					<button type="warn" @click="buy" :disabled="disabled">购买(￥{{money}})</button>
 				</view>
 				<view class="bottom">
 					<view>
@@ -63,7 +63,8 @@ export default {
 				pwE: 6
 			},
 			myStore: [],
-			selItem: null
+			selItem: null,
+			disabled: false
 		}
 	},
 	onLoad(option) {
@@ -89,6 +90,10 @@ export default {
 			this.text = item.details
 			this.money = item.price
 			this.selItem = {...item}
+			this.disabled = false
+			if(this.selItem.id == 1015){
+				this.disabled = true
+			}
 		},
 		back() {
 			if(this.gametype == 0){

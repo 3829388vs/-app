@@ -57,6 +57,7 @@
 
 <script>
 import res from '../../static/data/heroList.json'
+import heroStrongList from '../../static/data/heroStrong.json'
 export default {
 	data() {
 		return {
@@ -142,7 +143,23 @@ export default {
 					})	
 				}
 			})
-			this.heroList = [...list].concat(this.myStoreHero)
+			let heli = [...list].concat(this.myStoreHero)
+			let data = JSON.parse(uni.getStorageSync('heroAddData'))
+			heli.forEach((item=>{
+				data.forEach(it=>{
+					if(it.id == item.id){
+						if(it.strongIndex){
+							heroStrongList.data.map(i=>{
+								if(i.id == it.id && it.strongIndex == i.index){
+									item.icon = i.icon
+									item.name = i.name
+								}
+							})
+						}
+					}
+				})
+			}))
+			this.heroList = heli
 			// uniCloud.callFunction({
 			// 	name: 'getHeros'
 			// }).then((res) => {
@@ -219,7 +236,7 @@ export default {
 				uni.setStorageSync('heroAddData',JSON.stringify(data))
 			}
 			
-			if(uni.getStorageSync('gameType') == 'paiwei'){
+			if(uni.getStorageSync('gameType').indexOf('paiwei') != -1){
 				uni.redirectTo({
 					url: "/pages/paiwei/index?item="+JSON.stringify(item)+'&num='+this.num
 				})

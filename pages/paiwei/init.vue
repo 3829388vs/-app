@@ -9,6 +9,7 @@
 			<button style="width: 300rpx;" type="warn" @click="begin">开始排位</button>
 		</view>
 		<button style="width: 300rpx;margin-top: 30rpx;" type="primary" @click="back">返回菜单</button>
+		<image class="reward" src="../../static/imgs/mapObjs/bigbox.png" @click="reward"></image>
 	</view>
 </template>
 
@@ -56,7 +57,13 @@ export default {
 				this.img = 'zs.png'
 			}
 			if(this.userInfo.pwlv == 6){
+				this.img = 'cfds.png'
+			}
+			if(this.userInfo.pwlv == 7){
 				this.img = 'zqwz.png'
+			}
+			if(this.userInfo.pwlv > 7){
+				this.img = 'dianfengshai.png'
 			}
 		},
 		pweFilter() {
@@ -86,7 +93,99 @@ export default {
 				url: "/pages/index/index?isLogin=1"
 			})
 		},
-			
+		reward() {
+			if(parseInt(this.userInfo.pwlv) >= 5){
+				let myToolList = JSON.parse(uni.getStorageSync('tanxianPack'))
+				let has = false
+				myToolList.forEach(i=>{
+					if(i.name == '云霄龙魂'){
+						has = true
+					}
+				})
+				if(!has){
+					uni.showToast({
+						title: '获得【云霄龙魂】',
+						icon:'none',
+						duration: 2000
+					});
+					myToolList.push({"id":new Date().getTime(),"name":"云霄龙魂","gj": 0,"fy": 0,"fs": 0,"flz": 0,"speed": 5,"img":"yunxiaolh.png","icon":"yunxiaolh.png","detail":"手动触发该龙魂后，提升英雄移动速度120，持续12秒，并永久提升5移动速度。","price":0,"istool":1})
+					uni.setStorageSync('tanxianPack',JSON.stringify(myToolList))
+				}
+			}
+			if(parseInt(this.userInfo.pwlv) == 7){
+				let myToolList = JSON.parse(uni.getStorageSync('myStore'))
+				let has = false
+				myToolList.forEach(i=>{
+					if(i.name == '王者羽翼'){
+						has = true
+					}
+				})
+				if(!has){
+					uni.showToast({
+						title: '获得【王者羽翼】【王者相框】',
+						icon:'none',
+						duration: 2000
+					});
+				
+					myToolList.push({
+						id: new Date().getTime(),
+						name: '王者羽翼',
+						details: '王者羽翼。装备后可提升移动速度30%，防御力提升50',
+						icon: 'wangzheyy.png',
+						buyTime: new Date().getTime(),
+						fy: 50,
+						speed: 0.4,
+						istool:0,
+						isOther: true,
+						price: 10000
+					})
+					myToolList.push({"id":new Date().getTime()+1,"buyTime": new Date().getTime(),"name":"王者像框","isOther":true,"icon":"wzCircle.png","details":"王者像框","price":10000,"istool":0})
+					uni.setStorageSync('myStore',JSON.stringify(myToolList))
+				}else{
+					uni.showToast({
+						title: '你已经领取过王者羽翼和相框',
+						icon:'none',
+						duration: 1500
+					});
+				}
+			}
+			if(parseInt(this.userInfo.pwlv) == 8){
+				let myToolList = JSON.parse(uni.getStorageSync('myStore'))
+				let has = false
+				myToolList.forEach(i=>{
+					if(i.name == '嗜血恶魔羽翼'){
+						has = true
+					}
+				})
+				if(!has){
+					uni.showToast({
+						title: '获得【嗜血恶魔羽翼】',
+						icon:'none',
+						duration: 2000
+					});
+				
+					myToolList.push({
+						id: new Date().getTime(),
+						name: '嗜血恶魔羽翼',
+						details: '嗜血恶魔羽翼。装备后可提升移动速度40%，防御力提升75',
+						icon: 'shixueemoyy.png',
+						buyTime: new Date().getTime(),
+						fy: 75,
+						speed: 0.4,
+						istool:0,
+						isOther: true,
+						price: 15000
+					})
+					uni.setStorageSync('myStore',JSON.stringify(myToolList))
+				}else{
+					uni.showToast({
+						title: '你已经领取过嗜血恶魔羽翼',
+						icon:'none',
+						duration: 1500
+					});
+				}
+			}
+		},
 		levelFilter(level) {
 			let lv = '英勇黄铜'
 			if(level == 1) {
@@ -105,7 +204,13 @@ export default {
 				lv = '翡翠钻石'
 			}
 			if(level == 6) {
+				lv = '超凡大师'
+			}
+			if(level == 7) {
 				lv = '最强王者'
+			}
+			if(level > 7) {
+				lv = '巅峰王者'
 			}
 			return lv
 		},
@@ -201,6 +306,13 @@ export default {
 			color: #ffdb0e;
 			position: relative;
 			top: 160rpx;
+		}
+		.reward {
+			position: absolute;
+			right: 50rpx;
+			bottom: 50rpx;
+			width: 140rpx;
+			height: 130rpx;
 		}
 	}
 </style>
